@@ -27,4 +27,4 @@ script:
   - source /opt/intel/openvino/bin/setupvars.sh
   - mkdir build && cd build
   - cmake .. -DCMAKE_BUILD_TYPE=Release && make -j8
-  - ./test_ie
+  - ./bin/test_git
