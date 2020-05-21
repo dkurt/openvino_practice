@@ -1,1 +1,0 @@
-add_test(test_git main.cpp)
