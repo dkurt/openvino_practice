@@ -1,0 +1,30 @@
+language: cpp
+
+notifications:
+  email: false
+
+sudo: true
+
+compiler: gcc
+
+os: linux
+
+# branches:
+#   only:
+#     - master
+
+# git:
+#   submodules: true
+
+before_install:
+  - sudo curl -o GPG-PUB-KEY-INTEL-OPENVINO-2020 https://apt.repos.intel.com/openvino/2020/GPG-PUB-KEY-INTEL-OPENVINO-2020
+  - sudo apt-key add GPG-PUB-KEY-INTEL-OPENVINO-2020
+  - sudo echo "deb https://apt.repos.intel.com/openvino/2020 all main" | sudo tee - a /etc/apt/sources.list.d/intel-openvino-2020.list
+  - sudo apt-get update
+  - sudo apt-get install -y --no-install-recommends intel-openvino-dev-ubuntu16-2020.2.130
+
+script:
+  - source /opt/intel/openvino/bin/setupvars.sh
+  - mkdir build && cd build
+  - cmake .. -DCMAKE_BUILD_TYPE=Release && make -j8
+  - git diff --name-only HEAD^ ../modules/ | cut -d "/" -f2 | sed -E "s/[0-9]+_(.*)/\1/" | uniq | xargs -I '{}' sh -c './bin/test_{}'
