@@ -27,4 +27,4 @@ script:
   - source /opt/intel/openvino/bin/setupvars.sh
   - mkdir build && cd build
   - cmake .. -DCMAKE_BUILD_TYPE=Release && make -j8
-  - ./bin/test_git
+  - git diff --name-only HEAD^ ../modules/ | cut -d "/" -f2 | sed -E "s/[0-9]+_(.*)/\1/" | uniq | xargs -I '{}' sh -c './bin/test_{}'
