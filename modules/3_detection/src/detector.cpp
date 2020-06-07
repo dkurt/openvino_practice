@@ -8,6 +8,11 @@ using namespace cv;
 using namespace InferenceEngine;
 
 Detector::Detector() {
+    Core ie;
+
+    // Load deep learning network into memory
+    auto net = ie.ReadNetwork(utils::fs::join(DATA_FOLDER, "face-detection-0104.xml"),
+                              utils::fs::join(DATA_FOLDER, "face-detection-0104.bin"));
 }
 
 void Detector::detect(const cv::Mat& image, std::vector<cv::Rect>& boxes,

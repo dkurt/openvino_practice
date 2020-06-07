@@ -23,6 +23,8 @@ before_install:
   - sudo echo "deb https://apt.repos.intel.com/openvino/2020 all main" | sudo tee - a /etc/apt/sources.list.d/intel-openvino-2020.list
   - sudo apt-get update
   - sudo apt-get install -y --no-install-recommends intel-openvino-dev-ubuntu16-2020.2.130
+  # Download test data
+  - wget https://download.01.org/opencv/2020/openvinotoolkit/2020.3/open_model_zoo/models_bin/1/face-detection-0104/FP32/face-detection-0104.bin -O data/face-detection-0104.bin
 
 script:
   - source /opt/intel/openvino/bin/setupvars.sh
