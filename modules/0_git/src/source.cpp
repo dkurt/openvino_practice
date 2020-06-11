@@ -1,9 +1,9 @@
 #include "header.hpp"
 
 std::string myspace::func(A& a) {
-    return "Hello, World!";
+    return "Hello, Nizhny!";
 }
 
 std::string func(A& a) {
-    return "Hello, Nizhny!";
+    return "Hello, World!";
 }

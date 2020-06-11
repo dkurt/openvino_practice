@@ -20,7 +20,7 @@ foreach(module ${modules})
 
     # Build library
     file(GLOB SOURCES "${module}/src/*.cpp")
-    add_library(module_${module_name} SHARED ${SOURCES})
+    add_library(module_${module_name} STATIC ${SOURCES})
     target_include_directories(module_${module_name} PUBLIC "${module}/include")
     target_link_libraries(module_${module_name} PUBLIC ${OpenCV_LIBRARIES} ${InferenceEngine_LIBRARIES})
 
@@ -28,5 +28,8 @@ foreach(module ${modules})
     file(GLOB TEST_SOURCES "${module}/test/*.cpp")
     add_executable(test_${module_name} "${TEST_SOURCES}")
     target_include_directories(test_${module_name} PRIVATE "${PROJECT_SOURCE_DIR}/3rdparty/")
-    target_link_libraries(test_${module_name} PRIVATE gtest pthread module_${module_name})
+    target_link_libraries(test_${module_name} PRIVATE gtest module_${module_name})
+    if (UNIX)
+        target_link_libraries(test_${module_name} PRIVATE pthread)
+    endif()
 endforeach()
