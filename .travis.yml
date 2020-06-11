@@ -17,6 +17,7 @@ os: linux
 #   submodules: true
 
 before_install:
+  # Install OpenVINO
   - sudo curl -o GPG-PUB-KEY-INTEL-OPENVINO-2020 https://apt.repos.intel.com/openvino/2020/GPG-PUB-KEY-INTEL-OPENVINO-2020
   - sudo apt-key add GPG-PUB-KEY-INTEL-OPENVINO-2020
   - sudo echo "deb https://apt.repos.intel.com/openvino/2020 all main" | sudo tee - a /etc/apt/sources.list.d/intel-openvino-2020.list
@@ -27,4 +28,5 @@ script:
   - source /opt/intel/openvino/bin/setupvars.sh
   - mkdir build && cd build
   - cmake .. -DCMAKE_BUILD_TYPE=Release && make -j8
+  # Run tests only for changes modules
   - git diff --name-only HEAD^ ../modules/ | cut -d "/" -f2 | sed -E "s/[0-9]+_(.*)/\1/" | uniq | xargs -I '{}' sh -c './bin/test_{}'
