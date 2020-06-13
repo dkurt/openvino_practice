@@ -44,3 +44,5 @@ deep learning network. To complete this module, you should implement:
     ```
 
 * Put `DenseNet_121.xml` and `DenseNet_121.bin` to `openvino_practice/data` folder.
+
+* Use `git` to add model files (`.xml` and `.bin`) into commit

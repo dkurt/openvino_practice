@@ -25,3 +25,5 @@ deep learning network. To complete this module, you should implement:
 * Download weights file and put to `openvino_practice/data` folder:
 
   * [face-detection-0104.bin](https://download.01.org/opencv/2020/openvinotoolkit/2020.3/open_model_zoo/models_bin/1/face-detection-0104/FP32/face-detection-0104.bin)
+
+* Do not add `face-detection-0104.bin` into commit (it is downloaded automatically on CI)
