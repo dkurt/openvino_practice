@@ -25,6 +25,10 @@ before_install:
   - sudo apt-get install -y --no-install-recommends intel-openvino-dev-ubuntu16-2020.2.130
   # Download test data
   - wget https://download.01.org/opencv/2020/openvinotoolkit/2020.3/open_model_zoo/models_bin/1/face-detection-0104/FP32/face-detection-0104.bin -O data/face-detection-0104.bin
+  - wget http://yann.lecun.com/exdb/mnist/train-images-idx3-ubyte.gz -O data/train-images.idx3-ubyte.gz && gzip -d data/train-images.idx3-ubyte.gz
+  - wget http://yann.lecun.com/exdb/mnist/train-labels-idx1-ubyte.gz -O data/train-labels.idx1-ubyte.gz && gzip -d data/train-labels.idx1-ubyte.gz
+  - wget http://yann.lecun.com/exdb/mnist/t10k-images-idx3-ubyte.gz -O data/t10k-images.idx3-ubyte.gz && gzip -d data/t10k-images.idx3-ubyte.gz
+  - wget http://yann.lecun.com/exdb/mnist/t10k-labels-idx1-ubyte.gz -O data/t10k-labels.idx1-ubyte.gz && gzip -d data/t10k-labels.idx1-ubyte.gz
 
 script:
   - source /opt/intel/openvino/bin/setupvars.sh
