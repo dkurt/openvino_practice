@@ -7,6 +7,7 @@
 #include "detector.hpp"
 
 using namespace cv;
+using namespace cv::utils::fs;
 
 // Simple NMS test
 TEST(detection, nms) {
@@ -37,7 +38,7 @@ TEST(detection, faces) {
     const float nmsThreshold = 0.45f;
     const float probThreshold = 0.3f;
 
-    Mat img = imread(utils::fs::join(DATA_FOLDER, "conference.png"));
+    Mat img = imread(join(DATA_FOLDER, "conference.png"));
     std::vector<Rect> refBoxes = {
         Rect(276, 267, 24, 31), Rect(529, 244, 23, 31), Rect(127, 268, 22, 29),
         Rect(53, 263, 23, 29),  Rect(600, 248, 23, 30), Rect(453, 242, 22, 31),

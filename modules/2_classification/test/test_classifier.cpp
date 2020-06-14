@@ -7,6 +7,7 @@
 #include "classifier.hpp"
 
 using namespace cv;
+using namespace cv::utils::fs;
 
 TEST(classification, topK) {
     std::vector<float> src = {0.92f, 0.14f, 0.76f, 0.49f, 0.45f,
@@ -66,14 +67,14 @@ TEST(classification, SoftMaxLarge) {
 // In this test run image classification network and get top 5 classes with the
 // highest probabilities. Use implemented topK and SoftMax methods to pass tests
 TEST(classification, DenseNet) {
-    Mat image = imread(utils::fs::join(DATA_FOLDER, "tram.jpg"));
+    Mat image = imread(join(DATA_FOLDER, "tram.jpg"));
     std::vector<float> probabilities;
     std::vector<float> top5_scores;
     std::vector<unsigned> top5_classes;
 
     // Load file with classes names
     std::vector<std::string> classesNames;
-    std::ifstream ifs(utils::fs::join(DATA_FOLDER, "classification_classes_ILSVRC2012.txt"));
+    std::ifstream ifs(join(DATA_FOLDER, "classification_classes_ILSVRC2012.txt"));
     std::string line;
     while (std::getline(ifs, line))
         classesNames.push_back(line);
