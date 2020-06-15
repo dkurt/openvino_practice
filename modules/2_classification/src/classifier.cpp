@@ -4,8 +4,9 @@
 #include <opencv2/core/utils/filesystem.hpp>
 #include <inference_engine.hpp>
 
-using namespace cv;
 using namespace InferenceEngine;
+using namespace cv;
+using namespace cv::utils::fs;
 
 void topK(const std::vector<float>& src, unsigned k,
           std::vector<float>& dst,
@@ -28,10 +29,11 @@ Classifier::Classifier() {
     Core ie;
 
     // Load deep learning network into memory
-    CNNNetwork net = ie.ReadNetwork(utils::fs::join(DATA_FOLDER, "DenseNet_121.xml"),
-                                    utils::fs::join(DATA_FOLDER, "DenseNet_121.bin"));
+    CNNNetwork net = ie.ReadNetwork(join(DATA_FOLDER, "DenseNet_121.xml"),
+                                    join(DATA_FOLDER, "DenseNet_121.bin"));
 
     // Specify preprocessing procedures
+    // (NOTE: this part is different for different models!)
     InputInfo::Ptr inputInfo = net.getInputsInfo()["data"];
     inputInfo->getPreProcess().setResizeAlgorithm(ResizeAlgorithm::RESIZE_BILINEAR);
     inputInfo->setLayout(Layout::NHWC);

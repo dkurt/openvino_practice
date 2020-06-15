@@ -9,13 +9,6 @@ compiler: gcc
 
 os: linux
 
-# branches:
-#   only:
-#     - master
-
-# git:
-#   submodules: true
-
 before_install:
   # Install OpenVINO
   - sudo curl -o GPG-PUB-KEY-INTEL-OPENVINO-2020 https://apt.repos.intel.com/openvino/2020/GPG-PUB-KEY-INTEL-OPENVINO-2020
@@ -25,10 +18,19 @@ before_install:
   - sudo apt-get install -y --no-install-recommends intel-openvino-dev-ubuntu16-2020.2.130
   # Download test data
   - wget https://download.01.org/opencv/2020/openvinotoolkit/2020.3/open_model_zoo/models_bin/1/face-detection-0104/FP32/face-detection-0104.bin -O data/face-detection-0104.bin
+
   - wget http://yann.lecun.com/exdb/mnist/train-images-idx3-ubyte.gz -O data/train-images.idx3-ubyte.gz && gzip -d data/train-images.idx3-ubyte.gz
   - wget http://yann.lecun.com/exdb/mnist/train-labels-idx1-ubyte.gz -O data/train-labels.idx1-ubyte.gz && gzip -d data/train-labels.idx1-ubyte.gz
   - wget http://yann.lecun.com/exdb/mnist/t10k-images-idx3-ubyte.gz -O data/t10k-images.idx3-ubyte.gz && gzip -d data/t10k-images.idx3-ubyte.gz
   - wget http://yann.lecun.com/exdb/mnist/t10k-labels-idx1-ubyte.gz -O data/t10k-labels.idx1-ubyte.gz && gzip -d data/t10k-labels.idx1-ubyte.gz
+
+  - wget https://download.01.org/opencv/2020/openvinotoolkit/2020.3/open_model_zoo/models_bin/1/semantic-segmentation-adas-0001/FP32/semantic-segmentation-adas-0001.bin -O data/semantic-segmentation-adas-0001.bin
+  - wget https://download.01.org/opencv/2020/openvinotoolkit/2020.3/open_model_zoo/models_bin/1/semantic-segmentation-adas-0001/FP32/semantic-segmentation-adas-0001.xml -O data/semantic-segmentation-adas-0001.xml
+
+  # origin weights are from https://github.com/NifTK/NiftyNetModelZoo/tree/5-reorganising-with-lfs/unet_histology
+  - wget https://www.dropbox.com/s/hhu6ojkgru93poh/frozen_unet_histology.pb?dl=1 -O data/frozen_unet_histology.pb
+  # TODO: Implement frozen_unet_histology.pb model conversion with OpenVINO
+  # (note that TensorFlow accepts input tensor of shape 1,952,1144,1,1,3)
 
 script:
   - source /opt/intel/openvino/bin/setupvars.sh
