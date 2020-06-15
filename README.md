@@ -51,7 +51,7 @@ Download OpenVINO: https://software.seek.intel.com/openvino-toolkit
 
   ```bat
   "C:\Program Files\CMake\bin\cmake.exe" -G "Visual Studio 15 2017 Win64" ..
-  "C:\Program Files\CMake\bin\cmake.exe" --build . --config Release -- /m:4
+  "C:\Program Files\CMake\bin\cmake.exe" --build . --config Release
   ```
 
 4. Run tests for specific module
