@@ -1,0 +1,94 @@
+<html>
+
+<head>
+  <style>
+    table {
+      border-collapse: collapse;
+    }
+    table, th, td {
+      border: 1px solid black;
+      text-align: center;
+      padding: 5px;
+    }
+  </style>
+
+  <!-- jQuery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+  <script type='text/javascript'>
+
+    var prefix = "https://api.github.com/repos/dkurt/openvino_practice";
+    var users = new Map();
+
+    function renderTable() {
+      // Get a list of all the modules
+      $.ajax({
+        url: prefix + "/contents/modules?recursive=0&ref=develop",
+        dataType: 'json'
+      }).done(function(modules) {
+          var table = document.getElementById("results");
+
+          var header = table.insertRow();
+          header.insertCell(0).innerHTML = "User name";
+          modules.forEach(function(entry) {
+            header.insertCell().innerHTML = "<a href=" + entry.html_url + ">" + entry.name + "</a>";
+          });
+
+          users.forEach((progress, userId) => {
+            var row = table.insertRow();
+            row.insertCell().innerHTML = "<a href=https://github.com/" + userId + ">" + userId + "</a>";
+            modules.forEach(function(entry) {
+              var data = progress.get(entry.name);
+              var cell = row.insertCell();
+              if (data) {
+                var html = "<a href=" +data[0] + "><img src='https://img.shields.io/badge/";
+                if (data[1]) {
+                  html += "-accepted-4BC51D";
+                } else {
+                  html += "-in progress-red";
+                }
+                cell.innerHTML = html + "?style=plastic'></a>";
+              }
+            });
+          });
+      });
+    }
+
+    // Get a list of all pull requests
+    $.ajax({
+      url: prefix + "/pulls?state=all&sort=created",
+      dataType: 'json'
+    }).done(function(res) {
+      res.forEach(function(entry) {
+        var userId = entry.user.login;
+        if (!users.has(userId)) {
+          users.set(userId, new Map());
+        }
+
+        // Check for labels. Might be just module label or module label + approve
+        let moduleName = null;
+        let isAccepted = false;
+        entry.labels.forEach(function(label) {
+          var matches = label.name.match(/module: (.*)/);
+          if (matches) {
+            moduleName = matches[1];
+          }
+          if (label.name.localeCompare("accepted") == 0) {
+            isAccepted = true;
+          }
+        });
+        if (moduleName) {
+          users.get(userId).set(moduleName, [entry.html_url, isAccepted]);
+        }
+      });
+      renderTable();
+    });
+
+  </script>
+</head>
+
+<body>
+  <table id="results"></table>
+</body>
+
+</html>
