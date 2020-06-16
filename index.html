@@ -56,7 +56,7 @@
 
     // Get a list of all pull requests
     $.ajax({
-      url: prefix + "/pulls?state=all&sort=created",
+      url: prefix + "/pulls?per_page=300&sort=created",
       dataType: 'json'
     }).done(function(res) {
       res.forEach(function(entry) {
@@ -66,20 +66,20 @@
         }
 
         // Check for labels. Might be just module label or module label + approve
-        let moduleName = null;
-        let isAccepted = false;
+        var moduleNames = [];
+        var isAccepted = false;
         entry.labels.forEach(function(label) {
           var matches = label.name.match(/module: (.*)/);
           if (matches) {
-            moduleName = matches[1];
+            moduleNames.push(matches[1]);
           }
           if (label.name.localeCompare("accepted") == 0) {
             isAccepted = true;
           }
         });
-        if (moduleName) {
+        moduleNames.forEach(function(moduleName) {
           users.get(userId).set(moduleName, [entry.html_url, isAccepted]);
-        }
+        });
       });
       renderTable();
     });
