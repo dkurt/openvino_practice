@@ -27,6 +27,9 @@ before_install:
   - wget https://download.01.org/opencv/2020/openvinotoolkit/2020.3/open_model_zoo/models_bin/1/semantic-segmentation-adas-0001/FP32/semantic-segmentation-adas-0001.bin -O data/semantic-segmentation-adas-0001.bin
   - wget https://download.01.org/opencv/2020/openvinotoolkit/2020.3/open_model_zoo/models_bin/1/semantic-segmentation-adas-0001/FP32/semantic-segmentation-adas-0001.xml -O data/semantic-segmentation-adas-0001.xml
 
+  - wget https://www.dropbox.com/s/2fnlv87zbwra6az/distilbert.bin?dl=1 -O data/distilbert.bin
+  - wget https://www.dropbox.com/s/06bnkjr2pkpeyff/distilbert.xml?dl=1 -O data/distilbert.xml
+
   # origin weights are from https://github.com/NifTK/NiftyNetModelZoo/tree/5-reorganising-with-lfs/unet_histology
   - wget https://www.dropbox.com/s/hhu6ojkgru93poh/frozen_unet_histology.pb?dl=1 -O data/frozen_unet_histology.pb
   # TODO: Implement frozen_unet_histology.pb model conversion with OpenVINO
