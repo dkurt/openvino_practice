@@ -31,7 +31,8 @@ deep learning network. To complete this module, you should implement:
         --input_model DenseNet_121.caffemodel \
         --input_proto DenseNet_121.prototxt \
         --scale_values "[58.8235294117647]" \
-        --mean_values "[103.94,116.78,123.68]"
+        --mean_values "[103.94,116.78,123.68]" \
+        --data_type FP16
     ```
 
     * Microsoft Windows
@@ -40,7 +41,8 @@ deep learning network. To complete this module, you should implement:
         --input_model DenseNet_121.caffemodel ^
         --input_proto DenseNet_121.prototxt ^
         --scale_values "[58.8235294117647]" ^
-        --mean_values "[103.94,116.78,123.68]"
+        --mean_values "[103.94,116.78,123.68]" ^
+        --data_type FP16
     ```
 
 * Put `DenseNet_121.xml` and `DenseNet_121.bin` to `openvino_practice/data` folder.
