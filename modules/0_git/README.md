@@ -41,7 +41,7 @@ This module will show you how
 * Create a commit
 
     ```bash
-    git add modules/0_git/src/source.cpp
+    git add modules/0_git/test/main.cpp
     git commit -m "initial commit"
     ```
 
