@@ -20,7 +20,7 @@ private:
 // [inp] src     - vector of values
 // [inp] k       - positive integer to indicate number of top values
 // [out] dst     - output top k highest values in descending order
-// [out] indices - output indices of top 4 highest values from <src>
+// [out] indices - output indices of top k highest values from <src>
 void topK(const std::vector<float>& src, unsigned k,
           std::vector<float>& dst,
           std::vector<unsigned>& indices);
