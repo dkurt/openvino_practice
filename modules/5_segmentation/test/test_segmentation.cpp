@@ -37,6 +37,6 @@ TEST(ADAS, segment) {
 
     Mat carMask = mask == 13;
 
-    Mat ref = imread(join(DATA_FOLDER, "car_mask.png"), IMREAD_GRAYSCALE);
-    ASSERT_GE(Dice(carMask, ref), 0.95);
+    Mat refMask = imread(join(DATA_FOLDER, "car_mask.png"), IMREAD_GRAYSCALE);
+    ASSERT_GE(Dice(carMask, refMask), 0.96);
 }
