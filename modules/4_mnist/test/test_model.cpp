@@ -33,8 +33,17 @@ TEST(Model, ocr) {
     std::vector<Rect> boxes = {Rect(737, 325, 56, 56), Rect(781, 323, 56, 56),
                                Rect(830, 320, 56, 56)};
     int ref[] = {6, 6, 7};
+    int out[] = {0, 0, 0};
+
+    std::cout << "Predicted numbers:";
     for (int i = 0; i < boxes.size(); ++i) {
         Mat roi = image(boxes[i]);
-        ASSERT_EQ(predict(model, roi), ref[i]);
+        out[i] = predict(model, roi);
+        std::cout << " " << out[i];
+    }
+    std::cout << std::endl;
+
+    for (int i = 0; i < boxes.size(); ++i) {
+        ASSERT_EQ(out[i], ref[i]);
     }
 }
