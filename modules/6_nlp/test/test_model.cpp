@@ -27,6 +27,11 @@ TEST(model, embedding) {
     std::string source = "The most popular computer vision appoach for face recognition is to map face image to floating point vector called embedding and then compute a cosine distance between them.";
 
     std::string answer = model.getAnswer(question, source);
+
+    std::cout << "[text]: " << source << std::endl << std::endl;
+    std::cout << "[question]: " << question << std::endl << std::endl;
+    std::cout << "[answer]: " << answer << std::endl << std::endl;
+
     ASSERT_EQ(answer, "to map face image to floating point vector called embedding");
 }
 
@@ -37,6 +42,11 @@ TEST(model, openvino) {
     std::string source = "Use OpenVINO toolkit if you want to have fast deep learning inference for computer vision on CPU.";
 
     std::string answer = model.getAnswer(question, source);
+
+    std::cout << "[text]: " << source << std::endl << std::endl;
+    std::cout << "[question]: " << question << std::endl << std::endl;
+    std::cout << "[answer]: " << answer << std::endl << std::endl;
+
     ASSERT_EQ(answer, "openvino toolkit");
 }
 
@@ -47,5 +57,10 @@ TEST(model, squad) {
     std::string source = readFile(join(DATA_FOLDER, "squad_source.txt"));
 
     std::string answer = model.getAnswer(question, source);
+
+    std::cout << "[text]: " << source << std::endl << std::endl;
+    std::cout << "[question]: " << question << std::endl << std::endl;
+    std::cout << "[answer]: " << answer << std::endl << std::endl;
+
     ASSERT_EQ(answer, "the garden");
 }
