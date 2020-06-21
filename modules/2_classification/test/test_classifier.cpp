@@ -80,6 +80,10 @@ TEST(classification, DenseNet) {
         classesNames.push_back(line);
 
     // TODO: add code here
+	Classifier cl;
+	cl.classify(image, probabilities);
+	softmax(probabilities);
+	topK(probabilities, 5, top5_scores, top5_classes);
 
     ASSERT_EQ(probabilities.size(), 1000);
     ASSERT_EQ(top5_scores.size(), 5);
