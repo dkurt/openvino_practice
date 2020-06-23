@@ -7,8 +7,16 @@ public:
     Detector();
 
     // Performs object detection
+	// [inp] image
+	// [inp] nmsThreshold  - threshold for nms
+	// [inp] probThreshold - threshold for boxes probabilities
+	// [out] boxes         - list of bounding boxes
+	// [out] probabilities - list of probabilities corresponding to bounding boxes
+	// [out] classes       - indices of classes
     void detect(const cv::Mat& image, std::vector<cv::Rect>& boxes,
-                std::vector<float>& probabilities, std::vector<unsigned>& classes);
+                std::vector<float>& probabilities, std::vector<unsigned>& classes, 
+				const float nmsThreshold,
+				const float probThreshold);
 };
 
 // Non-maximum suppression for detected bounding boxes.
@@ -21,3 +29,4 @@ public:
 // [out] indices       - output indices of bounding boxes from input list which are not suppressed
 void nms(const std::vector<cv::Rect>& boxes, const std::vector<float>& probabilities,
          float threshold, std::vector<unsigned>& indices);
+

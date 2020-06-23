@@ -17,7 +17,9 @@ Detector::Detector() {
 
 void Detector::detect(const cv::Mat& image, std::vector<cv::Rect>& boxes,
                       std::vector<float>& probabilities,
-                      std::vector<unsigned>& classes) {
+                      std::vector<unsigned>& classes, 
+					  const float nmsThreshold,
+					  const float probThreshold) {
     CV_Error(Error::StsNotImplemented, "detect");
 }
 
