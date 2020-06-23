@@ -94,7 +94,6 @@ TEST(detection, faces) {
 
 		ASSERT_EQ(classes[i], 1);
 		ASSERT_EQ(boxes[i], refBoxes[i]);
-		std::cout << "i " << i << std::endl;
 		ASSERT_LE(fabs(probs[i] - refProbs[i]), 1e-5f);
 		
     }
