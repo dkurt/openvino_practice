@@ -68,17 +68,19 @@ TEST(detection, faces) {
     std::vector<Rect> boxes;
     std::vector<float> probs;
     std::vector<unsigned> classes;
-    model.detect(img, boxes, probs, classes);
+    model.detect(img, nmsThreshold, probThreshold, boxes, probs, classes);
 
     // Replace #if 0 to #if 1 for debug visualization.
 #if 0
-    for (int i = 0; i < boxes.size(); ++i) {
-        rectangle(img, boxes[i], 255);
-        putText(img, format("%.2f", probs[i]), Point(boxes[i].x, boxes[i].y - 2),
-                FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0, 255, 0));
-    }
+	for (int i = 0; i < boxes.size(); ++i) {
+		rectangle(img, boxes[i], Scalar(0, 0, 255));
+		rectangle(img, refBoxes[i], Scalar(0, 255, 0));
+		putText(img, format("%.2f", probs[i]), Point(boxes[i].x, boxes[i].y - 2),
+			FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0, 255, 0));
+	}
     imshow("Detection", img);
     waitKey();
+
 #endif
 
     ASSERT_GE(boxes.size(), refBoxes.size());
@@ -90,9 +92,10 @@ TEST(detection, faces) {
         if (probs[i] < probThreshold)
             break;
 
-        ASSERT_EQ(boxes[i], refBoxes[i]);
-        ASSERT_LE(fabs(probs[i] - refProbs[i]), 1e-5f);
-        ASSERT_EQ(classes[i], 1);
+		ASSERT_EQ(classes[i], 1);
+		ASSERT_EQ(boxes[i], refBoxes[i]);
+		ASSERT_LE(fabs(probs[i] - refProbs[i]), 1e-5f);
+		
     }
     ASSERT_EQ(i, boxes.size());
 }

@@ -15,7 +15,11 @@ Detector::Detector() {
                               utils::fs::join(DATA_FOLDER, "face-detection-0104.bin"));
 }
 
-void Detector::detect(const cv::Mat& image, std::vector<cv::Rect>& boxes,
+
+void Detector::detect(const cv::Mat& image,
+                      const float nmsThreshold,
+                      const float probThreshold,
+                      std::vector<cv::Rect>& boxes,
                       std::vector<float>& probabilities,
                       std::vector<unsigned>& classes) {
     CV_Error(Error::StsNotImplemented, "detect");
