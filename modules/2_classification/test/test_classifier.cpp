@@ -77,13 +77,15 @@ TEST(classification, DenseNet) {
     std::ifstream ifs(join(DATA_FOLDER, "classification_classes_ILSVRC2012.txt"));
     std::string line;
     while (std::getline(ifs, line))
-        classesNames.push_back(line);
+           classesNames.push_back(line);
 
-    // TODO: add code here
-
+	Classifier cl;
+	int k = 5;
+	std::vector<int> indices;
+	cl.classify(image, k, probabilities,indices);
     ASSERT_EQ(probabilities.size(), 1000);
-    ASSERT_EQ(top5_scores.size(), 5);
-    ASSERT_EQ(top5_classes.size(), 5);
+    ASSERT_EQ(top5_scores.size(), k);
+    ASSERT_EQ(top5_classes.size(), k);
 
     for (int i = 0; i < top5_classes.size(); ++i) {
         std::cout << format("%.5f", top5_scores[i]) << " ";
