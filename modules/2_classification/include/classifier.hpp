@@ -8,8 +8,12 @@ public:
 
     // Performs image classification
     // [inp] image         - OpenCV image in BGR color namespace
+	// [inp] k             - positive integer to indicate number of top values
     // [out] probabilities - vector of probabilities for every class
-    void classify(const cv::Mat& image, std::vector<float>& probabilities);
+	// [out] indices       - output indices of top k highest values from <src>
+
+	void classify(const cv::Mat& image, int k, std::vector<float>& probabilities,
+				std::vector<int>& indices);
 
 private:
     InferenceEngine::InferRequest req;
@@ -20,7 +24,7 @@ private:
 // [inp] src     - vector of values
 // [inp] k       - positive integer to indicate number of top values
 // [out] dst     - output top k highest values in descending order
-// [out] indices - output indices of top 4 highest values from <src>
+// [out] indices - output indices of top k highest values from <src>
 void topK(const std::vector<float>& src, unsigned k,
           std::vector<float>& dst,
           std::vector<unsigned>& indices);

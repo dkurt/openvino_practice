@@ -80,7 +80,10 @@ TEST(classification, DenseNet) {
         classesNames.push_back(line);
 
     // TODO: add code here
-
+	Classifier cl;
+	int k = 5;
+	std::vector<int> indices;
+	cl.classify(image, k, probabilities,indices);
     ASSERT_EQ(probabilities.size(), 1000);
     ASSERT_EQ(top5_scores.size(), 5);
     ASSERT_EQ(top5_classes.size(), 5);

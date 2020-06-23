@@ -47,7 +47,8 @@ Classifier::Classifier() {
     req = execNet.CreateInferRequest();
 }
 
-void Classifier::classify(const cv::Mat& image, std::vector<float>& probabilities) {
+void Classifier::classify(const cv::Mat& image, int k, std::vector<float>& probabilities,
+	std::vector<int>& indices) {
     // Create 4D blob from BGR image
     Blob::Ptr input = wrapMatToBlob(image);
 
