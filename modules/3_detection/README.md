@@ -27,3 +27,6 @@ deep learning network. To complete this module, you should implement:
   * [face-detection-0104.bin](https://download.01.org/opencv/2020/openvinotoolkit/2020.3/open_model_zoo/models_bin/1/face-detection-0104/FP32/face-detection-0104.bin)
 
 * Do not add `face-detection-0104.bin` into commit (it is downloaded automatically on CI)
+
+* The network returns an output of sizes Nx7, where N is the number of detected rectangles, and 7 is the vectors (image index, class index, probability, xmin, ymin, xmax, ymax).
+ The coordinates are normed by width and height of the image.
