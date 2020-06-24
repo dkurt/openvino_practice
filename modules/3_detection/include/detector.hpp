@@ -13,10 +13,11 @@ public:
     // [out] boxes         - list of bounding boxes
     // [out] probabilities - list of probabilities corresponding to bounding boxes
     // [out] classes       - indices of classes
-    void detect(const cv::Mat& image, std::vector<cv::Rect>& boxes,
-                std::vector<float>& probabilities, std::vector<unsigned>& classes, 
-                const float nmsThreshold,
-                const float probThreshold);
+    void detect(const cv::Mat& image,const float nmsThreshold,
+                const float probThreshold,
+                std::vector<cv::Rect>& boxes,
+                std::vector<float>& probabilities,
+                std::vector<unsigned>& classes);
 };
 
 // Non-maximum suppression for detected bounding boxes.

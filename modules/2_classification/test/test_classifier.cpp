@@ -78,6 +78,7 @@ TEST(classification, DenseNet) {
     std::string line;
     while (std::getline(ifs, line))
            classesNames.push_back(line);
+
 	Classifier cl;
 	int k = 5;
 	std::vector<int> indices;
