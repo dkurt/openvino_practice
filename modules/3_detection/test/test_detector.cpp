@@ -68,7 +68,6 @@ TEST(detection, faces) {
     std::vector<Rect> boxes;
     std::vector<float> probs;
     std::vector<unsigned> classes;
-
     model.detect(img, nmsThreshold, probThreshold, boxes, probs, classes);
 
     // Replace #if 0 to #if 1 for debug visualization.
