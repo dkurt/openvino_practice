@@ -47,7 +47,7 @@ TEST(classification, SoftMax) {
         ASSERT_LE(src[i], 1.0f);
         sum += src[i];
     }
-    ASSERT_LE(fabs(sum - 1.0f), 1e-5f);
+    ASSERT_NEAR(sum, 1.0f, 1e-5f);
 }
 
 TEST(classification, SoftMaxLarge) {
@@ -61,14 +61,13 @@ TEST(classification, SoftMaxLarge) {
         ASSERT_LE(src[i], 1.0f);
         sum += src[i];
     }
-    ASSERT_LE(fabs(sum - 1.0f), 1e-5f);
+    ASSERT_NEAR(sum, 1.0f, 1e-5f);
 }
 
 // In this test run image classification network and get top 5 classes with the
 // highest probabilities. Use implemented topK and SoftMax methods to pass tests
 TEST(classification, DenseNet) {
     Mat image = imread(join(DATA_FOLDER, "tram.jpg"));
-    std::vector<float> probabilities;
     std::vector<float> top5_scores;
     std::vector<unsigned> top5_classes;
 
@@ -77,13 +76,11 @@ TEST(classification, DenseNet) {
     std::ifstream ifs(join(DATA_FOLDER, "classification_classes_ILSVRC2012.txt"));
     std::string line;
     while (std::getline(ifs, line))
-           classesNames.push_back(line);
+        classesNames.push_back(line);
 
-	Classifier cl;
-	int k = 5;
-	std::vector<int> indices;
-	cl.classify(image, k, probabilities,indices);
-    ASSERT_EQ(probabilities.size(), 1000);
+    Classifier cl;
+    int k = 5;
+    cl.classify(image, k, top5_scores, top5_classes);
     ASSERT_EQ(top5_scores.size(), k);
     ASSERT_EQ(top5_classes.size(), k);
 
