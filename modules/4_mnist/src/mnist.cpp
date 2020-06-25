@@ -1,35 +1,3 @@
-Skip to content
-Search or jump to…
-
-Pull requests
-Issues
-Marketplace
-Explore
- 
-@MariaMedvede 
-MariaMedvede
-/
-openvino_practice
-forked from dkurt/openvino_practice
-0
-02
-Code
-Pull requests
-Actions
-Projects
-Wiki
-Security
-Insights
-Settings
-openvino_practice/modules/4_mnist/src/mnist.cpp
-@MariaMedvede
-MariaMedvede mnist practice
-Latest commit ed6de6b 1 hour ago
- History
- 2 contributors
-@MariaMedvede@dkurt
-151 lines (128 sloc)  4.03 KB
-  
 #include "mnist.hpp"
 #include <fstream>
 
@@ -105,9 +73,6 @@ Ptr<ml::KNearest> train(const std::vector<cv::Mat>& images,
 	prepareSamples(images, samples);
 	trainingData = TrainData::create(samples,
 		SampleTypes::ROW_SAMPLE, labels);
-	kclassifier->setIsClassifier(true);
-	kclassifier->setAlgorithmType(KNearest::Types::BRUTE_FORCE);
-	kclassifier->setDefaultK(1);
 	kclassifier->train(trainingData);
 	return kclassifier;
 }
@@ -123,22 +88,10 @@ float validate(Ptr<ml::KNearest> model,
 	std::cout << "preparing samples" << std::endl;
 	prepareSamples(images, samples);
 	std::cout << "predicting values" << std::endl;
-	//model->findNearest(samples, 1, results);
 	model->predict(samples, results);
 	std::vector <int> res = results.clone();
 	int size = results.rows;
 
-	/*std::cout << "results are:" << std::endl;
-	for (int i = 0; i < size; i++)
-	{
-		std::cout << res[i] << " ";
-		
-	}
-	std::cout << "labels are:" << std::endl;
-	for (size_t i = 0; i < labels.size(); i++)
-	{
-		std::cout <<labels[i] << " ";
-	}*/
 	int correct = 0;
 	for (size_t i = 0; i < labels.size(); i++)
 	{
@@ -148,7 +101,6 @@ float validate(Ptr<ml::KNearest> model,
 		}
 	}
 	std::cout << "predicted values" << std::endl;
-	//float correct = countNonZero(res == labels);
 	float accuracy = correct / float(images.size());
 	return accuracy;
 }
