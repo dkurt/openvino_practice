@@ -34,16 +34,22 @@ TEST(detection, nms) {
     ASSERT_EQ(indices[1], 1);
 }
 
+TEST(detection, iou) {
+    Rect a(21, 27, 110, 150);
+    Rect b(53, 56, 108, 152);
+    ASSERT_NEAR(iou(a, b), 0.401993, 1e-5);
+}
+
 TEST(detection, faces) {
     const float nmsThreshold = 0.45f;
     const float probThreshold = 0.3f;
 
     Mat img = imread(join(DATA_FOLDER, "conference.png"));
     std::vector<Rect> refBoxes = {
-        Rect(276, 267, 24, 31), Rect(529, 244, 23, 31), Rect(127, 268, 22, 29),
-        Rect(53, 263, 23, 29),  Rect(600, 248, 23, 30), Rect(453, 242, 22, 31),
-        Rect(428, 196, 22, 30), Rect(198, 264, 23, 29), Rect(570, 267, 22, 29),
-        Rect(605, 193, 21, 29), Rect(94, 250, 22, 28),  Rect(486, 197, 20, 27),
+        Rect(276, 267, 24, 31), Rect(529, 244, 24, 31), Rect(127, 268, 22, 29),
+        Rect(53, 263, 23, 29), Rect(600, 248, 23, 30), Rect(453, 242, 22, 31),
+        Rect(428, 196, 22, 30), Rect(199, 264, 22, 29), Rect(570, 267, 22, 29),
+        Rect(605, 192, 21, 30), Rect(94, 250, 22, 28), Rect(486, 197, 20, 27),
         Rect(432, 263, 23, 30), Rect(370, 196, 20, 28), Rect(534, 194, 20, 26),
         Rect(328, 236, 20, 29), Rect(627, 276, 22, 28), Rect(108, 173, 21, 31),
         Rect(368, 261, 24, 31), Rect(571, 173, 20, 27), Rect(166, 241, 22, 30),
@@ -52,16 +58,11 @@ TEST(detection, faces) {
         Rect(319, 210, 19, 27), Rect(31, 238, 23, 30)
     };
     std::vector<float> refProbs = {
-        0.9884441494941711, 0.9876197576522827, 0.9838215112686157,
-        0.9810286164283752, 0.9808980822563171, 0.9801519513130188,
-        0.9767189025878906, 0.9733858704566956, 0.9640806317329407,
-        0.9604413509368896, 0.9576659798622131, 0.9413405060768127,
-        0.9145927429199219, 0.9032665491104126, 0.8889322280883789,
-        0.8799750208854675, 0.8717259168624878, 0.8642042279243469,
-        0.8107402324676514, 0.8074663877487183, 0.7997952699661255,
-        0.7943004965782166, 0.7681276202201843, 0.7119753956794739,
-        0.6937134861946106, 0.6185194849967957, 0.5806660652160645,
-        0.4284421503543854, 0.3059006929397583
+        0.988363, 0.987432, 0.983568, 0.981547, 0.980774, 0.980398,
+        0.97681,  0.972978, 0.964593, 0.960844, 0.958782, 0.942152,
+        0.913904, 0.903534, 0.888043, 0.879184, 0.875234, 0.862958,
+        0.815154, 0.810955, 0.797403, 0.792146, 0.771417, 0.710467,
+        0.696174, 0.619217, 0.577113, 0.418896, 0.306871
     };
 
     Detector model;
@@ -72,15 +73,14 @@ TEST(detection, faces) {
 
     // Replace #if 0 to #if 1 for debug visualization.
 #if 0
-	for (int i = 0; i < boxes.size(); ++i) {
-		rectangle(img, boxes[i], Scalar(0, 0, 255));
-		rectangle(img, refBoxes[i], Scalar(0, 255, 0));
-		putText(img, format("%.2f", probs[i]), Point(boxes[i].x, boxes[i].y - 2),
-			FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0, 255, 0));
-	}
+    for (int i = 0; i < boxes.size(); ++i) {
+        rectangle(img, boxes[i], Scalar(0, 0, 255));
+        rectangle(img, refBoxes[i], Scalar(0, 255, 0));
+        putText(img, format("%.2f", probs[i]), Point(boxes[i].x, boxes[i].y - 2),
+                FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0, 255, 0));
+    }
     imshow("Detection", img);
     waitKey();
-
 #endif
 
     ASSERT_GE(boxes.size(), refBoxes.size());
@@ -92,10 +92,9 @@ TEST(detection, faces) {
         if (probs[i] < probThreshold)
             break;
 
-		ASSERT_EQ(classes[i], 1);
-		ASSERT_EQ(boxes[i], refBoxes[i]);
-		ASSERT_LE(fabs(probs[i] - refProbs[i]), 1e-5f);
-		
+        ASSERT_EQ(classes[i], 1);
+        ASSERT_NEAR(probs[i], refProbs[i], 1e-5f);
+        ASSERT_EQ(boxes[i], refBoxes[i]);
     }
     ASSERT_EQ(i, boxes.size());
 }
