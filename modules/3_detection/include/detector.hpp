@@ -13,12 +13,17 @@ public:
     // [out] boxes         - list of bounding boxes
     // [out] probabilities - list of probabilities corresponding to bounding boxes
     // [out] classes       - indices of classes
-    void detect(const cv::Mat& image,const float nmsThreshold,
-                const float probThreshold,
+    void detect(const cv::Mat& image,
+                float nmsThreshold,
+                float probThreshold,
                 std::vector<cv::Rect>& boxes,
                 std::vector<float>& probabilities,
                 std::vector<unsigned>& classes);
 };
+
+// Compute Intersection over Union (IoU) metric between two rectangles.
+// Returns a ratio of intersection area over union area.
+float iou(const cv::Rect& a, const cv::Rect& b);
 
 // Non-maximum suppression for detected bounding boxes.
 // Method returns boxes with the highest probabilities among other boxes with
@@ -30,4 +35,3 @@ public:
 // [out] indices       - output indices of bounding boxes from input list which are not suppressed
 void nms(const std::vector<cv::Rect>& boxes, const std::vector<float>& probabilities,
          float threshold, std::vector<unsigned>& indices);
-

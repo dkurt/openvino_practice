@@ -48,7 +48,7 @@ Classifier::Classifier() {
 }
 
 void Classifier::classify(const cv::Mat& image, int k, std::vector<float>& probabilities,
-                          std::vector<int>& indices) {
+                          std::vector<unsigned>& indices) {
     // Create 4D blob from BGR image
     Blob::Ptr input = wrapMatToBlob(image);
 
