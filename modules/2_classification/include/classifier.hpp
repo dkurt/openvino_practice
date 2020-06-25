@@ -10,9 +10,9 @@ public:
     // [inp] image         - OpenCV image in BGR color namespace
     // [inp] k             - positive integer to indicate number of top values
     // [out] probabilities - vector of probabilities for every class
-	// [out] indices       - output indices of top k highest values from <src>
-
-	void classify(const cv::Mat& image, int k, std::vector<float>& probabilities,
+    // [out] indices       - output indices of top k highest values from <src>
+    
+    void classify(const cv::Mat& image, int k, std::vector<float>& probabilities,
                   std::vector<int>& indices);
 
 private:
