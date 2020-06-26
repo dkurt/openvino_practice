@@ -56,15 +56,15 @@ float validate(Ptr<ml::KNearest> model,
 }
 
 int predict(Ptr<ml::KNearest> model, const Mat& image) {
-	// TODO: resize image to 28x28 (cv::resize)
+    // TODO: resize image to 28x28 (cv::resize)
 
-	// TODO: convert image from BGR to HSV (cv::cvtColor)
+    // TODO: convert image from BGR to HSV (cv::cvtColor)
 
-	// TODO: get Saturate component (cv::split)
+    // TODO: get Saturate component (cv::split)
 
-	// TODO: prepare input - single row FP32 Mat
+    // TODO: prepare input - single row FP32 Mat
 
-	// TODO: make a prediction by the model
+    // TODO: make a prediction by the model
 
     CV_Error(Error::StsNotImplemented, "predict");
 }
