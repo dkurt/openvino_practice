@@ -42,6 +42,7 @@ TEST(DataLoader, prepareSamples) {
     Mat samples;
     prepareSamples(images, samples);
 
+    ASSERT_EQ(samples.type(), CV_32FC1);
     ASSERT_EQ(samples.rows, 3);
     ASSERT_EQ(samples.cols, 28*28);
     ASSERT_EQ(countNonZero(samples.row(0) != 11), 0);
