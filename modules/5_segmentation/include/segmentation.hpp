@@ -2,9 +2,12 @@
 #include <opencv2/opencv.hpp>
 #include <inference_engine.hpp>
 
+using namespace InferenceEngine;
+using namespace cv;
+
 // Compute Dice score over to binary masks
 float Dice(const cv::Mat& a, const cv::Mat& b);
-
+Blob::Ptr wrapMatToBlob(const Mat& m);
 // Basic interface
 class Segmenter {
 public:
@@ -23,6 +26,10 @@ public:
     ADAS();
 
     virtual void segment(const cv::Mat& image, cv::Mat& mask);
+private:
+	InferenceEngine::InferRequest req;
+	std::string outputName;
+
 };
 
 // Glands segmentation in colon histology images
