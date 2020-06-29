@@ -33,7 +33,7 @@ ADAS::ADAS() {
 }
 
 static Blob::Ptr wrapMatToBlob(const Mat& m) {
-	//CV_Assert(m.depth() == CV_8U);
+	CV_Assert(m.depth() == CV_8U);
 	std::vector<size_t> dims = { 1, (size_t)m.channels(), (size_t)m.rows, (size_t)m.cols };
 	return make_shared_blob<uint8_t>(TensorDesc(Precision::U8, dims, Layout::NHWC),
 		(uint8_t*)m.data);
@@ -41,10 +41,7 @@ static Blob::Ptr wrapMatToBlob(const Mat& m) {
 
 void ADAS::segment(const Mat& image, Mat& mask) {
 	// Create 4D blob from BGR image
-	Mat resized;
-	resize(image, resized, Size(1024, 2048));
-	//resized.convertTo(resized, BGR);
-	Blob::Ptr input = wrapMatToBlob(resized);
+	Blob::Ptr input = wrapMatToBlob(image);
 
 	req.SetBlob("data", input);
 
@@ -77,7 +74,7 @@ void ADAS::segment(const Mat& image, Mat& mask) {
 			
 	}
 	std::cout << "car segment " << cars << std::endl;
-	mask = mask.reshape(1, resized.rows);
+	mask = mask.reshape(1, 1024);
 	imshow("original mask", mask);
 	waitKey(0);
 	resize(mask, mask, Size(image.cols, image.rows));

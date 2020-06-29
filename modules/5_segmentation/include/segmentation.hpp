@@ -7,7 +7,6 @@ using namespace cv;
 
 // Compute Dice score over to binary masks
 float Dice(const cv::Mat& a, const cv::Mat& b);
-Blob::Ptr wrapMatToBlob(const Mat& m);
 // Basic interface
 class Segmenter {
 public:
