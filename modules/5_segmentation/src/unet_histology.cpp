@@ -5,6 +5,7 @@
 using namespace InferenceEngine;
 using namespace cv;
 using namespace cv::utils::fs;
+using namespace std;
 
 Blob::Ptr wrapMatToBlob(const Mat& m) {
     CV_Assert(m.depth() == CV_32F);
@@ -25,15 +26,31 @@ UNetHistology::UNetHistology() {
 
     // Create a single processing thread
     req = execNet.CreateInferRequest();
+	outputName = net.getOutputsInfo().begin()->first;
 }
 
 void UNetHistology::bgr2rgb(const Mat& src, Mat& dst) {
-    CV_Error(Error::StsNotImplemented, "bgr2rgb");
+	cv::cvtColor(src, dst, COLOR_BGR2RGB);
 }
 
-
 void UNetHistology::normalize(const Mat& src, Mat& dst) {
-    CV_Error(Error::StsNotImplemented, "normalize");
+	cout << "normalization" << endl;
+	Scalar mean, stdDev;
+	meanStdDev(src, mean, stdDev);
+
+	for (size_t i = 0; i < src.rows; i++)
+	{
+		for (size_t j = 0; j < src.cols; j++)
+		{
+			for (size_t k = 0; k < 3; k++)
+			{
+				dst.push_back((src.at<Vec3b>(i, j)(k) - mean[k]) / stdDev[k]);
+			}
+		}
+	}
+	cout << "convertion" << endl;
+	dst = dst.reshape(3, src.rows);
+	dst.convertTo(dst, CV_32F);
 }
 
 void UNetHistology::segment(const Mat& image, Mat& mask) {
@@ -64,11 +81,29 @@ void UNetHistology::segment(const Mat& image, Mat& mask) {
     Blob::Ptr inputBlob = wrapMatToBlob(inp);
 
     // TODO: Put inputBlob to the network, perform inference and return mask
+	req.SetBlob("worker_0/validation/IteratorGetNext", inputBlob);
+	// Launch network
+	req.Infer();
+	// Copy output. 
+	int32_t* output = req.GetBlob(outputName)->buffer();
+	int size = req.GetBlob(outputName)->size();
 
-    CV_Error(Error::StsNotImplemented, "UNetHistology semantic segmentation");
+	std::cout << "size is " << size << std::endl;
+	for (size_t i = 0; i < size; i++)
+	{
+		mask.push_back(float(output[i]));
+	}
+	std::cout << "width is " << image.cols << std::endl;
+
+	std::cout << "height is " << image.rows << std::endl;
+	mask = mask.reshape(1, 772);
+	std::cout << "resizing "<< std::endl;
+	resize(mask, mask, Size(image.cols, image.rows));
+	mask.convertTo(mask, CV_8UC1);
 }
 
 int UNetHistology::countGlands(const cv::Mat& segm) {
+	
     CV_Error(Error::StsNotImplemented, "countGlands");
 }
 
