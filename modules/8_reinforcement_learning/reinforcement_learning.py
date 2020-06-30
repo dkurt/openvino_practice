@@ -47,7 +47,8 @@ class Agent:
 
     def best_action(self, observation):
         """Return best action given obesrvation according to current stored q_values"""
-        return self.q_values[observation].argmax()
+        print('best_action is not implemented')
+        exit(1)
 
     def update_q_values(self, observation, action, reward, next_observation, done):
         """Update stored q_values with provided data following Bellman equation.
@@ -58,12 +59,8 @@ class Agent:
         
         If done==True the update doesn't care about next_observation.
         """
-        if done:
-            self.q_values[observation, action] = ((1.0 - Agent.ALPHA) * self.q_values[observation, action]
-                + Agent.ALPHA * reward)
-        else:
-            self.q_values[observation, action] = (1.0 - Agent.ALPHA) * self.q_values[observation, action] \
-                + Agent.ALPHA * (reward + Agent.GAMMA * self.q_values[next_observation].max())
+        print('update_q_values is not implemented')
+        exit(1)
 
 
 def check_agent_actions(agent):
@@ -96,8 +93,11 @@ def train():
     UPDATE_PERIOD = 10000
     EPSILON_DECAY = 0.7
     env = wrappers.TimeLimit(toy_text.FrozenLakeEnv(map_name='8x8'), max_episode_steps=1000)
-    # Create an agent
-    agent = Agent(env.observation_space.n, env.action_space.n)
+
+    print('agent is not created')
+    exit(1)
+    agent = None
+
     check_agent_actions(agent)
     check_agent_update()
 
@@ -107,11 +107,11 @@ def train():
         score = 0.0
         observation = env.reset()
         while True:
-            # Perform a random action with probability of epsilon. Request best action from agent otherwise
-            if epsilon > random.random():
-                action = env.action_space.sample()
-            else:
-                action = agent.best_action(observation)
+
+            print('perform a random action with probability of epsilon. Request best action from agent otherwise')
+            exit(1)
+            action = None
+
             next_observation, reward, done, _ = env.step(action)
             agent.update_q_values(observation, action, reward, next_observation, done)
             score += reward
