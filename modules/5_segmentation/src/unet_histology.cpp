@@ -120,7 +120,7 @@ int UNetHistology::countGlands(const cv::Mat& segm) {
 	sure_fg.convertTo(sure_fg, CV_8U);
 	int res = connectedComponents(sure_fg, markers);
 	
-	return res-1;
+	return res;
 }
 
 void UNetHistology::padMinimum(const Mat& src, int width, int height, Mat& dst) {
