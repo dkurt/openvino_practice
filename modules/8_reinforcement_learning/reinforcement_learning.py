@@ -8,7 +8,7 @@ from gym.envs import toy_text
 import test_reinforcement_learning
 
 
-WEIGHTS_PATH = os.path.join(os.path.dirname(__file__), 'q_values.npy')
+WEIGHTS_PATH = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'q_values.npy')
 
 def try_gym():
     # Jump to FrozenLakeEnv defenition to see its descrition
