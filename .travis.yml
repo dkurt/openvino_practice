@@ -44,7 +44,7 @@ before_install:
   - /opt/intel/openvino/deployment_tools/model_optimizer/mo.py \
     --input_model data/frozen_unet_histology.pb \
     --input_shape "[1,952,1144,1,1,3]" \
-    -- output_dir -O data 
+    --output_dir -O data 
    
 
 script:
