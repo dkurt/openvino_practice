@@ -100,7 +100,7 @@ TEST(UNetHistology, segment) {
     ASSERT_GE(Dice(ref, mask), 0.95);
 }
 
-/*TEST(UNetHistology, countGlands) {
+TEST(UNetHistology, countGlands) {
     UNetHistology model;
 
     Mat img = imread(join(DATA_FOLDER, "colon_histology.jpg"));
@@ -111,4 +111,4 @@ TEST(UNetHistology, segment) {
 
     ASSERT_GE(numGlands, 23);
     ASSERT_LE(numGlands, 24);
-}*/
+}
