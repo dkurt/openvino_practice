@@ -23,4 +23,4 @@ python3 -m pip install -r requirements.txt
 python3 test_reinforcement_learning.py
 ```
 
-* Add `q_values.npy` file
+* Add resulting `q_values.npy` file to a commit

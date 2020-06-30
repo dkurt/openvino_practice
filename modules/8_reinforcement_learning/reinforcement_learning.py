@@ -76,19 +76,6 @@ def check_agent_update():
     assert agent.q_values[0, 0] > 0
 
 
-def final_test(agent):
-    EPISODE_NUM = 1000
-    env = wrappers.TimeLimit(toy_text.FrozenLakeEnv(map_name='8x8'), max_episode_steps=1000)
-    score_sum = 0.0
-    for _ in range(EPISODE_NUM):
-        observation = env.reset()
-        while True:
-            observation, reward, done, _ = env.step(agent.best_action(observation))
-            score_sum += reward
-            if done: break
-    assert score_sum / EPISODE_NUM >= 0.99
-
-
 def train():
     UPDATE_PERIOD = 10000
     EPSILON_DECAY = 0.7
@@ -135,9 +122,7 @@ def train():
 def main():
     try_gym()
     agent = train()
-    final_test(agent)
     agent.save(WEIGHTS_PATH)
-    test_reinforcement_learning.test()
 
 
 if __name__ == '__main__':
