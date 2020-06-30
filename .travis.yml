@@ -40,6 +40,7 @@ before_install:
   # (note that TensorFlow accepts input tensor of shape 1,952,1144,1,1,3)
   - sudo apt-get install -y python3-pip
   - python3 -m pip install networkx
+  - python3 -m pip install defusedxml
   - /opt/intel/openvino/deployment_tools/model_optimizer/mo.py \
     --input_model data/frozen_unet_histology.pb \
     --input_shape "[1,952,1144,1,1,3]" \
