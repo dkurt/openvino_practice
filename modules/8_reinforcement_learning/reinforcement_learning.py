@@ -1,6 +1,5 @@
 import itertools
 import os
-import random
 
 import numpy as np
 from gym import wrappers

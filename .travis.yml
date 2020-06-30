@@ -10,16 +10,15 @@ compiler: gcc
 os: linux
 
 before_install:
-  - sudo apt-get install -y megatools python3-numpy
+  - sudo apt-get install -y megatools python3-setuptools python3-pip
+  - python3 -m pip install --upgrade pip
+  - python3 -m pip install -r modules/8_reinforcement_learning/requirements.txt
   # Install OpenVINO
   - sudo curl -o GPG-PUB-KEY-INTEL-OPENVINO-2020 https://apt.repos.intel.com/openvino/2020/GPG-PUB-KEY-INTEL-OPENVINO-2020
   - sudo apt-key add GPG-PUB-KEY-INTEL-OPENVINO-2020
   - sudo echo "deb https://apt.repos.intel.com/openvino/2020 all main" | sudo tee - a /etc/apt/sources.list.d/intel-openvino-2020.list
   - sudo apt-get update
   - sudo apt-get install -y --no-install-recommends intel-openvino-dev-ubuntu16-2020.2.130
-  - sudo apt-get install -y megatools python3-pip
-  - python3 -m pip install --upgrade pip
-  - python3 -m pip install -r modules/8_reinforcement_learning/requirements.txt
   # Download test data
   - wget https://download.01.org/opencv/2020/openvinotoolkit/2020.3/open_model_zoo/models_bin/1/face-detection-0104/FP32/face-detection-0104.bin -O data/face-detection-0104.bin
 
