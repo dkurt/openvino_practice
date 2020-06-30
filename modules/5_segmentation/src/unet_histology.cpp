@@ -102,9 +102,66 @@ void UNetHistology::segment(const Mat& image, Mat& mask) {
 	mask.convertTo(mask, CV_8UC1);
 }
 
+
 int UNetHistology::countGlands(const cv::Mat& segm) {
+	/*// Eliminate noise and smaller objects
+	cv::Mat fg;
+	cv::erode(segm, fg, cv::Mat(), cv::Point(-1, -1), 2);
+	imshow("fg", fg);
+
+	// Identify image pixels without objects
+	cv::Mat bg;
+	cv::dilate(segm, bg, cv::Mat(), cv::Point(-1, -1), 3);
+	cv::threshold(bg, bg, 1, 128, cv::THRESH_BINARY_INV);
+	imshow("bg", bg);
+
+	// Create markers image
+	cv::Mat markers(segm.size(), CV_8U, cv::Scalar(0));
+	markers = fg + bg;
+	imshow("markers", markers);
+
+	cv::waitKey(0);*/
+	Mat thresh;
+	cv::threshold(segm, thresh, 0, 255, cv::THRESH_BINARY_INV + cv::THRESH_OTSU);
+	// noise removal
+	Mat opening;
+	Mat sure_bg;
+	morphologyEx(thresh, opening, MORPH_CLOSE, Mat::ones(3, 3, CV_8U), Point(-1, -1), 3);
+	// sure background area
+	int niters = 3;
+	dilate(opening, sure_bg, Mat(), Point(-1, -1), niters);
+	// Finding sure foreground area
+	Mat dist_transform;
+	distanceTransform(opening, dist_transform, cv::DIST_L2, 5);
+	Mat sure_fg;
+	double max, min;
+	minMaxLoc(dist_transform, &min, &max);
+	cv::threshold(dist_transform, sure_fg, 0.9*max, 255, 0);
+	// Finding unknown region
+	Mat unknown;
+	sure_bg.convertTo(sure_bg, CV_8U);
+	sure_fg.convertTo(sure_fg, CV_8U);
+	subtract(sure_bg, sure_fg, unknown);
+	Mat markers;
+	//Marker labelling
+	int res = connectedComponents(sure_fg, markers);
 	
-    CV_Error(Error::StsNotImplemented, "countGlands");
+	/*for (size_t i = 0; i < markers.rows; i++)
+	{
+		for (size_t j = 0; j < markers.cols; j++)
+		{
+
+			if (unknown.at<int>(i,j) == 255)
+			{
+				markers.at<int>(i, j) = 0;
+			}
+
+		}
+	}
+	//imshow("markers", markers);
+	//cv::waitKey(0);*/
+
+	return res-1;
 }
 
 void UNetHistology::padMinimum(const Mat& src, int width, int height, Mat& dst) {
