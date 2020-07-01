@@ -87,9 +87,9 @@ TEST(UNetHistology, segment) {
     ASSERT_EQ(mask.rows, img.rows);
     ASSERT_EQ(mask.cols, img.cols);
     ASSERT_EQ(mask.channels(), 1);
+    CV_CheckType(mask.type(), mask.type() == CV_8UC1, "Segmentation mask type");
 
-    Mat ref = imread(join(DATA_FOLDER, "unet_histology_mask.png"));
-
+    Mat ref = imread(join(DATA_FOLDER, "unet_histology_mask.png"), IMREAD_GRAYSCALE);
     ASSERT_GE(Dice(ref, mask), 0.95);
 }
 
@@ -102,6 +102,5 @@ TEST(UNetHistology, countGlands) {
 
     int numGlands = UNetHistology::countGlands(mask);
 
-    ASSERT_GE(numGlands, 23);
-    ASSERT_LE(numGlands, 24);
+    ASSERT_EQ(numGlands, 24);
 }
