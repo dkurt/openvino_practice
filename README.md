@@ -1,5 +1,28 @@
-# openvino_practice
-Practice for git, CI and Intel OpenVINO
+# Practice git, Travis CI and Intel OpenVINO
+
+This is a set of interactive modules which will help you study OpenVINO toolkit and practice git, GitHub and Travis CI
+
+[![chat](https://img.shields.io/badge/join-chat-green?style=plastic&logo=discord&logoColor=white)](https://discord.com/channels/723484061472915457/723484061472915460)
+
+:bar_chart: Check your progress at https://dkurt.github.io/openvino_practice
+
+## Getting started
+
+An every task is a separate folder in [modules](./modules) subfolder. To start new module always do:
+
+1. Nagivate to a base branch
+
+    ```
+    git checkout master
+    ```
+
+2. Create a new local branch with unique name
+
+    ```
+    git checkout -b practice_classification
+    ```
+
+Start with [Git, GitHub and Travis CI](./modules/0_git) module to complete first task.
 
 ## Build instruction
 
@@ -33,6 +56,11 @@ Download OpenVINO: https://software.seek.intel.com/openvino-toolkit
   ```
 
 ### Windows
+
+0. Download useful programs
+  * [CMake](https://cmake.org/download/)
+  * [Git BASH](https://gitforwindows.org/)
+
 1. Open terminal (Start -> Developer Command Prompt) and navigate to the project folder. Create a build folder.
 
   ```bat

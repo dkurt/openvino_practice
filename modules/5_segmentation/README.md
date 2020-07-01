@@ -35,7 +35,7 @@ result with opened pull request.
     * [semantic-segmentation-adas-0001.bin](https://download.01.org/opencv/2020/openvinotoolkit/2020.3/open_model_zoo/models_bin/1/semantic-segmentation-adas-0001/FP32/semantic-segmentation-adas-0001.bin)
     * [semantic-segmentation-adas-0001.xml](https://download.01.org/opencv/2020/openvinotoolkit/2020.3/open_model_zoo/models_bin/1/semantic-segmentation-adas-0001/FP32/semantic-segmentation-adas-0001.xml)
 
-* Download [frozen_unet_histology.pb](https://www.dropbox.com/s/hhu6ojkgru93poh/frozen_unet_histology.pb?dl=1) TensorFlow model from and put to `openvino_practice/data`
+* Download [frozen_unet_histology.pb](https://mega.nz/#!RAFU1I4T!xjuol1lZ9t_hA67AxgAxp8w1JIb5FXm53617UXR0NO8) TensorFlow model from and put to `openvino_practice/data`
 
 * Use OpenVINO Model Optimizer to get IR files (`.xml` and `.bin`). Note that
 original TensorFlow network accepts tensors of shape `1,952,1144,1,1,3` which
