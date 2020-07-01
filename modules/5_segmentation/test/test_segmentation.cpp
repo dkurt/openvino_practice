@@ -34,6 +34,7 @@ TEST(ADAS, segment) {
     ASSERT_EQ(mask.rows, img.rows);
     ASSERT_EQ(mask.cols, img.cols);
     ASSERT_EQ(mask.channels(), 1);
+    CV_CheckType(mask.type(), mask.type() == CV_8UC1, "Segmentation mask type");
 
     Mat carMask = mask == 13;
 
