@@ -10,9 +10,9 @@ class Segmenter {
 public:
     // Performs semantic segmentation
     // [inp] image - color BGR image
-    // [out] mask  - output binary mask of the same size as input image but with
+    // [out] mask  - output segmentation mask of the same size as input image but with
     //               a single channel. Every pixel is a number which indicates
-    //               predicted class.
+    //               predicted class. Pixels with a car have class = 13. 
     virtual void segment(const cv::Mat& image, cv::Mat& mask) = 0;
 };
 
