@@ -1,0 +1,6 @@
+cloudpickle
+future
+gym
+numpy
+pyglet
+scipy
