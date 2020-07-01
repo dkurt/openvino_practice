@@ -2,7 +2,7 @@
 
 This module demonstrates semantic segmentation based on Intel's [semantic-segmentation-adas-0001](https://github.com/opencv/open_model_zoo/blob/master/models/intel/semantic-segmentation-adas-0001/description/semantic-segmentation-adas-0001.md) deep learning network. To complete this module, you should implement:
 
-1. `dice` score metric computation for binary masks
+1. `Dice` score metric computation for binary masks
 2. `ADAS::segment` method which performs image semantic segmentation for the sollowing classes:
 
     ```
@@ -24,7 +24,7 @@ result with opened pull request.
     2. `normalize` preprocessing procedure which does per-channel mean variance image normalization
     3. Add TensorFlow model conversion command into `.travis.yml` configuration file
     4. `UNetHistology::segment` method to perform image segmentation
-    5. `countGlands` method which should estimate number of glands by segmentation mask
+    5. `countGlands` method which should estimate number of glands by segmentation mask. You may reuse an algorithm from [OpenCV module](../1_opencv)
 
     <img src="../../data/unet_histology_segm.jpg" width="256">
 

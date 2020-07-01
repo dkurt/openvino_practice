@@ -101,5 +101,5 @@ TEST(UNetHistology, countGlands) {
 
     int numGlands = UNetHistology::countGlands(mask);
 
-	ASSERT_EQ(numGlands, 24);
+    ASSERT_EQ(numGlands, 24);
 }
