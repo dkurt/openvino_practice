@@ -11,8 +11,8 @@ It uses DistilBERT model from Hugging Face project: https://github.com/huggingfa
 * DistilBERT model (`distilbert-base-uncased-distilled-squad`) has been already converted
 into OpenVINO format and you may download IR files:
 
-  * [distilbert.xml](https://www.dropbox.com/s/06bnkjr2pkpeyff/distilbert.xml?dl=1)
-  * [distilbert.bin](https://www.dropbox.com/s/2fnlv87zbwra6az/distilbert.bin?dl=1)
+  * [distilbert.xml](https://mega.nz/#!IZE0iYaT!XR9MdIy7B4EqVKOiiHppmliRf6E4ov_rtKs18wmyx3I)
+  * [distilbert.bin](https://mega.nz/#!lAEwmKKS!1uNNTyrBkROtYjJMeUB6bEMpppwud2TsRVokOvVR09s)
 
 * Do not add model files (`.xml` and `.bin`) into commit (it is downloaded automatically on CI)
 

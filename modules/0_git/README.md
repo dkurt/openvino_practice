@@ -51,7 +51,9 @@ This module will show you how
     git push origin practice_git
     ```
 
-* TODO: open a PR
+* Open a pull request: `Pull requests -> New pull request`
+
+    ![](../../data/git_pr.png)
 
 * Wait for validation results:
     * ![](../../data/git_ci_progress.png) - tests in progress
