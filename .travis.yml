@@ -35,6 +35,8 @@ before_install:
   - megadl 'https://mega.nz/#!cBcHTA6Y!1FIiHhDCLSbW_Ba4zVIbSNQGgJB8mTCEjMjYgSwPh5M' --path data --no-progress  # deoldify.xml
   - megadl 'https://mega.nz/#!lAEwmKKS!1uNNTyrBkROtYjJMeUB6bEMpppwud2TsRVokOvVR09s' --path data --no-progress  # distilbert.bin
   - megadl 'https://mega.nz/#!IZE0iYaT!XR9MdIy7B4EqVKOiiHppmliRf6E4ov_rtKs18wmyx3I' --path data --no-progress  # distilbert.xml
+  - megadl 'https://mega.nz/#!NMV02agL!APdG2lwOvEKy5oqMwMKpRJJxNPIGDY4hSm3hpY9kj7M' --path data --no-progress  # candy.bin
+  - megadl 'https://mega.nz/#!lNFWyagB!DPTHP8OKDDB9wcrshvQxcTSRAbyrgeUHKeVOYyiFss0' --path data --no-progress  # candy.xml
 
   # origin weights are from https://github.com/NifTK/NiftyNetModelZoo/tree/5-reorganising-with-lfs/unet_histology
   - megadl 'https://mega.nz/#!RAFU1I4T!xjuol1lZ9t_hA67AxgAxp8w1JIb5FXm53617UXR0NO8' --path data --no-progress  # frozen_unet_histology.pb
