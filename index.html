@@ -28,6 +28,11 @@
       }).done(function(modules) {
           var table = document.getElementById("results");
 
+          // Sort names by leading number
+          modules.sort(function(a, b) {
+            return a.name.localeCompare(b.name, undefined, {numeric: true, sensitivity: 'base'})
+          });
+
           var header = table.insertRow();
           header.insertCell(0).innerHTML = "User name";
           modules.forEach(function(entry) {
