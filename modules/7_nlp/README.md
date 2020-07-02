@@ -5,6 +5,10 @@ It uses DistilBERT model from Hugging Face project: https://github.com/huggingfa
 
 1. `basicTokenize` method which splits input sentence on works by whitespaces and punctuation
 2. `getAnswer` method which runs neural network and returns an answer for specific question-source pair.
+3. Choose your own text and question for it and precict an answer. Write it in the following files:
+    * `data/my_squad_question.txt`
+    * `data/my_squad_source.txt`
+    * `data/my_squad_answer.txt`
 
 ## Details
 
