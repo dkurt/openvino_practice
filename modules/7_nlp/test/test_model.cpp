@@ -64,3 +64,19 @@ TEST(model, squad) {
 
     ASSERT_EQ(answer, "the garden");
 }
+
+TEST(model, squad_my_question) {
+    SQuADModel model;
+
+    std::string question = readFile(join(DATA_FOLDER, "my_squad_question.txt"));
+    std::string source = readFile(join(DATA_FOLDER, "my_squad_source.txt"));
+    std::string ref = readFile(join(DATA_FOLDER, "my_squad_answer.txt"));
+
+    std::string answer = model.getAnswer(question, source);
+
+    std::cout << "[text]: " << source << std::endl << std::endl;
+    std::cout << "[question]: " << question << std::endl << std::endl;
+    std::cout << "[answer]: " << answer << std::endl << std::endl;
+
+    ASSERT_EQ(answer, ref);
+}

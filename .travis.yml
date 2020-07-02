@@ -12,8 +12,8 @@ os: linux
 before_install:
   - sudo apt-get install -y megatools python3-setuptools python3-pip
   - python3 -m pip install --upgrade pip
-  - python3 -m pip install -r modules/8_reinforcement_learning/requirements.txt --quiet
-  - python3 -m pip install -r modules/5_segmentation/requirements.txt --quiet
+  - python3 -m pip install -r modules/6_segmentation/requirements.txt --quiet
+  - python3 -m pip install -r modules/10_reinforcement_learning/requirements.txt --quiet
   # Install OpenVINO
   - sudo curl -o GPG-PUB-KEY-INTEL-OPENVINO-2020 https://apt.repos.intel.com/openvino/2020/GPG-PUB-KEY-INTEL-OPENVINO-2020
   - sudo apt-key add GPG-PUB-KEY-INTEL-OPENVINO-2020
