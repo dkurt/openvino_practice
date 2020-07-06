@@ -95,9 +95,7 @@ Download OpenVINO: https://software.seek.intel.com/openvino-toolkit
 
     4.2 Using terminal:
 
-        ```bat
         "C:\Program Files\CMake\bin\cmake.exe" --build . --config Release
-        ```
 
 5. Run tests for specific module (in terminal)
 
