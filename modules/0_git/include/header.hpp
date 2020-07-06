@@ -1,10 +1,12 @@
 #pragma once
 #include <string>
 
+
+
 namespace myspace {
     class A { };
-    std::string func(A& a);
+    std::string func(A& ab);
 };
 
 class A;
-std::string func(A& a);
+std::string func(A& ab);
