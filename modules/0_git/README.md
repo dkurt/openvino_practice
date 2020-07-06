@@ -3,7 +3,7 @@
 This module will show you how
 * Fork repository and open a Pull Request (PR)
 * Create new branches using `git` and push the changes by commits
-* Work with Contiguous Integration (CI) system [Travis CI](https://travis-ci.org/)
+* Work with Contiguous Integration (CI) system [Travis CI](https://travis-ci.com/)
 
 ## Details
 * Create a GitHub account
