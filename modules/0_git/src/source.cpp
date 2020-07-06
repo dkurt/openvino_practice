@@ -5,5 +5,5 @@ std::string myspace::func(A& a) {
 }
 
 std::string func(A& a) {
-    return "Hello, Nizhny!";
+    return "Hello, World!";
 }
