@@ -7,7 +7,7 @@
 TEST(git, say_hello) {
     myspace::A a;
     EXPECT_EQ(myspace::func(a), "Hello, Nizhny!");
-    EXPECT_EQ(func(a), "Hello, NizhnyHello, Nizhny!");
+    EXPECT_EQ(func(a), "Hello, World!");
 }
 
 int main(int argc, char **argv) {
