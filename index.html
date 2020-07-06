@@ -61,7 +61,7 @@
 
     // Get a list of all pull requests
     $.ajax({
-      url: prefix + "/pulls?per_page=300&sort=created",
+      url: prefix + "/pulls?per_page=1000&sort=created",
       dataType: 'json'
     }).done(function(res) {
       res.forEach(function(entry) {
