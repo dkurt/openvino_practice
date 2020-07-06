@@ -5,9 +5,10 @@
 #include "header.hpp"
 
 TEST(git, say_hello) {
-    myspace::A a;
-    EXPECT_EQ(myspace::func(a), "Hello, Nizhny!");
-    EXPECT_EQ(func(a), "Hello, World!");
+    A a;
+    myspace::A b;
+    EXPECT_EQ(myspace::func(b), "Hello, Nizhny!");
+    EXPECT_EQ(func(a), "Hello, Ilya!");
 }
 
 int main(int argc, char **argv) {
