@@ -10,7 +10,7 @@ namespace myspace {
 };
 
 
-
-
 class A;
 std::string func(A& a);
+
+
