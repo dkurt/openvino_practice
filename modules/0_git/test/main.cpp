@@ -5,6 +5,7 @@
 #include "header.hpp"
 
 
+
 TEST(git, say_hello) {
     myspace::A a;
     EXPECT_EQ(myspace::func(a), "Hello, Nizhny!");
