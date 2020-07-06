@@ -5,8 +5,8 @@
 
 namespace myspace {
     class A { };
-    std::string func(A& ab);
+    std::string func(A& a);
 };
 
 class A;
-std::string func(A& ab);
+std::string func(A& a);
