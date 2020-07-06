@@ -23,7 +23,7 @@
     function renderTable() {
       // Get a list of all the modules
       $.ajax({
-        url: prefix + "/contents/modules?recursive=0&ref=develop",
+        url: prefix + "/contents/modules?recursive=0",
         dataType: 'json'
       }).done(function(modules) {
           var table = document.getElementById("results");
