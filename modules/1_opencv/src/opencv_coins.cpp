@@ -24,20 +24,14 @@ unsigned countCoins(const Mat& img) {
 	findContours(fg, contours, RETR_EXTERNAL, CHAIN_APPROX_NONE);
 	int sum = 0;
 	double r = 0;
-	vector<double> area;
 	for (int i = 0; i < contours.size(); i++)
-		area.push_back(contourArea(contours[i]));
-	sort(area.begin(), area.end());
-	double min_r_of_1st_2 = sqrt(area[10] / CV_PI);
-	for (int i = 0; i < area.size(); i++)
 	{
-		r = sqrt(area[i] / CV_PI);
-		if (r >= min_r_of_1st_2)
-			sum = sum + 2;
+		r = sqrt(contourArea(contours[i]) / CV_PI);
+		if (r > 11) //11 approximately shows the radius difference between coins
+			sum += 2;
 		else
 			sum++;
 	}
 	return sum;
 	// TODO: implement an algorithm from https://docs.opencv.org/master/d3/db4/tutorial_py_watershed.html
-	CV_Error(Error::StsNotImplemented, "countCoins");
 }
