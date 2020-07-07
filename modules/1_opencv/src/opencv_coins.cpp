@@ -18,7 +18,7 @@ unsigned countCoins(const Mat& img) {
     distanceTransform(thresh, thresh, DIST_L2, 5);
     double dist_transform;
     minMaxLoc(thresh, &dist_transform);
-    threshold(thresh,thresh, 0.7*dist_transform,255.0, THRESH_BINARY);
+    threshold(thresh,thresh, 0.7*dist_transform,255, THRESH_BINARY);
     thresh.convertTo(thresh, CV_8U);
     std::vector<std::vector<cv::Point> > contours;
     cv::findContours(thresh, contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
@@ -26,7 +26,7 @@ unsigned countCoins(const Mat& img) {
     int sum = 0;
     double radius;
     for (int i = 0; i < ncomp; ++i) {
-        radius = contourArea(contours[i]) / (2 * 3.14);
+        radius = sqrt(contourArea(contours[i]) /3.14);
         if (radius > 11) {
             sum += 2;
         }
