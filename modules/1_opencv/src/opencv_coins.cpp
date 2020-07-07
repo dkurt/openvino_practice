@@ -58,8 +58,7 @@ unsigned countCoins(const Mat& img) {
 	cv::imshow("Img", distance_transform);
 	cv::waitKey();
 	return count_coins;
-    // TODO: implement an algorithm from https://docs.opencv.org/master/d3/db4/tutorial_py_watershed.html
-    CV_Error(Error::StsNotImplemented, "countCoins");
+    
 	
 	
 
