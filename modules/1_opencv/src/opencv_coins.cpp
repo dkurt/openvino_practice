@@ -4,7 +4,6 @@
 #include <iostream>
 
 using namespace cv;
-using namespace std;
 
 unsigned countCoins(const Mat& img) {
 	Mat gray, thresh, bg, fg, unknown;
@@ -19,7 +18,7 @@ unsigned countCoins(const Mat& img) {
 	double min, max;
 	minMaxLoc(fg, &min, &max);
 	threshold(fg, fg, max*0.7, 255, THRESH_BINARY);
-	vector<vector<Point>> contours;
+	std::vector<std::vector<Point>> contours;
 	fg.convertTo(fg, CV_8U);
 	findContours(fg, contours, RETR_EXTERNAL, CHAIN_APPROX_NONE);
 	int sum = 0;
@@ -33,5 +32,4 @@ unsigned countCoins(const Mat& img) {
 			sum++;
 	}
 	return sum;
-	// TODO: implement an algorithm from https://docs.opencv.org/master/d3/db4/tutorial_py_watershed.html
 }
