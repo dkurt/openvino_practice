@@ -22,16 +22,13 @@ unsigned countCoins(const Mat& img) {
 	findContours(thresh, contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
 	
 	int Sum = 0;
-	for (int i = 0; i < contours.size(); i++)
-	{
+	for (int i = 0; i < contours.size(); i++){
 		double radius = arcLength(contours[i], true) /( 2 * CV_PI);
-		if (radius > 15 )
-		{
-			Sum += 2;
+		if (radius > 15 ){
+		  Sum += 2;
         }
 		else Sum += 1;
 	}
 	return Sum;
-    // TODO: implement an algorithm from https://docs.opencv.org/master/d3/db4/tutorial_py_watershed.html
-    CV_Error(Error::StsNotImplemented, "countCoins");
+    
 }
