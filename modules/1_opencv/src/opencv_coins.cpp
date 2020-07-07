@@ -11,7 +11,6 @@ unsigned countCoins(const Mat& img) {
 
     morphologyEx(thresh, thresh, MORPH_CLOSE, Mat::ones(3, 3, CV_8U), Point(-1, -1), 3);
 
-
     dilate(thresh, sure_bg, Mat(), Point(-1, -1), 2, 1, 1);
 
     distanceTransform(thresh, dist_transform, DIST_L2, 5);
