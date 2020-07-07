@@ -43,8 +43,5 @@ unsigned countCoins(const Mat& img) {
             sum += 1;
     }
 
-    return sum;
-  
-  
-    
+    return sum; 
   }
