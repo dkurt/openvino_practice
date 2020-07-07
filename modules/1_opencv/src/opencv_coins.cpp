@@ -7,8 +7,6 @@ using namespace cv;
 //Mat img = imread("C:\\Users\\Анна\\openvino_practice\\data\\coins.jpg");
 
 
-
-
 unsigned countCoins(const Mat& img) {
    
     Mat gray, thresh;
