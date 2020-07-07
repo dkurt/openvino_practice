@@ -16,13 +16,12 @@ unsigned countCoins(const Mat& img) {
     dilate(thresh, bg, Mat(3, 3, CV_8U), Point(-1, -1), 3);
 
     distanceTransform(opening, dist_transform, DIST_L2, CV_32F);
-    Mat fgC;
     double minVal, maxVal;
     minMaxLoc(dist_transform, &minVal, &maxVal);
     threshold(dist_transform, fg, maxVal *0.7, 255, THRESH_BINARY);
-    fg.convertTo(fgC, CV_8U, 1, 0);
+    fg.convertTo(fg, CV_8U, 1, 0);
     std::vector<std::vector<Point>> contours;
-    findContours(fgC, contours, RETR_LIST, CHAIN_APPROX_NONE);
+    findContours(fg, contours, RETR_LIST, CHAIN_APPROX_NONE);
     unsigned int sum = 0, numofcoin = 0;
 
     for (int i = 0; i < contours.size(); i++)
