@@ -24,7 +24,7 @@ unsigned countCoins(const Mat& img) {
 
     std::vector<double> radiuses2;
     for (size_t i = 0; i < contours.size(); i++) {
-        radiuses2.push_back(contourArea(contours[i]) / 3.14);
+        radiuses2.push_back(contourArea(contours[i]) / CV_PI);
     }
 
     // 105.0625 = 10.25^2; 10.25mm - radius 1 ruble
