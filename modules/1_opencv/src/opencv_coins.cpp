@@ -27,8 +27,6 @@ unsigned countCoins(const Mat& img) {
         radiuses2.push_back(contourArea(contours[i]) / 3.14);
     }
 
-    std::sort(radiuses2.begin(), radiuses2.end());
-
     // 105.0625 = 10.25^2; 10.25mm - radius 1 ruble
     // 132.25 = 11.5^2; 11.5mm - radius 1 ruble
     int sum = 0;
@@ -42,6 +40,4 @@ unsigned countCoins(const Mat& img) {
     }
     
     return sum;
-    // TODO: implement an algorithm from https://docs.opencv.org/master/d3/db4/tutorial_py_watershed.html
-    //CV_Error(Error::StsNotImplemented, "countCoins"); 
 }
