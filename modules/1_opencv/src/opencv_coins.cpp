@@ -35,6 +35,7 @@ unsigned countCoins(const Mat& img) {
     findContours(thresh, contoursVector, RETR_EXTERNAL, CHAIN_APPROX_NONE);
 
     int coinsSum(0);
+    /*
     double R(0);
     std::vector<double> area;
     for (int i(0); i < contoursVector.size(); i++) {
@@ -46,13 +47,15 @@ unsigned countCoins(const Mat& img) {
         R = sqrt(area[i] / CV_PI);
         R >= minRadius2 ? coinsSum += 2 : coinsSum++;
     }
-    /*for (auto contour : contoursVector) {
+    */
+
+    for (auto contour : contoursVector) {
         
         double R = sqrt(contourArea(contour) / CV_PI);
         //std::cout << R << std::endl;  //radiuses of circles
-        R < 10 ? coinsCount++ : coinsCount += 2;
+        R < 10 ? coinsSum++ : coinsSum += 2;
     }
-    */
+    
     
     return coinsSum;
 
