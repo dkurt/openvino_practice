@@ -30,7 +30,6 @@ unsigned countCoins(const Mat& img) {
         if (radius > 15) sum += 2;
         else sum++;
     }
-    imshow("img1", fg);
-    waitKey();
+    
     return sum;
 }
