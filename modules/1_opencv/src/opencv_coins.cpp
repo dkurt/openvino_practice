@@ -1,14 +1,11 @@
 #include "opencv_coins.hpp"
-#include <opencv2/imgcodecs/imgcodecs_c.h>
-#include <opencv2/imgproc.hpp>
-#include <opencv2/highgui.hpp>
-#include <vector>
+
 
 using namespace cv;
 
 unsigned countCoins(const Mat& img) {
     cv::Mat image = cv::imread("C:\\Users\\Alexandra\\openvino_practice\\data\\coins.jpg");
-    Mat gray, thresh,sure_bg;
+    Mat gray, thresh;
     int sum = 0;
     cvtColor(img, gray, COLOR_BGR2GRAY);
     threshold(gray, thresh, 0, 255, THRESH_BINARY_INV + THRESH_OTSU);
@@ -17,7 +14,7 @@ unsigned countCoins(const Mat& img) {
 
     // TODO: implement an algorithm from https://docs.opencv.org/master/d3/db4/tutorial_py_watershed.html
     CV_Error(Error::StsNotImplemented, "countCoins");
-    dilate(thresh, sure_bg, 3);
+    dilate(thresh,thresh,3);
     distanceTransform(thresh, thresh, DIST_L2, 5);
     double maxValue, minValue;
     Point maxLoc, minLoc;
