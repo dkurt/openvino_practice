@@ -35,7 +35,8 @@ unsigned countCoins(const Mat& img) {
     int sum= 0;
     for (int i = 0; i < circuits.size(); i++)
     {
-        double r = sqrt(contourArea(circuits[i]) / 3.14);
+       
+        double r = sqrt(contourArea(circuits[i]) / CV_PI);
         if (r > 12)
             sum += 2;
         else
