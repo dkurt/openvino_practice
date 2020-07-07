@@ -1,5 +1,4 @@
 #include "opencv_coins.hpp"
-#include <opencv2\opencv.hpp>
 #include <vector>
 #define _USE_MATH_DEFINES
 #include <math.h>
