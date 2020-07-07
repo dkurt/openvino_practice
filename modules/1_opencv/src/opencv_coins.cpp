@@ -1,5 +1,4 @@
 #include "opencv_coins.hpp"
-#include<algorithm>
 #include<math.h>
 using namespace cv;
 
@@ -18,28 +17,25 @@ unsigned countCoins(const Mat& img) {
     double min_thresh, max_threh;
     minMaxLoc(sure_fg, &min_thresh, &max_threh);
     threshold(sure_fg, sure_fg,0.7 * max_threh,255, THRESH_BINARY);
-    thresh.convertTo(thresh, CV_8U, 1, 0);
+    sure_fg.convertTo(sure_fg, CV_8U, 1, 0);
     imshow("ex_4", sure_fg);
     waitKey(10000);
-    std::vector<std::vector<Point>> contours;
-    findContours(sure_fg, contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
-    int sum = 0;
-    double r = 0;
-    std::vector<double> area;
-    for (int i = 0; i < contours.size(); i++)
+    std::vector<std::vector<Point>> contours_coins;
+    findContours(sure_fg, contours_coins, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
+    int s = 0;
+    double R = 0;
+    for (int i = 0; i < contours_coins.size(); i++)
     {
-        area.push_back(contourArea(contours[i]));
-        sort(area.begin(), area.end());
-    }
-    double r_min_ofst_2 = sqrt(area[10] / CV_PI);
-    for (int i = 0; i < area.size(); i++)
-    {
-        r = sqrt(area[i] / CV_PI);
-        if (r >= r_min_ofst_2)
-            sum = sum + 2;
+        R = sqrt(contourArea(contours_coins[i]) / CV_PI);
+        if (R > 11) //11 approximately shows the radius difference between coins
+            s += 2;
         else
-            sum++;
+            s++;
+
     }
+    return s;
+
+
 
 
 
