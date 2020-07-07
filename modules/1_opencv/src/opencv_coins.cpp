@@ -1,4 +1,5 @@
 #include "opencv_coins.hpp"
+#include <cmath>
 
 using namespace cv;
 
@@ -27,8 +28,8 @@ unsigned countCoins(const Mat& img) {
 
     for (auto contour : contours)
     {
-        double radius = contourArea(contour) / 3.14;
-        if (radius > 200)
+        double radius = std::sqrt(contourArea(contour) / M_PI);
+        if (radius > 14)
         {
             coinsValue += 2;
         }
