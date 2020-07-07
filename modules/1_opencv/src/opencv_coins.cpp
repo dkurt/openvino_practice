@@ -6,8 +6,7 @@
 
 using namespace cv;
 
-unsigned countCoins(const Mat& img) 
-{
+unsigned countCoins(const Mat& img) {
     cv::Mat image = cv::imread("C:\\Users\\Alexandra\\openvino_practice\\data\\coins.jpg");
     Mat gray, thresh,sure_bg;
     int sum = 0;
