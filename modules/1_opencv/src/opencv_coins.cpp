@@ -18,8 +18,6 @@ unsigned countCoins(const Mat& img) {
     minMaxLoc(sure_fg, &min_thresh, &max_threh);
     threshold(sure_fg, sure_fg,0.7 * max_threh,255, THRESH_BINARY);
     sure_fg.convertTo(sure_fg, CV_8U, 1, 0);
-    imshow("ex_4", sure_fg);
-    waitKey(10000);
     std::vector<std::vector<Point>> contours_coins;
     findContours(sure_fg, contours_coins, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
     int s = 0;
