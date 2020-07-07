@@ -59,6 +59,3 @@ unsigned countCoins(const Mat& img) {
 	
 }
 
-
-
-
