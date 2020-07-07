@@ -32,14 +32,5 @@ unsigned countCoins(const Mat& img) {
 
     }
     return s;
-
-
-
-
-
-   
-
-
-
 }
 
