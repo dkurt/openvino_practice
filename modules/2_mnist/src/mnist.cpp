@@ -81,40 +81,34 @@ void prepareSamples(const std::vector<cv::Mat>& images, cv::Mat& samples) {
 Ptr<ml::KNearest> train(const std::vector<cv::Mat>& images,
                         const std::vector<int>& labels) {
     Ptr<ml::KNearest> knn = ml::KNearest::create();
+    Ptr<ml::TrainData> trainingData;
 
-    // IN PROCESS
-    // FIX: unknown file: error: SEH exception with code 0xc0000005 thrown in the test body.
-
-    std::cout << images.size();
-    std::cout << labels.size();
-    Ptr <ml::TrainData> traindata = ml::TrainData::create(images, ml::SampleTypes::ROW_SAMPLE, labels);
-    knn->train(traindata);
-    std::cout << "yes";
+    Mat samples;
+    prepareSamples(images, samples);
+    trainingData = ml::TrainData::create(samples, ml::SampleTypes::ROW_SAMPLE, labels);
+    knn->train(trainingData);
     return knn;
 }
 
 float validate(Ptr<ml::KNearest> model,
                const std::vector<cv::Mat>& images,
                const std::vector<int>& labels) {
+    Mat samples;
+    prepareSamples(images, samples);
 
-    int size = images.size();
-    cv::Mat imagesMat(size, 1, CV_8U);
-
-    for (int i = 0; i < size; i++)
-    {
-        imagesMat.at<Mat>(i, 0) = images[i];
-    }
+    Mat resultsMat;
+    model->predict(samples, resultsMat);
+    std::vector<int> resultsPredicting = resultsMat.clone();
+    int size = resultsMat.rows;
 
     int positiveAttempts = 0;
-    for (int i = 0; i < imagesMat.rows; i++) {
-        Mat result;
-        float attempt = model->findNearest(imagesMat.row(i), model->getDefaultK(), result);
-        if (imagesMat.at<char>(i, 0) == (char)attempt) {
+    for (int i = 0; i < labels.size(); i++) {
+        if (resultsPredicting[i] == labels[i]) {
             positiveAttempts++;
         }
     }
 
-    double positivePercent = (double)positiveAttempts / (double)imagesMat.rows;
+    double positivePercent = (double)positiveAttempts / (double)images.size();
     return positivePercent;
 }
 
@@ -141,5 +135,4 @@ int predict(Ptr<ml::KNearest> model, const Mat& image) {
     for (auto result: results)
         std::cout << result;
 
-    CV_Error(Error::StsNotImplemented, "predict");
 }
