@@ -21,11 +21,14 @@ unsigned countCoins(const Mat& img) {
     findContours(converted_foreground, contours, RETR_EXTERNAL, CHAIN_APPROX_NONE);
 
     int count_coins = 0;
-    for (auto contour : contours) {
-        if (contourArea(contour) / CV_PI > 200) {
+    for (auto contour : contours) 
+    {
+        if (contourArea(contour) / CV_PI > 200) 
+        {
             count_coins += 2;
         }
-        else {
+        else 
+        {
             count_coins += 1;
         }
     }
