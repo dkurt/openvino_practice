@@ -103,9 +103,9 @@ int predict(Ptr<ml::KNearest> model, const Mat& image) {
     std::vector<Mat> saturation;
     saturation.push_back(channels[1]);
 
-    Mat inputImg;
-    prepareSamples(saturation, inputImg);
+    Mat Input;
+    prepareSamples(saturation, Input);
 
-    int result = model->predict(inputImg);
+    int result = model->predict(Input);
     return result;
 }
