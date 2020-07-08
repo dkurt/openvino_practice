@@ -1,5 +1,6 @@
 #include "mnist.hpp"
 #include <fstream>
+#include <iostream>
 
 using namespace cv;
 
@@ -16,14 +17,29 @@ void loadImages(const std::string& filepath,
                 std::vector<Mat>& images) {
     std::ifstream ifs(filepath.c_str(), std::ios::binary);
     CV_CheckEQ(ifs.is_open(), true, filepath.c_str());
-
-    int magicNum = readInt(ifs);
+	
+    int magicNum = readInt(ifs);	
     CV_CheckEQ(magicNum, 2051, "");
 
     int numImages = readInt(ifs);
+	int numRows = readInt(ifs);
+	int numColumns = readInt(ifs);
 
-    // TODO: follow "FILE FORMATS FOR THE MNIST DATABASE" specification
-    // at http://yann.lecun.com/exdb/mnist/
+	for (int i = 0; i < numImages; i++)
+	{
+		Mat newImage(numRows,numColumns,CV_8UC1);
+
+		for (int j = 0; j < numRows; j++)
+		{
+			for (int k = 0; k < numColumns; k++)
+			{
+				char pixel;
+				ifs.read((char *)&pixel, 1);			
+				newImage.at<char>(j, k) = pixel;	
+			}
+		}	
+		images.push_back(newImage);
+	}  
 }
 
 void loadLabels(const std::string& filepath,
@@ -31,7 +47,7 @@ void loadLabels(const std::string& filepath,
     std::ifstream ifs(filepath.c_str(), std::ios::binary);
     CV_CheckEQ(ifs.is_open(), true, filepath.c_str());
 
-    int magicNum = readInt(ifs);
+    int magicNum = readInt(ifs);	
     CV_CheckEQ(magicNum, 2049, "");
 
     int numLabels = readInt(ifs);
