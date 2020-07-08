@@ -97,7 +97,7 @@ unsigned countCoins(const Mat& img) {
 			}
 		}
 	}
-	// Sort the coins (not much sense in it though)
+	// Sort the coins (SOMEHOW sorting makes the results more consistent, i have no idea why)
 	std::sort(coins.begin(), coins.end());
 
 
