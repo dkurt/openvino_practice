@@ -21,8 +21,8 @@ void loadImages(const std::string& filepath,
     CV_CheckEQ(magicNum, 2051, "");
 
     int numImages = readInt(ifs);
-    int numRows = 28;
-    int numCols = 28;
+    int numRows = readInt(ifs);
+    int numCols = readInt(ifs);
 
 
     // TODO: follow "FILE FORMATS FOR THE MNIST DATABASE" specification
@@ -31,20 +31,13 @@ void loadImages(const std::string& filepath,
         Mat img(numRows, numCols, CV_8U);
         for (int r = 0; r < numRows; ++r) {
             for (int c = 0; c < numCols; ++c) {
-                unsigned char byte = 0;
-                //ifs.read((char*)&byte, sizeof(byte));
-                //img.push_back(byte);
+                unsigned char pixel = readInt(ifs);
+                img.at<unsigned char>(r, c) = pixel;
             }
         }
-        std::cout << "test cout_1" << std::endl;
-        std::cout << "test cout_2" << std::endl;
-        std::cout << "test cout_3" << std::endl;
-
-        std::cout << img.size() << std::endl;
-        //images.push_back(img);
+        images.push_back(img);
     }
     
-    std::cout << "test cout" << std::endl;
 }
 
 void loadLabels(const std::string& filepath,
@@ -56,17 +49,23 @@ void loadLabels(const std::string& filepath,
     CV_CheckEQ(magicNum, 2049, "");
 
     int numLabels = readInt(ifs);
-
-    // TODO: follow "FILE FORMATS FOR THE MNIST DATABASE" specification
-    // at http://yann.lecun.com/exdb/mnist/
+    labels.resize(numLabels);
+    for (int i = 0; i < numLabels; ++i) {
+        unsigned char label = readInt(ifs);
+        labels[i] = label;
+    }
 }
 
 void prepareSamples(const std::vector<cv::Mat>& images, cv::Mat& samples) {
+
     CV_Error(Error::StsNotImplemented, "prepareSamples");
 }
 
 Ptr<ml::KNearest> train(const std::vector<cv::Mat>& images,
                         const std::vector<int>& labels) {
+
+    ml::KNearest model();
+    return *model;
     CV_Error(Error::StsNotImplemented, "train");
 }
 
