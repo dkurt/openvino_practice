@@ -31,9 +31,9 @@ void loadImages(const std::string& filepath,
         {
             for (int k = 0; k < numColumns; k++)
             {
-                unsigned char tmp = 0;
-                ifs.read((char*)&tmp, 4);
-                t.at<unsigned char>(j, k) = tmp;
+                char tmp;
+                ifs.read((char*)&tmp, 1);
+                t.at<char>(j, k) = tmp;
 
             }
 
