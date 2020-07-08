@@ -125,6 +125,6 @@ unsigned countCoins(const Mat& img) {
 	// Debug
 	//imshow("image", gray);
 	//waitKey();
-	//std::cout << sum << std::endl;
+	std::cout << sum << std::endl;
 	return sum;
 }
