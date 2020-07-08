@@ -22,7 +22,7 @@ unsigned countCoins(const Mat& img) {
 	dist_transform.convertTo(dist_transform, CV_8U);
 
 	// Find the max in the dist_transform
-	uint8_t max;
+	uint8_t max = 0;
 	for (int y = 0; y < dist_transform.rows; y++)
 	{
 		for (int x = 0; x < dist_transform.cols; x++)
