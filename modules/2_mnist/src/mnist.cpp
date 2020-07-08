@@ -19,7 +19,7 @@ void loadImages(const std::string& filepath,
 
     int magicNum = readInt(ifs);
     CV_CheckEQ(magicNum, 2051, "");
- 
+
     int numImages = readInt(ifs);
     int numRows = readInt(ifs);
     int numCols = readInt(ifs);
@@ -52,7 +52,6 @@ void loadLabels(const std::string& filepath,
         ifs.read((char*)&temp, 1);
         labels[i] = temp;
     }
-
 }
 
 void prepareSamples(const std::vector<cv::Mat>& images, cv::Mat& samples) {
@@ -104,24 +103,22 @@ float validate(Ptr<ml::KNearest> model,
 }
 
 int predict(Ptr<ml::KNearest> model, const Mat& image) {
-    // TODO: resize image to 28x28 (cv::resize)
     Mat image28;
     resize(image, image28, Size(28, 28));
-    // TODO: convert image from BGR to HSV (cv::cvtColor)
+
     Mat imageHSV;
     cvtColor(image28, imageHSV, COLOR_BGR2HSV);
-    // TODO: get Saturate component (cv::split)
+
     Mat* digit = new Mat[3];
     split(imageHSV, digit);
-    // TODO: prepare input - single row FP32 Mat
+
     Mat inputImage;
     std::vector<Mat> digits;
     digits.push_back(digit[1]);
     prepareSamples(digits, inputImage);
-    //TODO: make a prediction by the model
+
     Mat response;
     model->findNearest(inputImage, 7, response);
-    // CV_Error(Error::StsNotImplemented, "predict");
+
     return (int)response.at<float>(0,0);
-    //return 0;
 }
