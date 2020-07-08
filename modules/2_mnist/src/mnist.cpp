@@ -44,16 +44,19 @@ void loadImages(const std::string& filepath,
 
 void loadLabels(const std::string& filepath,
                 std::vector<int>& labels) {
-    std::ifstream ifs(filepath.c_str(), std::ios::binary);
-    CV_CheckEQ(ifs.is_open(), true, filepath.c_str());
+	std::ifstream ifs(filepath.c_str(), std::ios::binary);
+	CV_CheckEQ(ifs.is_open(), true, filepath.c_str());
 
-    int magicNum = readInt(ifs);
-    CV_CheckEQ(magicNum, 2049, "");
+	int magicNum = readInt(ifs);
+	CV_CheckEQ(magicNum, 2049, "");
 
-    int numLabels = readInt(ifs);
-
-    // TODO: follow "FILE FORMATS FOR THE MNIST DATABASE" specification
-    // at http://yann.lecun.com/exdb/mnist/
+	int numLabels = readInt(ifs);
+	for (int i = 0; i < numLabels; i++)
+	{
+		char newLabel;
+		ifs.read((char *)&newLabel, 1);
+		labels.push_back((int)newLabel);
+	}
 }
 
 void prepareSamples(const std::vector<cv::Mat>& images, cv::Mat& samples) {
