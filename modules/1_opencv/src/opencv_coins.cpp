@@ -1,9 +1,6 @@
 #include "opencv_coins.hpp"
-#include <string>
-#include <iostream>
-int dist_transform;
 using namespace cv;
-Mat img = imread("C:\\Users\\k_kab\\Picture\\coins.jpg");
+Mat img = imread("coins.jpg");
 
 unsigned countCoins(const Mat& img) {
     Mat gray, thresh, sure_bg, sure_fg, dist_transform, markers;
