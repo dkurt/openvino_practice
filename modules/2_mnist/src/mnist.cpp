@@ -22,6 +22,26 @@ void loadImages(const std::string& filepath,
 
     int numImages = readInt(ifs);
 
+    int numRows = readInt(ifs);
+    int numCols = readInt(ifs);
+
+    for (int i = 0; i < numImages; ++i)
+    {
+        Mat image(numRows, numCols, CV_8UC1);
+        for (int j = 0; j < numRows; ++j)
+        {
+            for (int k = 0; k < numCols; ++k)
+            {
+                unsigned char val = 0;
+                ifs.read((char*)&val, sizeof(val));
+                image.at<unsigned char>(j, k) = val;
+            }
+        }
+        images.push_back(image);
+        image.release();
+    }
+
+
     // TODO: follow "FILE FORMATS FOR THE MNIST DATABASE" specification
     // at http://yann.lecun.com/exdb/mnist/
 }
@@ -36,6 +56,13 @@ void loadLabels(const std::string& filepath,
 
     int numLabels = readInt(ifs);
 
+    for (int i = 0; i < numLabels; i++)
+    {
+        unsigned char val = 0;
+        ifs.read((char*)&val, sizeof(val));
+        labels.push_back(val);
+    }
+
     // TODO: follow "FILE FORMATS FOR THE MNIST DATABASE" specification
     // at http://yann.lecun.com/exdb/mnist/
 }
@@ -46,12 +73,31 @@ void prepareSamples(const std::vector<cv::Mat>& images, cv::Mat& samples) {
 
 Ptr<ml::KNearest> train(const std::vector<cv::Mat>& images,
                         const std::vector<int>& labels) {
-    CV_Error(Error::StsNotImplemented, "train");
+    Ptr<ml::KNearest> knn = ml::KNearest::create();
+
+    // IN PROCESS
+    // FIX: unknown file: error: SEH exception with code 0xc0000005 thrown in the test body.
+
+    int size = images.size();
+
+    cv::Mat imagesMat(size, 1, CV_8U);
+
+    for (int i = 0; i < size; i++)
+    {
+        imagesMat.at<Mat>(i, 0) = images[i];
+    }
+
+    Mat trainingVectors(imagesMat, size, CV_32FC1);
+    Mat trainingLabels(labels, 1, CV_32FC1);
+
+    knn->train(trainingVectors, ml::ROW_SAMPLE, trainingLabels);
+    return knn;
 }
 
 float validate(Ptr<ml::KNearest> model,
                const std::vector<cv::Mat>& images,
                const std::vector<int>& labels) {
+
     CV_Error(Error::StsNotImplemented, "validate");
 }
 

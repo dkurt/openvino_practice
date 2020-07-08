@@ -9,7 +9,6 @@ using namespace cv;
 TEST(DataLoader, TrainImages) {
     std::vector<Mat> images;
     loadImages(utils::fs::join(DATA_FOLDER, "train-images.idx3-ubyte"), images);
-
     ASSERT_EQ(images.size(), 60000);
 
     for (int i = 0; i < 2; ++i) {
