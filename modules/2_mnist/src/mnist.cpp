@@ -38,8 +38,7 @@ void loadImages(const std::string& filepath,
 
         images.push_back(tmp);
     }
-    // TODO: follow "FILE FORMATS FOR THE MNIST DATABASE" specification
-    // at cc
+
 }
 
 void loadLabels(const std::string& filepath,
@@ -57,8 +56,7 @@ void loadLabels(const std::string& filepath,
         ifs.read((char*)&val, 1);
         labels.push_back(val);
     }
-    // TODO: follow "FILE FORMATS FOR THE MNIST DATABASE" specification
-    // at http://yann.lecun.com/exdb/mnist/
+
 }
 
 void prepareSamples(const std::vector<cv::Mat>& images, cv::Mat& samples) {
@@ -80,6 +78,10 @@ float validate(Ptr<ml::KNearest> model,
     const std::vector<cv::Mat>& images,
     const std::vector<int>& labels) {
         CV_Error(Error::StsNotImplemented, "validate");
+
+
+
+
 }
 
 int predict(Ptr<ml::KNearest> model, const Mat& image) {
