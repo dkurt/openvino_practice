@@ -58,14 +58,24 @@ void loadLabels(const std::string& filepath,
 
 void prepareSamples(const std::vector<cv::Mat>& images, cv::Mat& samples) {
 
+    
+    for (int i = 0; i < images.size(); ++i) {
+        Mat image_pixels = images[i].reshape(1, 1);
+        samples.push_back(image_pixels);
+    }
+
     CV_Error(Error::StsNotImplemented, "prepareSamples");
 }
 
 Ptr<ml::KNearest> train(const std::vector<cv::Mat>& images,
                         const std::vector<int>& labels) {
 
-    ml::KNearest model();
-    return *model;
+    Mat a;
+    prepareSamples(images, a);
+
+
+
+
     CV_Error(Error::StsNotImplemented, "train");
 }
 
@@ -77,9 +87,11 @@ float validate(Ptr<ml::KNearest> model,
 
 int predict(Ptr<ml::KNearest> model, const Mat& image) {
     // TODO: resize image to 28x28 (cv::resize)
+    Mat resized_image, converted_image;
+    resize(image, resized_image, Size(28,28));
 
     // TODO: convert image from BGR to HSV (cv::cvtColor)
-
+    cvtColor(resized_image, converted_image, COLOR_BGR2HSV);
     // TODO: get Saturate component (cv::split)
 
     // TODO: prepare input - single row FP32 Mat
