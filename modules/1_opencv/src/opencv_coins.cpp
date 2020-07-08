@@ -11,7 +11,6 @@ unsigned countCoins(const Mat& img) {
     // Remove unfilled black holes by morphological closing
     morphologyEx(thresh, thresh, MORPH_CLOSE, Mat::ones(3, 3, CV_8U), Point(-1, -1), 3);
 
-    
     dilate(thresh, newThresh, Mat::ones(3, 3, CV_8U), Point(-1, -1), 3);
     erode(thresh, thresh, Mat::ones(3, 3, CV_8U), Point(-1, -1), 5);
     distanceTransform(thresh, thresh, DIST_L2, 3);
@@ -31,8 +30,7 @@ unsigned countCoins(const Mat& img) {
         double R = sqrt(contourArea(contour) / CV_PI);
         R < 10 ? coinsSum++ : coinsSum += 2;
     }
-    
-    
+
     return coinsSum;
 
     // TODO: implement an algorithm from https://docs.opencv.org/master/d3/db4/tutorial_py_watershed.html
