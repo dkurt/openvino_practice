@@ -68,7 +68,14 @@ void loadLabels(const std::string& filepath,
 }
 
 void prepareSamples(const std::vector<cv::Mat>& images, cv::Mat& samples) {
-    CV_Error(Error::StsNotImplemented, "prepareSamples");
+    
+    for (int i = 0; i < images.size(); i++)
+    {
+        Mat row = images[i].reshape(1, 1);
+        samples.push_back(row);
+    }
+
+    samples.convertTo(samples, CV_32FC1);
 }
 
 Ptr<ml::KNearest> train(const std::vector<cv::Mat>& images,
@@ -78,19 +85,11 @@ Ptr<ml::KNearest> train(const std::vector<cv::Mat>& images,
     // IN PROCESS
     // FIX: unknown file: error: SEH exception with code 0xc0000005 thrown in the test body.
 
-    int size = images.size();
-
-    cv::Mat imagesMat(size, 1, CV_8U);
-
-    for (int i = 0; i < size; i++)
-    {
-        imagesMat.at<Mat>(i, 0) = images[i];
-    }
-
-    Mat trainingVectors(imagesMat, size, CV_32FC1);
-    Mat trainingLabels(labels, 1, CV_32FC1);
-
-    knn->train(trainingVectors, ml::ROW_SAMPLE, trainingLabels);
+    std::cout << images.size();
+    std::cout << labels.size();
+    Ptr <ml::TrainData> traindata = ml::TrainData::create(images, ml::SampleTypes::ROW_SAMPLE, labels);
+    knn->train(traindata);
+    std::cout << "yes";
     return knn;
 }
 
@@ -98,19 +97,49 @@ float validate(Ptr<ml::KNearest> model,
                const std::vector<cv::Mat>& images,
                const std::vector<int>& labels) {
 
-    CV_Error(Error::StsNotImplemented, "validate");
+    int size = images.size();
+    cv::Mat imagesMat(size, 1, CV_8U);
+
+    for (int i = 0; i < size; i++)
+    {
+        imagesMat.at<Mat>(i, 0) = images[i];
+    }
+
+    int positiveAttempts = 0;
+    for (int i = 0; i < imagesMat.rows; i++) {
+        Mat result;
+        float attempt = model->findNearest(imagesMat.row(i), model->getDefaultK(), result);
+        if (imagesMat.at<char>(i, 0) == (char)attempt) {
+            positiveAttempts++;
+        }
+    }
+
+    double positivePercent = (double)positiveAttempts / (double)imagesMat.rows;
+    return positivePercent;
 }
 
 int predict(Ptr<ml::KNearest> model, const Mat& image) {
     // TODO: resize image to 28x28 (cv::resize)
+    resize(image, image, Size(28, 28));
 
     // TODO: convert image from BGR to HSV (cv::cvtColor)
+    cvtColor(image, image, COLOR_BGR2HSV);
 
     // TODO: get Saturate component (cv::split)
+    std::vector<Mat> channels;
+    channels.resize(image.channels());
+    split(image, &channels[0]);
+    Mat saturation = channels[1];
 
     // TODO: prepare input - single row FP32 Mat
+    Mat inputImage(saturation, 1, CV_32FC1);
 
+    std::vector<int> results;
     // TODO: make a prediction by the model
+    model->findNearest(saturation, model->getDefaultK(), results);
+
+    for (auto result: results)
+        std::cout << result;
 
     CV_Error(Error::StsNotImplemented, "predict");
 }
