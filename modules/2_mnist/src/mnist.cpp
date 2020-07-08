@@ -42,8 +42,6 @@ void loadImages(const std::string& filepath,
     }
 }
 
-
-
 void loadLabels(const std::string& filepath,
                 std::vector<int>& labels) {
     std::ifstream ifs(filepath.c_str(), std::ios::binary);
