@@ -86,19 +86,34 @@ Ptr<ml::KNearest> train(const std::vector<cv::Mat>& images,
 float validate(Ptr<ml::KNearest> model,
                const std::vector<cv::Mat>& images,
                const std::vector<int>& labels) {
-    CV_Error(Error::StsNotImplemented, "validate");
+	Mat samples, results;
+	prepareSamples(images, samples);
+	model->findNearest(samples, 2, results);
+	int numLab = labels.size();
+	int numSuccess = 0;
+	for (int i = 0; i < numLab; i++)
+		if ((int)results.at<float>(i, 0) == labels[i])
+			numSuccess++;
+	return (float)numSuccess / (float)numLab;
 }
 
 int predict(Ptr<ml::KNearest> model, const Mat& image) {
     // TODO: resize image to 28x28 (cv::resize)
-
+	Mat image_resize_to_28;
+	resize(image, image_resize_to_28, Size(28, 28));
     // TODO: convert image from BGR to HSV (cv::cvtColor)
-
+	Mat image_HSV;
+	cvtColor(image_resize_to_28, image_HSV, COLOR_BGR2HSV);
     // TODO: get Saturate component (cv::split)
-
+	std::vector<Mat> channels;
+	split(image_HSV, channels);
     // TODO: prepare input - single row FP32 Mat
-
+	std::vector<Mat> sat;
+	sat.push_back(channels[1]);
+	Mat image_in;
+	prepareSamples(sat, image_in);
     // TODO: make a prediction by the model
-
-    CV_Error(Error::StsNotImplemented, "predict");
+	Mat result;
+	model->findNearest(image_in, 64, result);
+	return (int)result.at<float>(0, 0);
 }
