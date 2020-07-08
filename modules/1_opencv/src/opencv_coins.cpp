@@ -13,10 +13,10 @@ unsigned countCoins(const Mat& img)
 	double max = -100000.0;
 	unsigned int result = 0;
 
-    cvtColor(img, gray, COLOR_BGR2GRAY);
-    threshold(gray, thresh, 0, 255, THRESH_BINARY_INV + THRESH_OTSU);
+	cvtColor(img, gray, COLOR_BGR2GRAY);
+	threshold(gray, thresh, 0, 255, THRESH_BINARY_INV + THRESH_OTSU);
 
-    morphologyEx(thresh, thresh, MORPH_CLOSE, kernel, Point(-1, -1), 3);
+	morphologyEx(thresh, thresh, MORPH_CLOSE, kernel, Point(-1, -1), 3);
 
 	dilate(thresh, sure_bg, kernel, Point(-1, -1), 3);
 
