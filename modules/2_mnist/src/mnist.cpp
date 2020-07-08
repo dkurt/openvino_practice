@@ -15,13 +15,13 @@ inline int readInt(std::ifstream& ifs) {
 
 void loadImages(const std::string& filepath,
                 std::vector<Mat>& images) {
-    std::ifstream ifs(filepath.c_str(), std::ios::binary);
-    CV_CheckEQ(ifs.is_open(), true, filepath.c_str());
+	std::ifstream ifs(filepath.c_str(), std::ios::binary);
+	CV_CheckEQ(ifs.is_open(), true, filepath.c_str());
 	
-    int magicNum = readInt(ifs);	
-    CV_CheckEQ(magicNum, 2051, "");
+	int magicNum = readInt(ifs);	
+	CV_CheckEQ(magicNum, 2051, "");
 
-    int numImages = readInt(ifs);
+	int numImages = readInt(ifs);
 	int numRows = readInt(ifs);
 	int numColumns = readInt(ifs);
 
