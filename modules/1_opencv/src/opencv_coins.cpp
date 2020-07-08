@@ -98,7 +98,7 @@ unsigned countCoins(const Mat& img) {
 		}
 	}
 	// Sort the coins (not much sense in it though)
-	//std::sort(coins.begin(), coins.end());
+	std::sort(coins.begin(), coins.end());
 
 
 	// Output the areas (debug)
