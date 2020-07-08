@@ -1,7 +1,6 @@
 #include "opencv_coins.hpp"
 
 using namespace cv;
-using namespace std;
 
 unsigned countCoins(const Mat& img) {
     Mat gray, thresh, dist;
@@ -19,7 +18,7 @@ unsigned countCoins(const Mat& img) {
     threshold(thresh, thresh, maxV*0.7, 255, THRESH_BINARY);
     thresh.convertTo(thresh, CV_8U, 1, 0);
 
-    vector<vector<Point>> cont;
+    std::vector<std::vector<Point>> cont;
     findContours(thresh, cont, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
     int sum = 0;
     double radius;
