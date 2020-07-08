@@ -21,10 +21,28 @@ void loadImages(const std::string& filepath,
     CV_CheckEQ(magicNum, 2051, "");
 
     int numImages = readInt(ifs);
+    int numRows = readInt(ifs);
+    int numColumns = readInt(ifs);
 
-    // TODO: follow "FILE FORMATS FOR THE MNIST DATABASE" specification
-    // at http://yann.lecun.com/exdb/mnist/
+    for (int i = 0; i < numImages; i++)
+    {
+        Mat t(numRows, numColumns, CV_8UC1);
+        for (int j = 0; j < numRows; j++)
+        {
+            for (int k = 0; k < numColumns; k++)
+            {
+                unsigned char tmp = 0;
+                ifs.read((char*)&tmp, 4);
+                t.at<unsigned char>(j, k) = tmp;
+
+            }
+
+        }
+        images.push_back(t);
+    }
 }
+
+
 
 void loadLabels(const std::string& filepath,
                 std::vector<int>& labels) {
