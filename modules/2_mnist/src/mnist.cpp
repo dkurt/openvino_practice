@@ -71,16 +71,17 @@ void prepareSamples(const std::vector<cv::Mat>& images, cv::Mat& samples) {
 
 Ptr<ml::KNearest> train(const std::vector<cv::Mat>& images,
     const std::vector<int>& labels) {
+    
     CV_Error(Error::StsNotImplemented, "train");
+
 }
 
 float validate(Ptr<ml::KNearest> model,
     const std::vector<cv::Mat>& images,
     const std::vector<int>& labels) {
-        CV_Error(Error::StsNotImplemented, "validate");
-
-
-
+        
+    
+    CV_Error(Error::StsNotImplemented, "validate");
 
 }
 
