@@ -39,8 +39,6 @@ void loadImages(const std::string& filepath,
 			}
 		images.push_back(img);
 	}
-    // TODO: follow "FILE FORMATS FOR THE MNIST DATABASE" specification
-    // at http://yann.lecun.com/exdb/mnist/
 }
 
 void loadLabels(const std::string& filepath,
@@ -60,8 +58,6 @@ void loadLabels(const std::string& filepath,
 		ifs.read((char*)&val, sizeof(val));
 		labels.push_back(val);
 	}
-    // TODO: follow "FILE FORMATS FOR THE MNIST DATABASE" specification
-    // at http://yann.lecun.com/exdb/mnist/
 }
 
 void prepareSamples(const std::vector<cv::Mat>& images, cv::Mat& samples) {
@@ -71,8 +67,6 @@ void prepareSamples(const std::vector<cv::Mat>& images, cv::Mat& samples) {
 		for (int i = 0; i < images[0].rows; i++)
 			for (int j = 0; j < images[0].cols; j++)
 				samples.at<float>(k, i*images[0].cols + j) = (float)images[k].at<uint8_t>(i, j);
-
-	    //CV_Error(Error::StsNotImplemented, "prepareSamples");
 }
 
 Ptr<ml::KNearest> train(const std::vector<cv::Mat>& images,
@@ -115,22 +109,19 @@ float validate(Ptr<ml::KNearest> model,
 }
 
 int predict(Ptr<ml::KNearest> model, const Mat& image) {
-    // TODO: resize image to 28x28 (cv::resize)
+    
 	Mat tmp;
 	resize(image, tmp, Size(28, 28));
 
-    // TODO: convert image from BGR to HSV (cv::cvtColor)
 	cvtColor(tmp, tmp, COLOR_BGR2HSV);
 
-    // TODO: get Saturate component (cv::split)
 	Mat hsv_planes[3];
 	split(tmp,&hsv_planes[0]);     //hsv_planes[1]- S channel
 
-    // TODO: prepare input - single row FP32 Mat
 	std::vector<Mat> s_planes;
 	s_planes.push_back(hsv_planes[1]);
 	prepareSamples(s_planes, tmp);
-    // TODO: make a prediction by the model
+    
 	int pr=model->predict(tmp);
 	return pr;   
 }
