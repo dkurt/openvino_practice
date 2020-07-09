@@ -11,7 +11,16 @@ using namespace cv::utils::fs;
 void topK(const std::vector<float>& src, unsigned k,
           std::vector<float>& dst,
           std::vector<unsigned>& indices) {
-    CV_Error(Error::StsNotImplemented, "topK");
+    //CV_Error(Error::StsNotImplemented, "topK");
+    std::vector<float>v;
+    v = src;
+    std::sort(v.begin(), v.end(), std::greater<float>());
+    for (int i = 0; i < k; ++i) {
+        dst.push_back(v[i]);
+        auto it = std::find(src.begin(), src.end(), v[i]);
+        auto index = std::distance(src.begin(), it);
+        indices.push_back(index);
+    }
 }
 
 void softmax(std::vector<float>& values) {
