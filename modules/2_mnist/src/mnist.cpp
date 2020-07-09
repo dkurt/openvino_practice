@@ -104,17 +104,29 @@ float validate(Ptr<ml::KNearest> model,
 
 int predict(Ptr<ml::KNearest> model, const Mat& image) {
     // TODO: resize image to 28x28 (cv::resize)
-    Mat resized_image, converted_image, channels, sample;
-    resize(image, resized_image, Size(28,28));
+    Mat resized_image;
+    resize(image, resized_image, Size(28, 28));
 
     // TODO: convert image from BGR to HSV (cv::cvtColor)
-    cvtColor(resized_image, converted_image, COLOR_BGR2HSV);
+
+    Mat HSV_image;
+    cvtColor(resized_image, HSV_image, COLOR_BGR2HSV);
+
     // TODO: get Saturate component (cv::split)
-    split(converted_image, channels);
+
+    std::vector<Mat> channels;
+    split(HSV_image, channels);
 
     // TODO: prepare input - single row FP32 Mat
-    prepareSamples(image, sample);
+
+    std::vector<Mat> saturate;
+    saturate.push_back(channels[1]);
+
+    Mat samples;
+
+    prepareSamples(saturate, samples);
     // TODO: make a prediction by the model
-    int predict_value = model->predict(sample);
-    return predict_value;
+    Mat result;
+    model->findNearest(samples, 64, result);
+    return (int)result.at<float>(0, 0);
 }
