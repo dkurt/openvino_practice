@@ -45,7 +45,6 @@ void loadLabels(const std::string& filepath,
     CV_CheckEQ(ifs.is_open(), true, filepath.c_str());
     int magicNum = readInt(ifs);
     CV_CheckEQ(magicNum, 2049, "");
-
     int numLabels = readInt(ifs);
 
     for (int i(0); i < numLabels; i++) {
