@@ -63,6 +63,7 @@ void prepareSamples(const std::vector<cv::Mat>& images, cv::Mat& samples) {
         Mat image_pixels = images[i].reshape(1, 1);
         samples.push_back(image_pixels);
     }
+    std::cout<<samples.at<unsigned char>(0);
 
     CV_Error(Error::StsNotImplemented, "prepareSamples");
 }
@@ -70,10 +71,18 @@ void prepareSamples(const std::vector<cv::Mat>& images, cv::Mat& samples) {
 Ptr<ml::KNearest> train(const std::vector<cv::Mat>& images,
                         const std::vector<int>& labels) {
 
-    Mat a;
-    prepareSamples(images, a);
+    Ptr<ml::KNearest> model = ml::KNearest::create();
+    Ptr<ml::TrainData> training_data;
+    model->setDefaultK(5);  
+    Mat samples;
 
+    prepareSamples(images, samples);
 
+    training_data = ml::TrainData::create(samples, ml::SampleTypes::ROW_SAMPLE, labels);
+
+    model->train(training_data);
+
+    return model;
 
 
     CV_Error(Error::StsNotImplemented, "train");
