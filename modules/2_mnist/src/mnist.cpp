@@ -129,5 +129,5 @@ int predict(Ptr<ml::KNearest> model, const Mat& image) {
     prepareSamples(channels, sample);
 
     // TODO: make a prediction by the model
-    return model->predict(sample)+0.5;
+    return model->predict(sample);
 }
