@@ -13,7 +13,7 @@ void topK(const std::vector<float>& src, unsigned k,
           std::vector<unsigned>& indices) {
     std::vector<std::pair<float, unsigned>> pairtop(src.size());
     for (int i = 0; i < src.size(); i++) {
-        pairtop[i] = std::make_pair(src[i], i);
+        pairtop[i]=std::make_pair(src[i], i);
     }
     std::sort(pairtop.begin(), pairtop.end(), std::greater<std::pair<float, unsigned>>());
     dst = std::vector<float>(k);
@@ -28,14 +28,11 @@ void softmax(std::vector<float>& values) {
     float buf = 0.0f;
     int n = values.size();
     float max = *std::max_element(values.begin(),values.end());
-    for (int i = 0; i < n; i++) {
-        values[i] -= max;
-    }
     for (int i = 0; i < n; i++){
-        buf += cv::exp(values[i]);
+        buf += cv::exp(values[i]-max);
     }
     for (int i = 0; i < n; i++) {
-        values[i] = cv::exp(values[i]) / buf;
+        values[i] = cv::exp(values[i]-max) / buf;
     }
 }
 
@@ -82,12 +79,12 @@ void Classifier::classify(const cv::Mat& image, int k, std::vector<float>& proba
     // Copy output. "prob" is a name of output from .xml file
     float* output = req.GetBlob(outputName)->buffer();
     int n = req.GetBlob(outputName)->size();
-    std::vector<float> buf(n);
+    std::vector<float> src(n);
     for (int i = 0; i < n; i++) {
-        buf[i] = output[i];
+        src[i] = output[i];
     }
     probabilities = std::vector<float>(k);
     indices = std::vector<unsigned>(k);
-    topK(buf, k, probabilities, indices);
+    topK(src, k, probabilities, indices);
     softmax(probabilities);
 }
