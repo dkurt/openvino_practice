@@ -11,16 +11,24 @@ using namespace cv::utils::fs;
 void topK(const std::vector<float>& src, unsigned k,
           std::vector<float>& dst,
           std::vector<unsigned>& indices) {
-    std::vector<std::pair<float, unsigned>> pairtop(src.size());
+    /*std::vector<std::pair<float, unsigned>> pairtop(src.size());
     for (int i = 0; i < src.size(); i++){
         pairtop[i]=std::make_pair(src[i], i);
     }
-    std::sort(pairtop.begin(), pairtop.end(), std::greater<std::pair<float,unsigned>>());
+    std::sort(pairtop.begin(), pairtop.end(), std::greater<std::pair<float,unsigned>>());*/
+    std::map<float, unsigned> srcidx;
+    for (size_t i = 0; i < src.size(); i++) {
+        srcidx.insert(std::make_pair(src[i], i));
+    }
     dst = std::vector<float>(k);
     indices = std::vector<unsigned>(k);
+    auto it = srcidx.cend();
     for (int i = 0; i < k; i++){
-        dst[i] = pairtop[i].first;
-        indices[i] = pairtop[i].second;
+        //dst[i] = pairtop[i].first;
+        //indices[i] = pairtop[i].second;
+        it--;
+        dst[i] = (*it).first;
+        indices[i] = (*it).second;
     }
 }
 
