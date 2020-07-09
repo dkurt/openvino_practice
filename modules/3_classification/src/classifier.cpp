@@ -25,16 +25,26 @@ void topK(const std::vector<float>& src, unsigned k,
 }
 
 void softmax(std::vector<float>& values) {
+    float maxValue = values[0];
+
+    for (int i = 0; i < values.size(); i++)
+    {
+        if (values[i] > maxValue)
+        {
+            maxValue = values[i];
+        }
+    }
+
     float sum = 0;
 
     for (int i = 0; i < values.size(); i++)
     {
-        sum += exp(values[i]);
+        sum += exp(values[i] - maxValue);
     }
 
     for (int i = 0; i < values.size(); i++)
     {
-        values[i] = exp(values[i]) / sum;
+        values[i] = exp(values[i] - maxValue) / sum;
     }
 }
 
