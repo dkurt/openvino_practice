@@ -63,9 +63,7 @@ void prepareSamples(const std::vector<cv::Mat>& images, cv::Mat& samples) {
         Mat image_pixels = images[i].reshape(1, 1);
         samples.push_back(image_pixels);
     }
-    std::cout<<samples.at<unsigned char>(0);
-
-    CV_Error(Error::StsNotImplemented, "prepareSamples");
+    samples.convertTo(samples, CV_32FC1);
 }
 
 Ptr<ml::KNearest> train(const std::vector<cv::Mat>& images,
@@ -73,7 +71,6 @@ Ptr<ml::KNearest> train(const std::vector<cv::Mat>& images,
 
     Ptr<ml::KNearest> model = ml::KNearest::create();
     Ptr<ml::TrainData> training_data;
-    model->setDefaultK(5);  
     Mat samples;
 
     prepareSamples(images, samples);
@@ -83,9 +80,6 @@ Ptr<ml::KNearest> train(const std::vector<cv::Mat>& images,
     model->train(training_data);
 
     return model;
-
-
-    CV_Error(Error::StsNotImplemented, "train");
 }
 
 float validate(Ptr<ml::KNearest> model,
@@ -96,13 +90,13 @@ float validate(Ptr<ml::KNearest> model,
 
 int predict(Ptr<ml::KNearest> model, const Mat& image) {
     // TODO: resize image to 28x28 (cv::resize)
-    Mat resized_image, converted_image;
+    Mat resized_image, converted_image, channels;
     resize(image, resized_image, Size(28,28));
 
     // TODO: convert image from BGR to HSV (cv::cvtColor)
     cvtColor(resized_image, converted_image, COLOR_BGR2HSV);
     // TODO: get Saturate component (cv::split)
-
+    split(converted_image, channels);
     // TODO: prepare input - single row FP32 Mat
 
     // TODO: make a prediction by the model
