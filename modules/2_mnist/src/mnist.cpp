@@ -4,7 +4,6 @@
 using namespace cv;
 
 inline int readInt(std::ifstream& ifs) {
-
     int val;
     ifs.read((char*)&val, 4);
     // Integers in file are high endian which requires swap
@@ -13,8 +12,8 @@ inline int readInt(std::ifstream& ifs) {
     return val;
 }
 
-void loadImages(const std::string& filepath, std::vector<Mat>& images) {
-
+void loadImages(const std::string& filepath,
+                std::vector<Mat>& images) {
     std::ifstream ifs(filepath.c_str(), std::ios::binary);
     CV_CheckEQ(ifs.is_open(), true, filepath.c_str());
 
@@ -41,8 +40,8 @@ void loadImages(const std::string& filepath, std::vector<Mat>& images) {
     // at http://yann.lecun.com/exdb/mnist/
 }
 
-void loadLabels(const std::string& filepath, std::vector<int>& labels) {
-
+void loadLabels(const std::string& filepath,
+                std::vector<int>& labels) {
     std::ifstream ifs(filepath.c_str(), std::ios::binary);
     CV_CheckEQ(ifs.is_open(), true, filepath.c_str());
 
@@ -61,7 +60,6 @@ void loadLabels(const std::string& filepath, std::vector<int>& labels) {
 }
 
 void prepareSamples(const std::vector<cv::Mat>& images, cv::Mat& samples) {
-
     int images_size = images.size();
     int images_rows = images[0].rows;
     int images_cols = images[0].cols;
@@ -75,8 +73,8 @@ void prepareSamples(const std::vector<cv::Mat>& images, cv::Mat& samples) {
     }
 }
 
-Ptr<ml::KNearest> train(const std::vector<cv::Mat>& images, const std::vector<int>& labels) {
-    
+Ptr<ml::KNearest> train(const std::vector<cv::Mat>& images,
+                        const std::vector<int>& labels) {
     Ptr<ml::KNearest> modelKnn = ml::KNearest::create();
     Ptr<ml::TrainData> trainData;
 
@@ -88,7 +86,6 @@ Ptr<ml::KNearest> train(const std::vector<cv::Mat>& images, const std::vector<in
 }
 
 float validate(Ptr<ml::KNearest> model, const std::vector<cv::Mat>& images, const std::vector<int>& labels) {
-
     Mat samples, result;
     prepareSamples(images, samples);
 
@@ -107,7 +104,6 @@ float validate(Ptr<ml::KNearest> model, const std::vector<cv::Mat>& images, cons
 }
 
 int predict(Ptr<ml::KNearest> model, const Mat& image) {
-    
     Mat tmpImage;
     resize(image, tmpImage, Size(28, 28)); // resize image to 28x28 (cv::resize)
     
