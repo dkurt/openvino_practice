@@ -1,6 +1,5 @@
 #include "mnist.hpp"
 #include <fstream>
-#include <iostream>
 using namespace cv;
 
 inline int readInt(std::ifstream& ifs) {
