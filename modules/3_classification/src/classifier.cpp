@@ -8,14 +8,71 @@ using namespace InferenceEngine;
 using namespace cv;
 using namespace cv::utils::fs;
 
+
 void topK(const std::vector<float>& src, unsigned k,
           std::vector<float>& dst,
           std::vector<unsigned>& indices) {
-    CV_Error(Error::StsNotImplemented, "topK");
+//    CV_Error(Error::StsNotImplemented, "topK");
+   
+    int size = src.size();
+    dst.resize(k);
+    indices.resize(k);
+    for (unsigned i = 0; i < k; i++)
+    {
+        dst[i] = src[i];
+        indices[i] = i;
+    }
+    
+
+    for (unsigned i = k; i < size; i++)
+    {
+        float min = dst[0];
+        unsigned ind = 0;
+        for (unsigned j = 1; j < k; j++)
+        {
+            if (dst[j] < min) {
+                min = dst[j];
+                ind = j;
+            }
+        }
+        if (min < src[i]) {
+            dst[ind] = src[i];
+            indices[ind] = i;
+        }
+    }
+
+    for (unsigned i = 0; i < k-1; i++)
+    {
+        for (unsigned j = 0; j < k-1-i; j++)
+        {
+            if (dst[j] < dst[j+1]) {
+                int ti = indices[j];
+                float tmp = dst[j];
+                indices[j] = indices[j + 1];
+                dst[j] = dst[j + 1];
+                indices[j + 1] = ti;
+                dst[j + 1] = tmp;
+            }
+        }
+    }
+
 }
 
 void softmax(std::vector<float>& values) {
-    CV_Error(Error::StsNotImplemented, "softmax");
+    //_Error(Error::StsNotImplemented, "softmax");
+    int size = values.size();
+    std::vector<float> tmp(size);
+    for (int i = 0; i < size; i++)
+    {
+        float  sum = 0;
+        
+        for (int  j= 0; j < size; j++)
+        {
+            sum += expf(values[j]);
+        }
+        tmp[i] = expf(values[i]) / sum;
+    }
+    values = tmp;
 }
 
 Blob::Ptr wrapMatToBlob(const Mat& m) {
