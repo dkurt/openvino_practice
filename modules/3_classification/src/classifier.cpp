@@ -15,7 +15,20 @@ void topK(const std::vector<float>& src, unsigned k,
 }
 
 void softmax(std::vector<float>& values) {
-    CV_Error(Error::StsNotImplemented, "softmax");
+    //CV_Error(Error::StsNotImplemented, "softmax");
+    float q = 0;
+    for (int i = 0; i < values.size(); ++i) {
+        if (values[i] > q) {
+            q = values[i];
+        }
+    }
+    float sum = 0;
+    for (int i = 0; i < values.size(); ++i) {
+        sum += exp(values[i] - q);
+    }
+    for (int i = 0; i < values.size(); ++i) {
+        values[i] = exp(values[i] - q) / sum;
+    }
 }
 
 Blob::Ptr wrapMatToBlob(const Mat& m) {
