@@ -24,20 +24,20 @@ void loadImages(const std::string& filepath,
     int numRows = readInt(ifs);
     int numCols = readInt(ifs);
 
-
+    images.resize(numImages);
     // TODO: follow "FILE FORMATS FOR THE MNIST DATABASE" specification
     // at http://yann.lecun.com/exdb/mnist/
     for (int i = 0; i < numImages; ++i) {
         Mat img(numRows, numCols, CV_8U);
         for (int r = 0; r < numRows; ++r) {
             for (int c = 0; c < numCols; ++c) {
-                unsigned char pixel = readInt(ifs);
+                unsigned char pixel = 0;
+                ifs.read((char*)&pixel, sizeof(pixel));
                 img.at<unsigned char>(r, c) = pixel;
             }
         }
-        images.push_back(img);
+        images[i] = img;
     }
-    
 }
 
 void loadLabels(const std::string& filepath,
@@ -49,9 +49,10 @@ void loadLabels(const std::string& filepath,
     CV_CheckEQ(magicNum, 2049, "");
 
     int numLabels = readInt(ifs);
-    labels.resize(numLabels);
+    labels.resize(numLabels, 0);
     for (int i = 0; i < numLabels; ++i) {
-        unsigned char label = readInt(ifs);
+        unsigned char label = 0;
+        ifs.read((char*)&label, sizeof(label));
         labels[i] = label;
     }
 }
@@ -85,21 +86,35 @@ Ptr<ml::KNearest> train(const std::vector<cv::Mat>& images,
 float validate(Ptr<ml::KNearest> model,
                const std::vector<cv::Mat>& images,
                const std::vector<int>& labels) {
-    CV_Error(Error::StsNotImplemented, "validate");
+
+    Mat samples, result;
+
+    prepareSamples(images, samples);
+
+    model->findNearest(samples, model->getDefaultK(), result);
+
+    int _count = 0;
+    for (int i = 0; i < labels.size(); ++i) {
+        if (result.at<float>(i) == labels[i]) {
+            _count++;
+        }
+    }
+    return float(_count) / labels.size();
 }
 
 int predict(Ptr<ml::KNearest> model, const Mat& image) {
     // TODO: resize image to 28x28 (cv::resize)
-    Mat resized_image, converted_image, channels;
+    Mat resized_image, converted_image, channels, sample;
     resize(image, resized_image, Size(28,28));
 
     // TODO: convert image from BGR to HSV (cv::cvtColor)
     cvtColor(resized_image, converted_image, COLOR_BGR2HSV);
     // TODO: get Saturate component (cv::split)
     split(converted_image, channels);
+
     // TODO: prepare input - single row FP32 Mat
-
+    prepareSamples(image, sample);
     // TODO: make a prediction by the model
-
-    CV_Error(Error::StsNotImplemented, "predict");
+    int predict_value = model->predict(sample);
+    return predict_value;
 }
