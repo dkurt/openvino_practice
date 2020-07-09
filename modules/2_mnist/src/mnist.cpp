@@ -118,7 +118,8 @@ int predict(Ptr<ml::KNearest> model, const Mat& image) {
     cvtColor(img, img, COLOR_BGR2HSV);
 
     // TODO: get Saturate component (cv::split)
-    Mat tmp[3];
+    Mat *tmp;
+    tmp = new Mat[3];
     std::vector<Mat> channels;
     split(img, &tmp[0]);
     channels.push_back(tmp[1]);
@@ -129,5 +130,5 @@ int predict(Ptr<ml::KNearest> model, const Mat& image) {
     prepareSamples(channels, sample);
 
     // TODO: make a prediction by the model
-    return model->predict(sample);
+    return model->predict(sample)+0.5;
 }
