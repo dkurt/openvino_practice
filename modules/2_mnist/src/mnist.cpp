@@ -84,7 +84,7 @@ Ptr<ml::KNearest> train(const std::vector<cv::Mat>& images,
     Ptr<ml::KNearest> model = ml::KNearest::create();
     Mat samples;
     prepareSamples(images, samples);
-    Ptr<ml::TrainData>& data = ml::TrainData::create(samples, ml::ROW_SAMPLE, labels);
+    const Ptr<ml::TrainData> data = ml::TrainData::create(samples, ml::ROW_SAMPLE, labels);
     model->train(data);    
     return model;
 }
