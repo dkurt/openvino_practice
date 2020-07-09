@@ -13,8 +13,8 @@ inline int readInt(std::ifstream& ifs) {
 }
 
 void loadImages(const std::string& filepath,
-    std::vector<Mat>& images) {
-    std::ifstream ifs(filepath.c_str(), std::ios::binary);
+                std::vector<Mat>& images) {
+                std::ifstream ifs(filepath.c_str(), std::ios::binary);
     CV_CheckEQ(ifs.is_open(), true, filepath.c_str());
 
     int magicNum = readInt(ifs);
@@ -39,8 +39,8 @@ void loadImages(const std::string& filepath,
 }
 
 void loadLabels(const std::string& filepath,
-    std::vector<int>& labels) {
-    std::ifstream ifs(filepath.c_str(), std::ios::binary);
+                std::vector<int>& labels) {
+                std::ifstream ifs(filepath.c_str(), std::ios::binary);
     CV_CheckEQ(ifs.is_open(), true, filepath.c_str());
 
     int magicNum = readInt(ifs);
@@ -66,7 +66,7 @@ void prepareSamples(const std::vector<cv::Mat>& images, cv::Mat& samples) {
 }
 
 Ptr<ml::KNearest> train(const std::vector<cv::Mat>& images,
-    const std::vector<int>& labels) {
+                        const std::vector<int>& labels) {
     
     Ptr <ml::KNearest> ptr = ml::KNearest::create();
     Mat sample;
@@ -76,8 +76,8 @@ Ptr<ml::KNearest> train(const std::vector<cv::Mat>& images,
 }
 
 float validate(Ptr<ml::KNearest> model,
-    const std::vector<cv::Mat>& images,
-    const std::vector<int>& labels) {
+                const std::vector<cv::Mat>& images,
+                const std::vector<int>& labels) {
     
     Mat sampleMat, resultMat;
     prepareSamples(images, sampleMat);
