@@ -60,13 +60,22 @@ void topK(const std::vector<float>& src, unsigned k,
 
 void softmax(std::vector<float>& values) {
     //_Error(Error::StsNotImplemented, "softmax");
-    int size = values.size();
+    unsigned size = values.size();
     std::vector<float> tmp(size);
+    float max = values[0];
+    for (int i = 1; i < size; i++)
+    {
+        if (max < values[i]) max = values[i];
+    }
     for (int i = 0; i < size; i++)
+    {
+        values[i] -= max;
+    }
+    for (unsigned i = 0; i < size; i++)
     {
         float  sum = 0;
         
-        for (int  j= 0; j < size; j++)
+        for (unsigned  j= 0; j < size; j++)
         {
             sum += expf(values[j]);
         }
