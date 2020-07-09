@@ -1,8 +1,6 @@
 #include "mnist.hpp"
 #include <fstream>
-
 using namespace cv;
-
 inline int readInt(std::ifstream& ifs) {
 	int val;
 	ifs.read((char*)&val, 4);
@@ -11,7 +9,6 @@ inline int readInt(std::ifstream& ifs) {
 	std::swap(((char*)&val)[1], ((char*)&val)[2]);
 	return val;
 }
-
 void loadImages(const std::string& filepath,
 	std::vector<Mat>& images) {
 	std::ifstream ifs(filepath.c_str(), std::ios::binary);
@@ -38,7 +35,6 @@ void loadImages(const std::string& filepath,
 		images.push_back(tmp);
 	}
 }
-
 void loadLabels(const std::string& filepath,
 	std::vector<int>& labels) {
 	std::ifstream ifs(filepath.c_str(), std::ios::binary);
@@ -55,7 +51,6 @@ void loadLabels(const std::string& filepath,
 		labels.push_back(val);
 	}
 }
-
 void prepareSamples(const std::vector<cv::Mat>& images, cv::Mat& samples) {
 	int i = images.size();
 	Mat sample(i, 28 * 28, CV_32FC1);
@@ -67,7 +62,6 @@ void prepareSamples(const std::vector<cv::Mat>& images, cv::Mat& samples) {
 	}
 	samples = sample;
 }
-
 Ptr<ml::KNearest> train(const std::vector<cv::Mat>& images,
 	const std::vector<int>& labels) {
 	Ptr <ml::KNearest> a = ml::KNearest::create();
@@ -76,7 +70,6 @@ Ptr<ml::KNearest> train(const std::vector<cv::Mat>& images,
 	a->train(sample, ml::ROW_SAMPLE, labels);
 	return a;
 }
-
 float validate(Ptr<ml::KNearest> model,
 	const std::vector<cv::Mat>& images,
 	const std::vector<int>& labels) {
@@ -90,7 +83,6 @@ float validate(Ptr<ml::KNearest> model,
 			numSuccess++;
 	return (float)numSuccess / (float)numLab;
 }
-
 int predict(Ptr<ml::KNearest> model, const Mat& image) {
 	// TODO: resize image to 28x28 (cv::resize)
 	Mat image_resize_to_28;
