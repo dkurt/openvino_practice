@@ -28,7 +28,7 @@ void loadImages(const std::string& filepath, std::vector<Mat>& images) {
         for (int j = 0; j < rows; j++) {
             for (int q = 0; q < cols; q++) {
                 unsigned char val = 0;
-                ifs.read((char*)&val, sizeof(val));
+                ifs.read((char*)&val, 1);
                 image.at<unsigned char>(j, q) = val;
             }
         }
@@ -47,7 +47,7 @@ void loadLabels(const std::string& filepath, std::vector<int>& labels) {
 
     for (int i = 0; i < numLabels; i++) {
         unsigned char val = 0;
-        ifs.read((char*)&val, sizeof(val));
+        ifs.read((char*)&val, 1);
         labels.push_back(val);
     }
 }
@@ -62,9 +62,9 @@ void prepareSamples(const std::vector<cv::Mat>& images, cv::Mat& samples) {
 Ptr<ml::KNearest> train(const std::vector<cv::Mat>& images, const std::vector<int>& labels) {
     Mat samples;
     prepareSamples(images, samples);
-    Ptr<ml::KNearest> trained_model = ml::KNearest::create();
-    trained_model->train(samples, ml::SampleTypes::ROW_SAMPLE, labels);
-    return trained_model;
+    Ptr<ml::KNearest> tr = ml::KNearest::create();
+    tr->train(samples, ml::ROW_SAMPLE, labels);
+    return tr;
 }
 
 float validate(Ptr<ml::KNearest> model, const std::vector<cv::Mat>& images, const std::vector<int>& labels) {
@@ -82,15 +82,15 @@ float validate(Ptr<ml::KNearest> model, const std::vector<cv::Mat>& images, cons
 
 int predict(Ptr<ml::KNearest> model, const Mat& image) {
     // TODO: resize image to 28x28 (cv::resize)
-    Mat tmpImg;
-    resize(image, tmpImg, Size(28, 28));
+    Mat tmp_Img;
+    resize(image, tmp_Img, Size(28, 28));
 
     // TODO: convert image from BGR to HSV (cv::cvtColor)
-    cvtColor(tmpImg, tmpImg, COLOR_BGR2HSV);
-
+    Mat image_HSV;
+    cvtColor(tmp_Img, image_HSV, COLOR_BGR2HSV);
     // TODO: get Saturate component (cv::split)
-    Mat channels[3];
-    split(tmpImg, &channels[0]);
+    std::vector<Mat> channels;
+    split(image_HSV, channels);
     std::vector<Mat> saturation;
     saturation.push_back(channels[1]);
 
