@@ -106,8 +106,9 @@ void Classifier::classify(const cv::Mat& image, int k, std::vector<float>& proba
 	topK(res, k, probabilities, indices);
 
 	// Normalize the output
+	float winner = probabilities[0];
 	for (int i = 0; i < k; i++)
 	{
-		probabilities[i] /= probabilities[0];
+		probabilities[i] /= winner;
 	}
 }
