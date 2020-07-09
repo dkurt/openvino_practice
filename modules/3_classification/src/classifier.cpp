@@ -90,4 +90,14 @@ void Classifier::classify(const cv::Mat& image, int k, std::vector<float>& proba
 
     // Copy output. "prob" is a name of output from .xml file
     float* output = req.GetBlob(outputName)->buffer();
+
+    std::vector<float> srcInput;
+
+    for (int i = 0; i < req.GetBlob(outputName)->size(); i++)
+    {
+        srcInput.push_back(output[i]);
+    }
+
+    topK(srcInput, k, probabilities, indices);
+    softmax(probabilities);
 }
