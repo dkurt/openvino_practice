@@ -61,7 +61,6 @@ void loadLabels(const std::string& filepath,
 }
 
 void prepareSamples(const std::vector<cv::Mat>& images, cv::Mat& samples) {
-	//CV_Error(Error::StsNotImplemented, "prepareSamples");
 	int count = images.size();
 	Mat samp(count, 28 * 28, CV_32FC1);
 	for (int i = 0; i < count; i++)
@@ -77,13 +76,28 @@ void prepareSamples(const std::vector<cv::Mat>& images, cv::Mat& samples) {
 
 Ptr<ml::KNearest> train(const std::vector<cv::Mat>& images,
 	const std::vector<int>& labels) {
-	CV_Error(Error::StsNotImplemented, "train");
+	Ptr<ml::KNearest> ptr = ml::KNearest::create();
+	Mat samp;
+	prepareSamples(images, samp);
+	ptr->train(samp, ml::ROW_SAMPLE, labels);
+	
+	return ptr;
 }
 
 float validate(Ptr<ml::KNearest> model,
 	const std::vector<cv::Mat>& images,
 	const std::vector<int>& labels) {
-	CV_Error(Error::StsNotImplemented, "validate");
+	Mat sample, res;
+	prepareSamples(images, sample);
+	model->findNearest(sample, 2, res);
+	int count_labels = labels.size();
+	int count_Success = 0;
+	for (int i = 0; i < count_labels; i++)
+		if ((int)res.at<float>(i, 0) == labels[i])
+			count_Success++;
+	return (float)count_Success / (float)count_labels;
+
+
 }
 
 int predict(Ptr<ml::KNearest> model, const Mat& image) {
