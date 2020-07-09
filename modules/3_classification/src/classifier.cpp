@@ -1,5 +1,6 @@
 #include "classifier.hpp"
 
+#include <map>
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/utils/filesystem.hpp>
 #include <inference_engine.hpp>
@@ -11,11 +12,39 @@ using namespace cv::utils::fs;
 void topK(const std::vector<float>& src, unsigned k,
           std::vector<float>& dst,
           std::vector<unsigned>& indices) {
-    CV_Error(Error::StsNotImplemented, "topK");
+    size_t n = src.size();
+    std::map<float, unsigned> srcidx;
+    for (size_t i = 0; i < n; i++) {
+        srcidx.insert(std::make_pair(src[i], i));
+    }
+    dst = std::vector<float>(k);
+    indices = std::vector<unsigned>(k);
+    auto it = srcidx.cend();
+    for (size_t i = 0; i < k; i++) {
+        it--;
+        dst[i] = (*it).first;
+        indices[i] = (*it).second;
+    }
 }
 
 void softmax(std::vector<float>& values) {
-    CV_Error(Error::StsNotImplemented, "softmax");
+    size_t n = values.size();
+
+    // normalize vector
+    float maxVal = *std::max_element(values.begin(), values.end());
+    for (size_t i = 0; i < n; i++) {
+        values[i] -= maxVal;
+    }
+
+    // calc denominator 
+    float den = 0.0f;
+    for (size_t i = 0; i < n; i++) {
+        den += cv::exp(values[i]);
+    }
+
+    for (size_t i = 0; i < n; i++) {
+        values[i] = cv::exp(values[i]) / den;
+    }
 }
 
 Blob::Ptr wrapMatToBlob(const Mat& m) {
@@ -60,4 +89,13 @@ void Classifier::classify(const cv::Mat& image, int k, std::vector<float>& proba
 
     // Copy output. "prob" is a name of output from .xml file
     float* output = req.GetBlob(outputName)->buffer();
+    size_t n = req.GetBlob(outputName)->size();
+    std::vector<float> src(n);
+    for (int i = 0; i < n; i++) {
+        src[i] = output[i];
+    }
+    probabilities = std::vector<float>(k);
+    indices = std::vector<unsigned>(k);
+    topK(src, k, probabilities, indices);
+    softmax(probabilities);
 }
