@@ -71,16 +71,16 @@ float validate(Ptr<ml::KNearest> model,
         correctGuesses += resultMat.at<int>(0, i) == labels[i];
     }
 
-    return correctGuesses / images.size() * 100;
+    return (float)correctGuesses / images.size() * 100;
 }
 
 int predict(Ptr<ml::KNearest> model, const Mat& image) {
     cv::Mat image_hsv;
     // resize
-    cv::resize(image, image, Size(28, 28));
+    cv::resize(image, image_hsv, cv::Size(28, 28));
 
     // bgr to hsv
-    cv::cvtColor(image, image_hsv, COLOR_BGR2HSV);
+    cv::cvtColor(image_hsv, image_hsv, COLOR_BGR2HSV);
 
     // split hsv, hsvComponents[1] holds the saturation component
     std::vector<cv::Mat> hsvComponents(3);
@@ -96,7 +96,7 @@ int predict(Ptr<ml::KNearest> model, const Mat& image) {
 
     // make a prediction by the model
     cv::Mat resultMat;
-    model->findNearest(image, model->getDefaultK(), resultMat);
+    model->findNearest(preparedImage, model->getDefaultK(), resultMat);
 
     return resultMat.at<int>(0, 0);
 }
