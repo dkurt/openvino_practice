@@ -9,7 +9,6 @@ using namespace cv;
 using namespace cv::utils::fs;
 
 
-
 void topK(const std::vector<float>& src, unsigned k,
           std::vector<float>& dst,
           std::vector<unsigned>& indices) {
