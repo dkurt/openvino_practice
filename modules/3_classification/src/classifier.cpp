@@ -40,13 +40,13 @@ void softmax(std::vector<float>& values) {
 	long double sum = 0;
 	for (float value : values)
 	{
-		sum += std::expl(value);
+		sum += exp((long double)value);
 		//std::cout << sum << ' ';
 	}
 	//std::cout << std::endl;
 	for (int i = 0; i < values.size(); i++)
 	{
-		long double exponent = std::expl(values[i]);
+		long double exponent = exp((long double)values[i]);
 		values[i] = static_cast<float>(exponent / sum);
 		//std::cout << values[i] << ' ';
 	}
