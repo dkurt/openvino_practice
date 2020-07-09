@@ -60,7 +60,15 @@ void loadLabels(const std::string& filepath,
 }
 
 void prepareSamples(const std::vector<cv::Mat>& images, cv::Mat& samples) {
-    CV_Error(Error::StsNotImplemented, "prepareSamples");
+	Mat Samples(0, images[0].cols*images[0].rows, CV_32FC1);
+
+	for (int i = 0; i < images.size(); i++)
+	{
+		Mat vec = images[i].reshape(1, 1);
+		vec.convertTo(vec, CV_32FC1);
+		Samples.push_back(vec);
+	}
+	samples = Samples;
 }
 
 Ptr<ml::KNearest> train(const std::vector<cv::Mat>& images,
