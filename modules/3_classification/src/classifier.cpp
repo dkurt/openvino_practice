@@ -11,11 +11,31 @@ using namespace cv::utils::fs;
 void topK(const std::vector<float>& src, unsigned k,
           std::vector<float>& dst,
           std::vector<unsigned>& indices) {
-    CV_Error(Error::StsNotImplemented, "topK");
+    std::vector<std::pair<float, unsigned>> pairtop(src.size());
+    for (int i = 0; i < src.size(); i++){
+        pairtop[i]=std::make_pair(src[i], i);
+    }
+    std::sort(pairtop.begin(), pairtop.end(), std::greater<std::pair<float,unsigned>>());
+    dst = std::vector<float>(k);
+    indices = std::vector<unsigned>(k);
+    for (int i = 0; i < k; i++){
+        dst[i] = pairtop[i].first;
+        indices[i] = pairtop[i].second;
+    }
 }
 
 void softmax(std::vector<float>& values) {
-    CV_Error(Error::StsNotImplemented, "softmax");
+    float buf = 0.0f;
+    float max = *std::max_element(values.begin(),values.end());
+    for (int i = 0; i < values.size(); i++) {
+        values[i] -= max;
+    }
+    for (int i = 0; i < values.size(); i++){
+        buf += std::exp(values[i]);
+    }
+    for (int i = 0; i < values.size(); i++) {
+        values[i] = std::exp(values[i]) / buf;
+    }
 }
 
 Blob::Ptr wrapMatToBlob(const Mat& m) {
@@ -60,4 +80,13 @@ void Classifier::classify(const cv::Mat& image, int k, std::vector<float>& proba
 
     // Copy output. "prob" is a name of output from .xml file
     float* output = req.GetBlob(outputName)->buffer();
+    int n = req.GetBlob(outputName)->size();
+    std::vector<float> buf(n);
+    for (int i = 0; i < n; i++) {
+        buf[i] = output[i];
+    }
+    probabilities = std::vector<float>(k);
+    indices = std::vector<unsigned>(k);
+    topK(buf, k, probabilities, indices);
+    softmax(probabilities);
 }
