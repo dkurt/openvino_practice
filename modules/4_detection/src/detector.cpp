@@ -34,7 +34,7 @@ Blob::Ptr wrapMatToBlob(const Mat& m) {
     return make_shared_blob<uint8_t>(TensorDesc(Precision::U8, dims, Layout::NHWC),
         m.data);
 }
-  
+
 
 void Detector::detect(const cv::Mat& image,
                       float nmsThreshold,
@@ -56,16 +56,12 @@ void Detector::detect(const cv::Mat& image,
 
     int xmin, ymin, xmax, ymax;
 
-    std::vector<Rect> boxesCopy;
-    std::vector<float> probabilitiesCopy;
-    std::vector<unsigned> classesCopy;
-
     for (int i = 0; i < detectedRects; i++)
     {
         int tempRectIndex = i * 7;
         float probability = output[tempRectIndex + 2];
 
-        if (probability >= probThreshold)
+        if (probability > probThreshold)
         {
             int height = image.rows;
             int width = image.cols;
@@ -75,25 +71,17 @@ void Detector::detect(const cv::Mat& image,
             xmax = output[tempRectIndex + 5] * width;
             ymax = output[tempRectIndex + 6] * height;
 
-            Rect approvedRect(xmin, ymin, int(xmax - xmin + 1), int(ymax - ymin + 1));
-            boxesCopy.push_back(approvedRect);
+            Rect approvedRect(xmin, ymin, xmax - xmin + 1, ymax - ymin + 1);
+            boxes.push_back(approvedRect);
 
             unsigned classIndex = output[tempRectIndex + 1];
-            classesCopy.push_back(classIndex);
+            classes.push_back(classIndex);
 
-            probabilitiesCopy.push_back(probability);
+            probabilities.push_back(probability);
         }
     }
 
-    std::vector<unsigned> indices;
-    nms(boxesCopy, probabilitiesCopy, nmsThreshold, indices);
-    
-    for (auto indice: indices) 
-    {
-        boxes.push_back(boxesCopy[indice]);
-        classes.push_back(classesCopy[indice]);
-        probabilities.push_back(probabilitiesCopy[indice]);
-    }
+    nms(boxes, probabilities, nmsThreshold, classes);
 }
 
 
@@ -139,5 +127,5 @@ void nms(const std::vector<cv::Rect>& boxes, const std::vector<float>& probabili
 float iou(const cv::Rect& a, const cv::Rect& b) {
     float intersectionRects = (a & b).area();
     float unionRects = a.area() + b.area();
-    return float(intersectionRects) / float(unionRects - intersectionRects);
+    return intersectionRects / (unionRects - intersectionRects);
 }
