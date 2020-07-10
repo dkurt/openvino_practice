@@ -72,7 +72,7 @@ TEST(detection, faces) {
     model.detect(img, nmsThreshold, probThreshold, boxes, probs, classes);
 
     // Replace #if 0 to #if 1 for debug visualization.
-#if 0
+#if 1
     for (int i = 0; i < boxes.size(); ++i) {
         rectangle(img, boxes[i], Scalar(0, 0, 255));
         rectangle(img, refBoxes[i], Scalar(0, 255, 0));
