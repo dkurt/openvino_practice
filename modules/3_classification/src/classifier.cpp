@@ -18,15 +18,12 @@ void topK(const std::vector<float>& src, unsigned k,
     }
 
     std::map<float, int>::iterator iter = valueIdx.end();
-    --iter;
+
     while (k > 0) {
-        
+        --k; --iter;
         indices.push_back(iter->second);
         dst.push_back(iter->first);
-        --k; --iter;
     }
-
-    //CV_Error(Error::StsNotImplemented, "topK");
 }
 
 void softmax(std::vector<float>& values) {
