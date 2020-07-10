@@ -81,7 +81,6 @@ void Detector::detect(const cv::Mat& image,
 		probabilities[i] = _probabilities[ind[i]];
 		classes[i] = _classes[ind[i]];
 	}
-
 }
 
 
