@@ -63,7 +63,7 @@ void prepareSamples(const std::vector<cv::Mat>& images, cv::Mat& samples) {
     for (int i = 0; i < images.size(); ++i) {
         for (int j = 0; j < images[0].rows; ++j) {
             for (int k = 0; k < images[0].cols; ++k) {
-                samples.at<double>(i, j * images[0].cols + k) = (double)images[i].at<uint8_t>(j, k);
+                samples.at<float>(i, j * images[0].cols + k) = (float)images[i].at<uint8_t>(j, k);
             }
         }
     }
