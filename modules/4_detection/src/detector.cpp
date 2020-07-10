@@ -28,9 +28,43 @@ void Detector::detect(const cv::Mat& image,
 
 void nms(const std::vector<cv::Rect>& boxes, const std::vector<float>& probabilities,
          float threshold, std::vector<unsigned>& indices) {
-    CV_Error(Error::StsNotImplemented, "nms");
+    std::vector<Rect> boxesTmp = boxes;
+    std::vector<float> probTmp = probabilities;
+    std::vector<Rect> acceptBoxes;
+
+    while (boxesTmp.size() > 0)
+    {
+        float tempprob = *std::max_element(probTmp.begin(), probTmp.end());
+        auto iterMax = std::find(probTmp.begin(), probTmp.end(), tempprob);
+        int iterMaxint = iterMax - probTmp.begin();
+
+        Rect currentRect = boxesTmp[iterMaxint];
+
+        boxesTmp.erase(boxesTmp.begin() + iterMaxint);
+        probTmp.erase(probTmp.begin() + iterMaxint);
+
+        acceptBoxes.push_back(currentRect);
+
+        for (int i = 0; i < boxesTmp.size(); i++)
+        {
+
+            if (iou(currentRect, boxesTmp[i]) > threshold)
+            {
+                boxesTmp.erase(boxesTmp.begin() + i);
+                probTmp.erase(probTmp.begin() + i);
+            }
+        }
+    }
+
+    for (int i = 0; i < acceptBoxes.size(); i++)
+    {
+        Rect tempRect = acceptBoxes[i];
+        auto iterMax = std::find(boxes.begin(), boxes.end(), tempRect);
+        int iterMaxint = iterMax - boxes.begin();
+        indices.push_back(iterMaxint);
+    }
 }
 
 float iou(const cv::Rect& a, const cv::Rect& b) {
-    CV_Error(Error::StsNotImplemented, "iou");
+    return (float)(a & b).area() / (float)(a.area() + b.area() - (a & b).area());
 }
