@@ -13,7 +13,28 @@ Detector::Detector() {
     // Load deep learning network into memory
     auto net = ie.ReadNetwork(utils::fs::join(DATA_FOLDER, "face-detection-0104.xml"),
                               utils::fs::join(DATA_FOLDER, "face-detection-0104.bin"));
+
+    InputInfo::Ptr inputInfo = net.getInputsInfo()["data"];
+    inputInfo->getPreProcess().setResizeAlgorithm(ResizeAlgorithm::RESIZE_BILINEAR);
+    inputInfo->setLayout(Layout::NHWC);
+    inputInfo->setPrecision(Precision::U8);
+    outputName = net.getOutputsInfo().begin()->first;
+
+    // Initialize runnable object on CPU device
+    ExecutableNetwork execNet = ie.LoadNetwork(net, "CPU");
+
+    // Create a single processing thread
+    req = execNet.CreateInferRequest();
 }
+
+
+Blob::Ptr wrapMatToBlob(const Mat& m) {
+    CV_Assert(m.depth() == CV_8U);
+    std::vector<size_t> dims = { 1, (size_t)m.channels(), (size_t)m.rows, (size_t)m.cols };
+    return make_shared_blob<uint8_t>(TensorDesc(Precision::U8, dims, Layout::NHWC),
+        m.data);
+}
+
 
 void Detector::detect(const cv::Mat& image,
                       float nmsThreshold,
@@ -21,7 +42,15 @@ void Detector::detect(const cv::Mat& image,
                       std::vector<cv::Rect>& boxes,
                       std::vector<float>& probabilities,
                       std::vector<unsigned>& classes) {
-    CV_Error(Error::StsNotImplemented, "detect");
+    // Create 4D blob from BGR image
+    Blob::Ptr input = wrapMatToBlob(image);
+
+    req.SetBlob("image", input);
+
+    // Launch network
+    req.Infer();
+
+    float* output = req.GetBlob(outputName)->buffer();
 }
 
 
