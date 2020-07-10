@@ -43,9 +43,7 @@ void Detector::detect(const cv::Mat& image,
                       std::vector<float>& probabilities,
                       std::vector<unsigned>& classes) {
     // Create 4D blob from BGR image
-    Mat resized;
-    cv::resize(image, resized, Size(448, 448));
-    Blob::Ptr input = wrapMatToBlob(resized);
+    Blob::Ptr input = wrapMatToBlob(image);
 
     req.SetBlob("image", input);
 
