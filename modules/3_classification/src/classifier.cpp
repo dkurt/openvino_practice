@@ -23,7 +23,6 @@ void topK(const std::vector<float>& src, unsigned k,
         
         indices.push_back(iter->second);
         dst.push_back(iter->first);
-        std::cout << iter->first << ' ' << iter->second << std::endl;
         --k; --iter;
     }
 
@@ -32,15 +31,16 @@ void topK(const std::vector<float>& src, unsigned k,
 
 void softmax(std::vector<float>& values) {
 
-    float _result = 0;
-    for (auto element : values) {
-        _result += exp(element);
+    long float _result = 0;
+    std::vector<float>::iterator max_value = std::max_element(values.begin(), values.end());
+
+    for (int i = 0; i < values.size();++i) {
+        values[i] -= *max_value;
+        _result += exp(values[i]);
     }
-    std::cout << _result;
-    int i = 0;
+
     for (int i = 0; i < values.size(); ++i) {
-        values[i] = exp(values[i]) / _result;
-        std::cout << values[i] << std::endl;
+        values[i] = cv::exp(values[i]) / _result;
     }
 }
 
