@@ -27,12 +27,15 @@ void topK(const std::vector<float>& src, unsigned k,
 }
 
 void softmax(std::vector<float>& values) {
-    float sum(0.0), degree (40.0);
+    float sum(0.0), maxValue(values.at(0));
     for (int i = 0; i < values.size(); i++)
-        sum += exp(values[i] - degree);
+        if (values[i] > maxValue) maxValue = values[i];
 
     for (int i = 0; i < values.size(); i++)
-        values[i] = exp(values[i] - degree) / sum;
+        sum += exp(values[i] - maxValue);
+
+    for (int i = 0; i < values.size(); i++)
+        values[i] = exp(values[i] - maxValue) / sum;
 }
 
 Blob::Ptr wrapMatToBlob(const Mat& m) {
