@@ -51,6 +51,41 @@ void Detector::detect(const cv::Mat& image,
     req.Infer();
 
     float* output = req.GetBlob(outputName)->buffer();
+
+    float probability, imageIndex = 0;
+    unsigned classIndex = 0;
+
+    int height = image.rows;
+    int width = image.cols;
+
+    int detectedRects = req.GetBlob(outputName)->size() / 7;
+
+    for (int i = 0; i < detectedRects; i++)
+    {
+        int tempRectIndex = i * 7;
+
+        imageIndex = output[tempRectIndex];
+        classIndex = output[tempRectIndex + 1];
+        probability = output[tempRectIndex + 2];
+
+        if (probability > probThreshold)
+        {
+            classes.push_back(classIndex);
+            probabilities.push_back(probability);
+
+            int xmin, ymin, xmax, ymax;
+
+            xmin = output[tempRectIndex + 3] * width;
+            ymin = output[tempRectIndex + 4] * height;
+            xmax = output[tempRectIndex + 5] * width;
+            ymax = output[tempRectIndex + 6] * height;
+
+            Rect approvedRect(xmin, ymin, int(xmax - xmin) + 1, int(ymax - ymin) + 1);
+            boxes.push_back(approvedRect);
+        }
+    }
+
+    nms(boxes, probabilities, nmsThreshold, classes);
 }
 
 
