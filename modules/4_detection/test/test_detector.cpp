@@ -91,7 +91,6 @@ TEST(detection, faces) {
     for (i = 0; i < boxes.size(); ++i) {
         if (probs[i] < probThreshold)
             break;
-
         ASSERT_EQ(classes[i], 1);
         ASSERT_NEAR(probs[i], refProbs[i], 1e-5f);
         ASSERT_EQ(boxes[i], refBoxes[i]);

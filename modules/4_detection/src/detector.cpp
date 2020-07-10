@@ -14,7 +14,7 @@ Detector::Detector() {
     auto net = ie.ReadNetwork(utils::fs::join(DATA_FOLDER, "face-detection-0104.xml"),
                               utils::fs::join(DATA_FOLDER, "face-detection-0104.bin"));
 
-    InputInfo::Ptr inputInfo = net.getInputsInfo()["data"];
+    InputInfo::Ptr inputInfo = net.getInputsInfo()["image"];
     inputInfo->getPreProcess().setResizeAlgorithm(ResizeAlgorithm::RESIZE_BILINEAR);
     inputInfo->setLayout(Layout::NHWC);
     inputInfo->setPrecision(Precision::U8);
@@ -52,36 +52,32 @@ void Detector::detect(const cv::Mat& image,
 
     float* output = req.GetBlob(outputName)->buffer();
 
-    float probability, imageIndex = 0;
-    unsigned classIndex = 0;
-
-    int height = image.rows;
-    int width = image.cols;
-
     int detectedRects = req.GetBlob(outputName)->size() / 7;
+
+    int xmin, ymin, xmax, ymax;
 
     for (int i = 0; i < detectedRects; i++)
     {
         int tempRectIndex = i * 7;
-
-        imageIndex = output[tempRectIndex];
-        classIndex = output[tempRectIndex + 1];
-        probability = output[tempRectIndex + 2];
+        float probability = output[tempRectIndex + 2];
 
         if (probability > probThreshold)
         {
-            classes.push_back(classIndex);
-            probabilities.push_back(probability);
-
-            int xmin, ymin, xmax, ymax;
+            int height = image.rows;
+            int width = image.cols;
 
             xmin = output[tempRectIndex + 3] * width;
             ymin = output[tempRectIndex + 4] * height;
             xmax = output[tempRectIndex + 5] * width;
             ymax = output[tempRectIndex + 6] * height;
 
-            Rect approvedRect(xmin, ymin, int(xmax - xmin) + 1, int(ymax - ymin) + 1);
+            Rect approvedRect(xmin, ymin, xmax - xmin, ymax - ymin);
             boxes.push_back(approvedRect);
+
+            unsigned classIndex = output[tempRectIndex + 1];
+            classes.push_back(classIndex);
+
+            probabilities.push_back(probability);
         }
     }
 
