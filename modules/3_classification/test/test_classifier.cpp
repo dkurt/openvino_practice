@@ -67,7 +67,7 @@ TEST(classification, SoftMaxLarge) {
 // In this test run image classification network and get top 5 classes with the
 // highest probabilities. Use implemented topK and SoftMax methods to pass tests
 TEST(classification, DenseNet) {
-    Mat image = imread(join(DATA_FOLDER, "tram.jpg"));
+    Mat image = imread(join(DATA_FOLDER, "carusel3.jpg"));
     std::vector<float> top5_scores;
     std::vector<unsigned> top5_classes;
 
