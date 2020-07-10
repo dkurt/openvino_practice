@@ -20,6 +20,7 @@ void topK(const std::vector<float>& src, unsigned k,
         auto foundEllement = std::find(src.begin(), src.end(), sorted[i]);
         int indexEllement = std::distance(src.begin(), foundEllement);
         indices.push_back(indexEllement);
+
     }
 }
 
