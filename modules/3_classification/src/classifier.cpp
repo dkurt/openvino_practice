@@ -12,17 +12,18 @@ void topK(const std::vector<float>& src, unsigned k,
     std::vector<float>& dst,
     std::vector<unsigned>& indices) {
 
-    std::map<float, int> valueIdx;
+    std::map<float, unsigned> valueIdx;
     for (int i = 0; i < src.size(); ++i) {
         valueIdx.insert(std::make_pair(src[i], i));
     }
 
-    std::map<float, int>::iterator iter = valueIdx.end();
+    auto iter = valueIdx.cend();
     for (int i = 0; i < k; ++i) {
         --iter;
         indices.push_back(iter->second);
         dst.push_back(iter->first);
     }
+
 }
 
 void softmax(std::vector<float>& values) {
@@ -31,8 +32,9 @@ void softmax(std::vector<float>& values) {
 
     auto maxValue = std::max_element(values.begin(), values.end());
 
+    float temp = *maxValue;
     for (int i = 0; i < values.size(); ++i) {
-        values[i] -= *maxValue;
+        values[i] -= temp;
         denominator += exp(values[i]);
     }
 
@@ -88,6 +90,7 @@ void Classifier::classify(const cv::Mat& image, int k, std::vector<float>& proba
     std::vector<float> src(size);
     for (int i = 0; i < size; ++i) {
         src[i] = output[i];
+
     }
     topK(src, k, probabilities, indices);
     softmax(probabilities);
