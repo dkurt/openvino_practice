@@ -39,6 +39,7 @@ void softmax(std::vector<float>& values) {
     for (int i = 0; i < values.size(); ++i) {
         values[i] = cv::exp(values[i]) / denominator;
     }
+
 }
 
 Blob::Ptr wrapMatToBlob(const Mat& m) {
