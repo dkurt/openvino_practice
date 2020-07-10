@@ -43,7 +43,9 @@ void Detector::detect(const cv::Mat& image,
                       std::vector<float>& probabilities,
                       std::vector<unsigned>& classes) {
     // Create 4D blob from BGR image
-    Blob::Ptr input = wrapMatToBlob(image);
+    Mat resized;
+    cv::resize(image, resized, Size(448, 448));
+    Blob::Ptr input = wrapMatToBlob(resized);
 
     req.SetBlob("image", input);
 
@@ -71,7 +73,7 @@ void Detector::detect(const cv::Mat& image,
             xmax = output[tempRectIndex + 5] * width;
             ymax = output[tempRectIndex + 6] * height;
 
-            Rect approvedRect(xmin, ymin, xmax - xmin, ymax - ymin);
+            Rect approvedRect(xmin, ymin, xmax - xmin + 1, ymax - ymin + 1);
             boxes.push_back(approvedRect);
 
             unsigned classIndex = output[tempRectIndex + 1];

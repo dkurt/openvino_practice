@@ -94,7 +94,7 @@ TEST(detection, faces) {
 
         ASSERT_EQ(classes[i], 1);
         ASSERT_NEAR(probs[i], refProbs[i], 1e-5f);
-        ASSERT_GE(iou(boxes[i], refBoxes[i]), 0.9);
+        ASSERT_EQ(boxes[i], refBoxes[i]);
     }
     ASSERT_EQ(i, boxes.size());
 }
