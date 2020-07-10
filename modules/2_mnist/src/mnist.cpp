@@ -6,7 +6,6 @@ using namespace cv;
 inline int readInt(std::ifstream& ifs) {
     int val;
     ifs.read((char*)&val, 4);
-    // Integers in file are high endian which requires swap
     std::swap(((char*)&val)[0], ((char*)&val)[3]);
     std::swap(((char*)&val)[1], ((char*)&val)[2]);
     return val;
@@ -63,7 +62,6 @@ void prepareSamples(const std::vector<cv::Mat>& images, cv::Mat& samples) {
             }
         }
     }
-    //CV_Error(Error::StsNotImplemented, "prepareSamples");
 }
 
 Ptr<ml::KNearest> train(const std::vector<cv::Mat>& images, const std::vector<int>& labels) {
