@@ -20,6 +20,9 @@ void loadImages(const std::string& filepath,
     CV_CheckEQ(magicNum, 2051, "");
 
     int numImages = readInt(ifs);
+
+    // at http://yann.lecun.com/exdb/mnist/
+
     int x = readInt(ifs);
     int y = readInt(ifs);
 
@@ -45,6 +48,8 @@ void loadLabels(const std::string& filepath,
     CV_CheckEQ(magicNum, 2049, "");
 
     int numLabels = readInt(ifs);
+
+    // at http://yann.lecun.com/exdb/mnist/
 
     for (int i = 0; i < numLabels; ++i) {
         uchar value;
