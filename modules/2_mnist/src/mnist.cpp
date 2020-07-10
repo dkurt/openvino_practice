@@ -70,7 +70,7 @@ Ptr<ml::KNearest> train(const std::vector<cv::Mat>& images, const std::vector<in
     prepareSamples(images, temp);
     newModel->train(temp, ml::ROW_SAMPLE, labels);
     return newModel;
-    CV_Error(Error::StsNotImplemented, "validate");
+    CV_Error(Error::StsNotImplemented, "train");
 }
 
 float validate(Ptr<ml::KNearest> model, const std::vector<cv::Mat>& images, const std::vector<int>& labels) {
