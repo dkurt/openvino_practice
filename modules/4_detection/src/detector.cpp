@@ -77,9 +77,9 @@ void Detector::detect(const cv::Mat& image,
 	nms(_boxes, _probabilities, nmsThreshold, ind);
 	for (int i = 0; i < ind.size(); i++)
 	{
-		boxes[i] = _boxes[ind[i]];
-		probabilities[i] = _probabilities[ind[i]];
-		classes[i] = _classes[ind[i]];
+		boxes.push_back(_boxes[ind[i]]);
+		probabilities.push_back(_probabilities[ind[i]]);
+		classes.push_back(_classes[ind[i]]);
 	}
 }
 
@@ -88,10 +88,11 @@ void nms(const std::vector<cv::Rect>& boxes, const std::vector<float>& probabili
          float threshold, std::vector<unsigned>& indices) {
 	std::vector<cv::Rect> _boxes = boxes;
 	std::vector<float> _probabilities = probabilities;
+	std::vector<Rect> passed_box;
 	while (_boxes.size() != 0)
 	{
-		float max_prob = 0;
-		int index_of_max_prob = 0;
+		float max_prob = 0.0;
+		unsigned index_of_max_prob = 0;
 		for (int i = 0; i < _probabilities.size(); i++)
 			if (_probabilities[i] > max_prob)
 			{
@@ -101,7 +102,7 @@ void nms(const std::vector<cv::Rect>& boxes, const std::vector<float>& probabili
 		cv::Rect max_box = _boxes[index_of_max_prob];
 		_boxes.erase(_boxes.begin() + index_of_max_prob);
 		_probabilities.erase(_probabilities.begin() + index_of_max_prob);
-		indices.push_back(index_of_max_prob);
+		passed_box.push_back(max_box);
 		for (int i = 0; i < _boxes.size(); i++)
 			if (iou(_boxes[i], max_box) > threshold)
 			{
@@ -109,11 +110,19 @@ void nms(const std::vector<cv::Rect>& boxes, const std::vector<float>& probabili
 				_probabilities.erase(_probabilities.begin() + i);
 			}
 	}
+	for (int i = 0; i < passed_box.size(); i++)
+	{
+		Rect search;
+		search = passed_box[i];
+		auto _ind = std::find(boxes.begin(), boxes.end(), search);
+		int ind = std::distance(boxes.begin(), _ind);
+		indices.push_back(ind);
+	}
 }
 
 float iou(const cv::Rect& a, const cv::Rect& b) {
-	float in = (a&b).area();
-	float un = a.area() + b.area() - (a&b).area();
+	float in = (float)((a&b).area());
+	float un = (float)(a.area() + b.area() - (a&b).area());
 	float ratio = in / un;
 	return ratio;
 }
