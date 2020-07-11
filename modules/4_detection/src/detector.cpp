@@ -61,17 +61,18 @@ void Detector::detect(const cv::Mat& image,
     nms(boxes, probabilities, nmsThreshold, indices);
     size = boxes.size();
 
-    int j, k = 0;
+    int k = 0;
+    int j = 0;    
     int dist;
     for (int i = 0; i < size; ++i) {
-        if (indices[k] != i) {
+        if (indices[k] == i) {
+            k++;
+        } else {
             dist = i - j;
             boxes.erase(boxes.begin() + dist);
             probabilities.erase(probabilities.begin() + dist);
             classes.erase(classes.begin() + dist);
             j++;
-        } else {
-            k++;
         }
     }
  }
@@ -95,13 +96,14 @@ void nms(const std::vector<cv::Rect>& boxes, const std::vector<float>& probabili
                 }
             }
         }
-    } 
-
-    std::sort(spec.begin(), spec.end(), [](const std::pair<int,float>& F, const std::pair<int,float>& S){
+        std::sort(spec.begin(), spec.end(), [](const std::pair<int,float>& F, const std::pair<int,float>& S){
             if(S.second < F.second)
                 return true;
             return false; 
             });
+
+    } 
+
     for (int i = 0; i < boxes.size(); ++i){
         if(spec[i].first != -1)
             indices.push_back(spec[i].first);
