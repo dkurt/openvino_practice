@@ -47,8 +47,7 @@ void softmax(std::vector<float>& values) {
 Blob::Ptr wrapMatToBlob(const Mat& m) {
     CV_Assert(m.depth() == CV_8U);
     std::vector<size_t> dims = {1, (size_t)m.channels(), (size_t)m.rows, (size_t)m.cols};
-    return make_shared_blob<uint8_t>(TensorDesc(Precision::U8, dims, Layout::NHWC),
-        m.data);
+    return make_shared_blob<uint8_t>(TensorDesc(Precision::U8, dims, Layout::NHWC), m.data);
 }
 
 Classifier::Classifier() {
