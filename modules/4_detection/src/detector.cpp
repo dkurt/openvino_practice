@@ -55,28 +55,30 @@ void Detector::detect(const cv::Mat& image,
 
     // Copy output. "prob" is a name of output from .xml file
     float* output = req.GetBlob(outputName)->buffer();
-    
-    int xmin, xmax, ymin, ymax;
-    int numRect = req.GetBlob(outputName)->size() / 7;
-    for (int i = 0; i < numRect; i++)
-    {
-        int ind = i * 7;
-        float prob = output[ind + 2];
-        if (prob > probThreshold)
-        {
-            probabilities.push_back(prob);
-            unsigned cl_ind = output[ind + 1];
-            classes.push_back(cl_ind);
-            xmin = output[ind + 3] * image.cols;
-            ymin = output[ind + 4] * image.rows;
-            xmax = output[ind + 5] * image.cols;
-            ymax = output[ind + 6] * image.rows;
-            Rect r(xmin, ymin, xmax - xmin+1, ymax - ymin+1);
-            boxes.push_back(r);
-        }
+    size_t numRect = req.GetBlob(outputName)->size();
+    std::vector<cv::Rect> boxesVec;
+    std::vector<float> probsVec;
+    std::vector<unsigned> classVec;
 
+    for (int i = 0; i < numRect / 7; i++) {
+        if (output[i * 7 + 2] > probThreshold) {
+            int xmin = output[i * 7 + 3] * image.cols;
+            int ymin = output[i * 7 + 4] * image.rows;
+            int xmax = output[i * 7 + 5] * image.cols;
+            int ymax = output[i * 7 + 6] * image.rows;
+            boxesVec.push_back(Rect(xmin, ymin, xmax - xmin + 1, ymax - ymin + 1));
+            probsVec.push_back(output[i * 7 + 2]);
+            classVec.push_back(output[i * 7 + 1]);
+        }
     }
-    nms(boxes, probabilities, nmsThreshold, classes);
+
+    std::vector<unsigned> ind;
+    nms(boxesVec, probsVec, nmsThreshold, ind);
+    for (auto i : ind) {
+        boxes.push_back(boxesVec.at(i));
+        probabilities.push_back(probsVec.at(i));
+        classes.push_back(classVec.at(i));
+    }
 }
 
 
@@ -85,16 +87,19 @@ void nms(const std::vector<cv::Rect>& boxes, const std::vector<float>& probabili
 
     std::vector<cv::Rect> boxesVec = boxes;
     std::vector<float> probsVec = probabilities;
+    std::vector<cv::Rect> newBoxesVec;
     while (boxesVec.size())
     {
         float maxProb = *std::max_element(probsVec.begin(), probsVec.end());
-        int indexMaxProb = std::find(probsVec.begin(), probsVec.end(), maxProb) - probsVec.begin();
-        
+        auto iterMaxProb = std::find(probsVec.begin(), probsVec.end(), maxProb);
+        int indexMaxProb = std::distance(probsVec.begin(), iterMaxProb);
+
         cv::Rect maxBox = boxesVec.at(indexMaxProb);
         boxesVec.erase(boxesVec.begin() + indexMaxProb);
         probsVec.erase(probsVec.begin() + indexMaxProb);
-        indices.push_back(indexMaxProb);
-        
+
+        newBoxesVec.push_back(maxBox);
+
         for (int i(0); i < boxesVec.size(); i++) {
             if (iou(boxesVec.at(i), maxBox) > threshold)
             {
@@ -103,6 +108,13 @@ void nms(const std::vector<cv::Rect>& boxes, const std::vector<float>& probabili
             }
         }
     }
+
+    for (auto i : newBoxesVec) {
+        Rect tempRect = i;
+        auto tempIter = std::find(boxes.begin(), boxes.end(), tempRect);
+        int tempIndex = std::distance(boxes.begin(), tempIter);
+        indices.push_back(tempIndex);
+    }    
 }
 
 float iou(const cv::Rect& a, const cv::Rect& b) {
