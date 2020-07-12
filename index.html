@@ -59,35 +59,47 @@
       });
     }
 
-    // Get a list of all pull requests
-    $.ajax({
-      url: prefix + "/pulls?per_page=1000&sort=created",
-      dataType: 'json'
-    }).done(function(res) {
-      res.forEach(function(entry) {
-        var userId = entry.user.login;
-        if (!users.has(userId)) {
-          users.set(userId, new Map());
-        }
+    var pageId = 1;
 
-        // Check for labels. Might be just module label or module label + approve
-        var moduleNames = [];
-        var isAccepted = false;
-        entry.labels.forEach(function(label) {
-          var matches = label.name.match(/module: (.*)/);
-          if (matches) {
-            moduleNames.push(matches[1]);
+    // Get a list of all pull requests
+    function fetchPullRequests() {
+      $.ajax({
+        // Maximum number of pull requests per page is 100
+        url: prefix + "/pulls?per_page=100&sort=created&page=" + pageId,
+        dataType: 'json'
+      }).done(function(res) {
+        res.forEach(function(entry) {
+          var userId = entry.user.login;
+          if (!users.has(userId)) {
+            users.set(userId, new Map());
           }
-          if (label.name.localeCompare("accepted") == 0) {
-            isAccepted = true;
-          }
+
+          // Check for labels. Might be just module label or module label + approve
+          var moduleNames = [];
+          var isAccepted = false;
+          entry.labels.forEach(function(label) {
+            var matches = label.name.match(/module: (.*)/);
+            if (matches) {
+              moduleNames.push(matches[1]);
+            }
+            if (label.name.localeCompare("accepted") == 0) {
+              isAccepted = true;
+            }
+          });
+          moduleNames.forEach(function(moduleName) {
+            users.get(userId).set(moduleName, [entry.html_url, isAccepted]);
+          });
         });
-        moduleNames.forEach(function(moduleName) {
-          users.get(userId).set(moduleName, [entry.html_url, isAccepted]);
-        });
+        if (res.length == 100) {
+          pageId += 1;
+          fetchPullRequests();
+        } else {
+          renderTable();
+        }
       });
-      renderTable();
-    });
+    }
+
+    fetchPullRequests();
 
   </script>
 </head>
