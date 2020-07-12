@@ -13,8 +13,17 @@ Detector::Detector() {
     // Load deep learning network into memory
     auto net = ie.ReadNetwork(utils::fs::join(DATA_FOLDER, "face-detection-0104.xml"),
                               utils::fs::join(DATA_FOLDER, "face-detection-0104.bin"));
-}
+    InputInfo::Ptr input_info = net.getInputsInfo().begin()->second;
+    std::string input_name = net.getInputsInfo().begin()->first;
+    
+    input_info->getPreProcess().setResizeAlgorithm(RESIZE_BILINEAR);
+    input_info->setLayout(Layout::NHWC);
+    input_info->setPrecision(Precision::U8);
 
+    ExecutableNetwork execNet = ie.LoadNetwork(net, "CPU");
+
+
+}
 
 void Detector::detect(const cv::Mat& image,
                       float nmsThreshold,
@@ -22,7 +31,10 @@ void Detector::detect(const cv::Mat& image,
                       std::vector<cv::Rect>& boxes,
                       std::vector<float>& probabilities,
                       std::vector<unsigned>& classes) {
-    CV_Error(Error::StsNotImplemented, "detect");
+
+
+
+    //CV_Error(Error::StsNotImplemented, "detect");
 }
 
 
