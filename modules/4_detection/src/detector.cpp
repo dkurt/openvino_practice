@@ -28,20 +28,31 @@ void Detector::detect(const cv::Mat& image,
 
 void nms(const std::vector<cv::Rect>& boxes, const std::vector<float>& probabilities,
          float threshold, std::vector<unsigned>& indices) {
+
     std::map<float, int> probIdx;
     for (int i = 0; i < probabilities.size(); ++i){
-        if (probabilities[i] >= threshold) {
-            probIdx.insert(std::make_pair(probabilities[i], i));
-        }
-    }
-    indices.resize(probIdx.size());
-    auto iter = probIdx.end();
-    for (size_t i = 0; i < probIdx.size(); ++i){
-        --iter;
-        indices[i] = iter->second;
+        probIdx.insert(std::make_pair(probabilities[i], i));  
     }
 
-    CV_Error(Error::StsNotImplemented, "nms");
+    indices.resize(0);
+    auto first_iter = probIdx.end();
+
+    for (size_t i = 0; i < probIdx.size(); ++i){
+
+        --first_iter;
+        indices.push_back(first_iter->second);
+        auto temp_iter = first_iter;                                
+
+        for (size_t j = 0; j < probIdx.size() - i; ++j){
+
+            --temp_iter;
+            float iou_result = iou(boxes[first_iter->second], boxes[temp_iter->second]);
+
+            if (iou_result > threshold) {
+                probIdx.erase(temp_iter);
+            }
+        }
+    }
 }
 
 float iou(const cv::Rect& a, const cv::Rect& b) {
