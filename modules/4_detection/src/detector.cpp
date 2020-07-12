@@ -64,6 +64,7 @@ void Detector::detect(const cv::Mat& image,
     int Size = boxes.size();
     int k = 0,j=0;
     for (int i = 0; i < Size; i++) {
+       
         if (indices[k] == i) {
             k++;
         }
@@ -74,6 +75,14 @@ void Detector::detect(const cv::Mat& image,
             j++;
         }
     }
+    /*cv::Mat img_copy = image.clone();
+    Size = boxes.size();
+    for (int i = 0; i < Size; i++) {
+        cv::rectangle(img_copy, boxes[i], cv::Scalar(255, 0, 0), 2);
+        cv::putText(img_copy, cv::String(std::to_string(probabilities[i])), cv::Point(boxes[i].x, boxes[i].y), 5, 0.5, cv::Scalar(0, 0, 255), 0.5, 8, false);
+    }
+    imshow("image_result", img_copy);
+    waitKey();*/
 }
 
 
