@@ -11,11 +11,38 @@ using namespace cv::utils::fs;
 void topK(const std::vector<float>& src, unsigned k,
           std::vector<float>& dst,
           std::vector<unsigned>& indices) {
-    CV_Error(Error::StsNotImplemented, "topK");
+
+    std::vector<std::pair<int, float*>> srcIndexed;
+
+    for (int index = 0; index < src.size(); index++) {
+        srcIndexed.push_back(std::pair<int, float*>(index, &const_cast<float &>(src[index])));
+    }
+
+    std::sort(
+            srcIndexed.begin(),
+            srcIndexed.end(),
+            [](std::pair<int, float*> i, std::pair<int, float*> j) -> bool { return *i.second > *j.second; }
+            );
+
+    k = srcIndexed.size() < k ? srcIndexed.size() : k;
+
+    for (int index = 0; index < k; index++) {
+        indices.push_back(srcIndexed[index].first);
+        dst.push_back(*srcIndexed[index].second);
+    }
 }
 
 void softmax(std::vector<float>& values) {
-    CV_Error(Error::StsNotImplemented, "softmax");
+    float sumOfExps = 0;
+    float maxValue = *std::max_element(values.begin(), values.end());
+
+    for (auto value: values) {
+        sumOfExps += exp(value / maxValue);
+    }
+
+    for (auto& value: values) {
+        value = exp(value / maxValue) / sumOfExps;
+    }
 }
 
 Blob::Ptr wrapMatToBlob(const Mat& m) {
@@ -41,6 +68,7 @@ Classifier::Classifier() {
     outputName = net.getOutputsInfo().begin()->first;
 
     // Initialize runnable object on CPU device
+    // Throws Exception: EXC_BAD_ACCESS (code=1, address=0x80) on my PC
     ExecutableNetwork execNet = ie.LoadNetwork(net, "CPU");
 
     // Create a single processing thread
@@ -60,4 +88,14 @@ void Classifier::classify(const cv::Mat& image, int k, std::vector<float>& proba
 
     // Copy output. "prob" is a name of output from .xml file
     float* output = req.GetBlob(outputName)->buffer();
+    int outputLength = req.GetBlob(outputName)->size();
+
+    std::vector<float> outValues;
+
+    for (int i = 0; i < outputLength; i++) {
+        outValues.push_back(output[i]);
+    }
+
+    topK(outValues, (unsigned)k, probabilities, indices);
+    softmax(probabilities);
 }
