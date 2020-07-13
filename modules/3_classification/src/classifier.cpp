@@ -56,7 +56,7 @@ void topK(const std::vector<float>& src, unsigned k,
 }
 
 void softmax(std::vector<float>& values) {
-    CV_Error(Error::StsNotImplemented, "softmax");
+    //CV_Error(Error::StsNotImplemented, "softmax");
     float sum = 0.0;
     float maxVal = *std::max_element(values.begin(), values.end());
 
