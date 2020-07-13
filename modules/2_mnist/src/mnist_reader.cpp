@@ -64,13 +64,11 @@ std::vector<cv::Mat> MnistImageReader::getAllImages() {
     ifs.seekg(GENERAL_OFFSET, std::ios::beg);
 
     for (int imageIndex = 0; imageIndex < imagesCount; imageIndex++) {
-        cv::Mat image(1, IMAGE_SQUARE, CV_8U);
+        char *pixels = (char *)malloc(sizeof(char) * IMAGE_SQUARE);
+        ifs.read(pixels, IMAGE_SQUARE);
+        cv::Mat image(cv::Mat(1, IMAGE_SQUARE, CV_8U, pixels).clone());
 
-        for (int i = 0; i < IMAGE_SQUARE; i++) {
-            char pixel;
-            ifs.read(&pixel, 1);
-            image.at<char>(0, i) = pixel;
-        }
+        free(pixels);
 
         images.push_back(image.reshape(1, imgConstraints.first));
     }

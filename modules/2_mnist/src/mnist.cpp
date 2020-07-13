@@ -2,19 +2,8 @@
 #include "mnist_reader.hpp"
 #include <fstream>
 
-using namespace cv;
-
-inline int readInt(std::ifstream& ifs) {
-    int val;
-    ifs.read((char*)&val, 4);
-    // Integers in file are high endian which requires swap
-    std::swap(((char*)&val)[0], ((char*)&val)[3]);
-    std::swap(((char*)&val)[1], ((char*)&val)[2]);
-    return val;
-}
-
 void loadImages(const std::string& filepath,
-                std::vector<Mat>& images) {
+                std::vector<cv::Mat>& images) {
     MnistImageReader imgDispatcher(filepath);
 
     printf("Images are loaded, %d\n", imgDispatcher.count());
@@ -43,20 +32,19 @@ void prepareSamples(const std::vector<cv::Mat>& images, cv::Mat& samples) {
     samples.convertTo(samples, CV_32F);
 }
 
-Ptr<ml::KNearest> train(const std::vector<cv::Mat>& images,
-                        const std::vector<int>& labels) {
-    Ptr<ml::KNearest> knn(ml::KNearest::create());
-    knn->setDefaultK(3);
+cv::Ptr<cv::ml::KNearest> train(const std::vector<cv::Mat>& images,
+        const std::vector<int>& labels) {
+    cv::Ptr<cv::ml::KNearest> knn(cv::ml::KNearest::create());
 
     cv::Mat samples;
     prepareSamples(images, samples);
 
-    knn->train(samples, ml::SampleTypes::ROW_SAMPLE, labels);
+    knn->train(samples, cv::ml::SampleTypes::ROW_SAMPLE, labels);
 
     return knn;
 }
 
-float validate(Ptr<ml::KNearest> model,
+float validate(const cv::Ptr<cv::ml::KNearest>& model,
                const std::vector<cv::Mat>& images,
                const std::vector<int>& labels) {
     int correctGuesses = 0;
@@ -74,13 +62,13 @@ float validate(Ptr<ml::KNearest> model,
     return (float)correctGuesses / images.size() * 100;
 }
 
-int predict(Ptr<ml::KNearest> model, const Mat& image) {
+int predict(const cv::Ptr<cv::ml::KNearest>& model, const cv::Mat& image) {
     cv::Mat image_hsv;
     // resize
     cv::resize(image, image_hsv, cv::Size(28, 28));
 
     // bgr to hsv
-    cv::cvtColor(image_hsv, image_hsv, COLOR_BGR2HSV);
+    cv::cvtColor(image_hsv, image_hsv, cv::COLOR_BGR2HSV);
 
     // split hsv, hsvComponents[1] holds the saturation component
     std::vector<cv::Mat> hsvComponents(3);
