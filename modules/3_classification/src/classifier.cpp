@@ -3,15 +3,56 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/utils/filesystem.hpp>
 #include <inference_engine.hpp>
-
+#include<algorithm>
 using namespace InferenceEngine;
 using namespace cv;
 using namespace cv::utils::fs;
+struct max_k
+{
+	float value;
+	int index;
+	friend bool operator<=(const max_k& l, const max_k& r)
+	{
+		return l.value <= r.value;
+	}
+	friend bool operator>=(const max_k& l, const max_k& r)
+	{
+		return l.value >= r.value;
+	}
+	friend bool operator==(const max_k& l, const max_k& r)
+	{
+		return l.value == r.value;
+	}
+	friend bool operator!=(const max_k& l, const max_k& r)
+	{
+		return !(l.value == r.value);
+	}
+	friend bool operator<(const max_k& l, const max_k& r)
+	{
+		return l.value < r.value;
+	}
+	friend bool operator >(const max_k& l, const max_k& r)
+	{
+		return l.value > r.value;
+	}
+};
 
 void topK(const std::vector<float>& src, unsigned k,
           std::vector<float>& dst,
           std::vector<unsigned>& indices) {
-    CV_Error(Error::StsNotImplemented, "topK");
+    //CV_Error(Error::StsNotImplemented, "topK");
+    std::vector<max_k> tmp;
+    for (int i = 0; i < k; i++)
+    {
+        tmp[i].value = src[i];
+        tmp[i].index = i;
+    }
+    sort(tmp.begin(), tmp.end());
+    for (int j = src.size() - 1; j > src.size() - 1 - k; --j)
+    {
+        dst.push_back(tmp[j].value);
+        indices.push_back(tmp[j].index);
+    }
 }
 
 void softmax(std::vector<float>& values) {
