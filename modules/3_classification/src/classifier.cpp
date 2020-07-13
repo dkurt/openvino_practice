@@ -40,7 +40,7 @@ struct max_k
 void topK(const std::vector<float>& src, unsigned k,
           std::vector<float>& dst,
           std::vector<unsigned>& indices) {
-    //CV_Error(Error::StsNotImplemented, "topK");
+ 
     std::vector<max_k> tmp;
     for (int i = 0; i < k; i++)
     {
@@ -57,6 +57,19 @@ void topK(const std::vector<float>& src, unsigned k,
 
 void softmax(std::vector<float>& values) {
     CV_Error(Error::StsNotImplemented, "softmax");
+    float sum = 0.0;
+    float maxVal = *std::max_element(values.begin(), values.end());
+
+    for (int i = 0; i < values.size(); i++)
+    {
+        values[i] = values[i] - maxVal;
+        sum += exp(values[i]);
+    }
+
+    for (int i = 0; i < values.size(); i++)
+    {
+        values[i] = exp(values[i]) / sum;
+    }
 }
 
 Blob::Ptr wrapMatToBlob(const Mat& m) {
@@ -101,4 +114,13 @@ void Classifier::classify(const cv::Mat& image, int k, std::vector<float>& proba
 
     // Copy output. "prob" is a name of output from .xml file
     float* output = req.GetBlob(outputName)->buffer();
+    int m = req.GetBlob(outputName)->size();
+    std::vector<float> out;
+
+    for (int i = 0; i < m; i++)
+    {
+        out.push_back(output[i]);
+    }
+    topK(out, (unsigned)k, probabilities, indices);
+    softmax(probabilities);
 }
