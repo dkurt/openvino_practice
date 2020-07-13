@@ -4,6 +4,7 @@
 #include <opencv2/core/utils/filesystem.hpp>
 #include <inference_engine.hpp>
 #include<algorithm>
+#include<iostream>
 using namespace InferenceEngine;
 using namespace cv;
 using namespace cv::utils::fs;
@@ -37,12 +38,13 @@ struct max_k
 	}
 };
 
+
 void topK(const std::vector<float>& src, unsigned k,
           std::vector<float>& dst,
           std::vector<unsigned>& indices) {
  
-    std::vector<max_k> tmp;
-    for (int i = 0; i < k; i++)
+    std::vector<max_k> tmp(src.size());
+    for (int i = 0; i < src.size(); i++)
     {
         tmp[i].value = src[i];
         tmp[i].index = i;
