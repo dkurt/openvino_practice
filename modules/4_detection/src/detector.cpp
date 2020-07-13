@@ -8,11 +8,29 @@ using namespace cv;
 using namespace InferenceEngine;
 
 Detector::Detector() {
-    Core ie;
+	Core ie;
 
-    // Load deep learning network into memory
-    auto net = ie.ReadNetwork(utils::fs::join(DATA_FOLDER, "face-detection-0104.xml"),
+	// Load deep learning network into memory
+	auto net = ie.ReadNetwork(utils::fs::join(DATA_FOLDER, "face-detection-0104.xml"),
                               utils::fs::join(DATA_FOLDER, "face-detection-0104.bin"));
+
+	InputInfo::Ptr inputInfo = net.getInputsInfo()["data"];
+
+	inputInfo->getPreProcess().setResizeAlgorithm(ResizeAlgorithm::RESIZE_BILINEAR);
+	inputInfo->setLayout(Layout::NHWC);
+	inputInfo->setPrecision(Precision::U8);
+	outputName = net.getOutputsInfo().begin()->first;
+
+	ExecutableNetwork execNet = ie.LoadNetwork(net, "CPU");
+
+	req = execNet.CreateInferRequest();
+}
+
+Blob::Ptr wrapMatToBlob(const Mat& m) {
+	CV_Assert(m.depth() == CV_8U);
+	std::vector<size_t> dims = { 1, (size_t)m.channels(), (size_t)m.rows, (size_t)m.cols };
+	return make_shared_blob<uint8_t>(TensorDesc(Precision::U8, dims, Layout::NHWC),
+		m.data);
 }
 
 
@@ -22,7 +40,22 @@ void Detector::detect(const cv::Mat& image,
                       std::vector<cv::Rect>& boxes,
                       std::vector<float>& probabilities,
                       std::vector<unsigned>& classes) {
-    CV_Error(Error::StsNotImplemented, "detect");
+	Blob::Ptr input = wrapMatToBlob(image);
+
+	req.SetBlob("data", input);
+
+	req.Infer();
+
+	float *output = req.GetBlob(outputName)->buffer();
+
+	size_t out_size = req.GetBlob(outputName)->size();
+	size_t reckt_num = out_size / 7;
+	std::vector<float> probs;
+
+	for (size_t i = 0; i < out_size; i++)
+	{
+
+	}
 }
 
 
