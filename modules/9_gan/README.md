@@ -1,6 +1,6 @@
 # Image generation with GAN
 
-This module demonstrates a simple image generation network that was trained on CIFAR-10.
+This module demonstrates a simple image generation network that was trained on CelebA.
 You will also learn how to use OpenVINO in Python.
 To complete this module you should implement:
 
@@ -8,15 +8,15 @@ To complete this module you should implement:
 2. `postprocess` procedure that applies some transformations to output of the network to get the final generated image.
 3. Generate images and add it to the pull request description.
 
-    <img src="../../data/cifar10.png" width="320">
+    <img src="../../data/celeba_samples.jpeg" width="320">
     <img src="../../data/generated_img.png" width="320">
 
 ## Details
 
 * Download converted model from here:
 
-  * [cifar_generator.xml]()
-  * [cifar_generator.bin]()
+  * [celeba_generator.xml]()
+  * [celeba_generator.bin]()
 
 * Setup OpenVINO environment
 

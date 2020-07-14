@@ -3,14 +3,14 @@ import cv2 as cv
 from openvino.inference_engine import IECore
 
 # This class runs a simple generator network that
-# produces an image from the distribution of CIFAR-10 using OpenVINO
+# produces an image from the distribution of CelebA using OpenVINO
 class Generator():
     # Constructor
     def __init__(self, xml_path, bin_path):
         print('constructor is not implemented')
         exit(1)
 
-    # Performs generation of an image from CIFAR-10 distributiuon. Returns a BGR image.
+    # Performs generation of an image from CelebA distributiuon. Returns a BGR image.
     # Here you need to request the input shape from the loaded generator net, create a
     # random input array of this shape via numpy, feed it into the generater and call postprocess to get image
     def generate(self):

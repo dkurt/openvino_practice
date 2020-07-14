@@ -7,8 +7,8 @@ from generator import Generator
 data_folder = os.path.join(os.path.dirname(__file__), '..', '..', 'data')
 
 # Create a model object
-xml_path = os.path.join(data_folder, 'cifar_generator.xml')
-bin_path = os.path.join(data_folder, 'cifar_generator.bin')
+xml_path = os.path.join(data_folder, 'celeba_generator.xml')
+bin_path = os.path.join(data_folder, 'celeba_generator.bin')
 model = Generator(xml_path, bin_path)
 
 # Run the algorithm
@@ -24,7 +24,7 @@ for i in range(grid_size * grid_size):
     all_images[img_size * row : img_size * (row + 1),
                img_size * col : img_size * (col + 1), :] = generated
 
-cv.imwrite('../../data/generated_img.png', all_images)
+cv.imwrite(os.path.join(data_folder, 'generated_img.png'), all_images)
 # Uncomment to see results
 # cv.imshow('Generated', all_images)
 # cv.waitKey()
