@@ -31,6 +31,7 @@ void softmax(std::vector<float>& values) {
         sum += exp(values[i] - max);
     for (int i = 0; i < values.size(); ++i) {
         values[i] = exp(values[i] - max) / sum;
+
     }       
 }
 
