@@ -12,7 +12,7 @@ Detector::Detector() {
     // Load deep learning network into memory
     auto net = ie.ReadNetwork(utils::fs::join(DATA_FOLDER, "face-detection-0104.xml"),
                               utils::fs::join(DATA_FOLDER, "face-detection-0104.bin"));
-    
+    // InputInfo - This class contains information about each input of the network.
     InputInfo::Ptr input_info = net.getInputsInfo()["image"];
     input_info->getPreProcess().setResizeAlgorithm(ResizeAlgorithm::RESIZE_BILINEAR);
     input_info->setLayout(Layout::NHWC);
@@ -20,7 +20,6 @@ Detector::Detector() {
     out_name = net.getOutputsInfo().begin()->first;
     ExecutableNetwork exec_net = ie.LoadNetwork(net, "CPU");
     request = exec_net.CreateInferRequest();
-
 }
 
 
@@ -34,7 +33,7 @@ void Detector::detect(const cv::Mat& image,
 
 
     std::vector<size_t> vec = { 1, (size_t)image.channels(), (size_t)image.rows, (size_t)image.cols };
-    Blob::Ptr input = make_shared_blob<size_t>(TensorDesc(Precision::U8, vec, Layout::NHWC), image.data);
+    Blob::Ptr input = make_shared_blob<uint8_t>(TensorDesc(Precision::U8, vec, Layout::NHWC), image.data);
     request.SetBlob("image", input);
     request.Infer();
 
@@ -74,14 +73,7 @@ void Detector::detect(const cv::Mat& image,
             j++;
         }
     }
-    cv::Mat img_copy = image.clone();
-    Size = boxes.size();
-    for (int i = 0; i < Size; i++) {
-        cv::rectangle(img_copy, boxes[i], cv::Scalar(255, 0, 0), 2);
-        cv::putText(img_copy, cv::String(std::to_string(probabilities[i])), cv::Point(boxes[i].x, boxes[i].y), 5, 0.5, cv::Scalar(0, 0, 255), 0.5, 8, false);
-    }
-    imshow("image_result", img_copy);
-    waitKey();
+    
 }
 
 
