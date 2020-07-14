@@ -12,8 +12,8 @@ Detector::Detector() {
 	Core ie;
 
 	// Load deep learning network into memory
-	auto net = ie.ReadNetwork("face-detection-0104.xml",
-                              "face-detection-0104.bin");
+	auto net = ie.ReadNetwork(utils::fs::join(DATA_FOLDER, "face-detection-0104.xml"),
+		                  utils::fs::join(DATA_FOLDER, "face-detection-0104.bin"));
 	InputInfo::Ptr inputInfo = net.getInputsInfo()["image"];
 
 	inputInfo->getPreProcess().setResizeAlgorithm(ResizeAlgorithm::RESIZE_BILINEAR);
