@@ -21,7 +21,21 @@ void loadImages(const std::string& filepath,
     CV_CheckEQ(magicNum, 2051, "");
 
     int numImages = readInt(ifs);
+    int numRows = readInt(ifs);
+    int numCols = readInt(ifs);
 
+    for (int i = 0; i < numImages; i++) {
+        Mat image(numRows, numCols, CV_8UC1);
+        for (int j = 0; j < numRows; j++) {
+            for (int k = 0; k < numCols; k++) {
+                uchar val;
+                ifs.read((char*)&val, sizeof(val));
+                image.at<uchar>(j, k) = val;
+            }
+        }
+        images.push_back(image);
+    }
+    
     // TODO: follow "FILE FORMATS FOR THE MNIST DATABASE" specification
     // at http://yann.lecun.com/exdb/mnist/
 }
@@ -35,36 +49,74 @@ void loadLabels(const std::string& filepath,
     CV_CheckEQ(magicNum, 2049, "");
 
     int numLabels = readInt(ifs);
+    for (int k = 0; k < numLabels; k++) {
+        uchar val;
+        ifs.read((char*)&val, sizeof(val));
+        labels.push_back(val);
+    }
 
     // TODO: follow "FILE FORMATS FOR THE MNIST DATABASE" specification
     // at http://yann.lecun.com/exdb/mnist/
 }
 
 void prepareSamples(const std::vector<cv::Mat>& images, cv::Mat& samples) {
-    CV_Error(Error::StsNotImplemented, "prepareSamples");
+    int images_size = images.size();
+    int images_rows = images[0].rows;
+    int images_cols = images[0].cols;
+    samples = Mat::zeros(images_size, images_rows * images_cols, CV_32FC1);
+    for (int k = 0; k < images_size; k++) { //rows sample
+        for (int i = 0; i < images_rows; i++) {
+            for (int j = 0; j < images_cols; j++) {
+                samples.at<float>(k, i * images_cols + j) = (float)images[k].at<uint8_t>(i, j);
+            }
+        }   
+    }
 }
 
 Ptr<ml::KNearest> train(const std::vector<cv::Mat>& images,
                         const std::vector<int>& labels) {
-    CV_Error(Error::StsNotImplemented, "train");
+    Ptr<ml::KNearest> modelKnn = ml::KNearest::create();
+    Ptr<ml::TrainData> trainData;
+
+    Mat samples;
+    prepareSamples(images, samples);
+    trainData = ml::TrainData::create(samples, ml::SampleTypes::ROW_SAMPLE, labels);
+    modelKnn->train(trainData);
+    return modelKnn;
 }
 
-float validate(Ptr<ml::KNearest> model,
-               const std::vector<cv::Mat>& images,
-               const std::vector<int>& labels) {
-    CV_Error(Error::StsNotImplemented, "validate");
+float validate(Ptr<ml::KNearest> model, const std::vector<cv::Mat>& images, const std::vector<int>& labels) {
+    Mat samples, result;
+    prepareSamples(images, samples);
+
+    model->predict(samples, result);
+    std::vector<int> resultsModel = result.clone();
+
+    int numMatch = 0;
+    for (int i = 0; i < labels.size(); i++) {
+        if (resultsModel[i] == labels[i]) {
+            numMatch++;
+        }
+    }
+
+    double positivePercent = (double)numMatch / (double)images.size();
+    return positivePercent;
 }
 
 int predict(Ptr<ml::KNearest> model, const Mat& image) {
-    // TODO: resize image to 28x28 (cv::resize)
+    Mat tmpImage;
+    resize(image, tmpImage, Size(28, 28)); // resize image to 28x28 (cv::resize)
+    
+    cvtColor(tmpImage, tmpImage, COLOR_BGR2HSV); // convert image from BGR to HSV (cv::cvtColor)
+    
+    Mat channels[3];
+    split(tmpImage, &channels[0]); // get Saturate component (cv::split)
 
-    // TODO: convert image from BGR to HSV (cv::cvtColor)
-
-    // TODO: get Saturate component (cv::split)
-
-    // TODO: prepare input - single row FP32 Mat
-
-    // TODO: make a prediction by the model
-
-    CV_Error(Error::StsNotImplemented, "predict");
+    std::vector<Mat> saturation;
+    saturation.push_back(channels[1]); // take S-channel
+    
+    Mat Input;
+    prepareSamples(saturation, Input);
+    int result = model->predict(Input); // make a prediction by the model
+    return result;
 }
