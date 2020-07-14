@@ -21,9 +21,23 @@ void loadImages(const std::string& filepath,
     CV_CheckEQ(magicNum, 2051, "");
 
     int numImages = readInt(ifs);
+    int numRows = readInt(ifs);
+    int numCols = readInt(ifs);
 
+    images.resize(numImages);
     // TODO: follow "FILE FORMATS FOR THE MNIST DATABASE" specification
     // at http://yann.lecun.com/exdb/mnist/
+    for (int i = 0; i < numImages; ++i) {
+        Mat img(numRows, numCols, CV_8U);
+        for (int r = 0; r < numRows; ++r) {
+            for (int c = 0; c < numCols; ++c) {
+                unsigned char pixel = 0;
+                ifs.read((char*)&pixel, sizeof(pixel));
+                img.at<unsigned char>(r, c) = pixel;
+            }
+        }
+        images[i] = img;
+    }
 }
 
 void loadLabels(const std::string& filepath,
@@ -35,36 +49,84 @@ void loadLabels(const std::string& filepath,
     CV_CheckEQ(magicNum, 2049, "");
 
     int numLabels = readInt(ifs);
-
-    // TODO: follow "FILE FORMATS FOR THE MNIST DATABASE" specification
-    // at http://yann.lecun.com/exdb/mnist/
+    labels.resize(numLabels, 0);
+    for (int i = 0; i < numLabels; ++i) {
+        unsigned char label = 0;
+        ifs.read((char*)&label, sizeof(label));
+        labels[i] = label;
+    }
 }
 
 void prepareSamples(const std::vector<cv::Mat>& images, cv::Mat& samples) {
-    CV_Error(Error::StsNotImplemented, "prepareSamples");
+
+    
+    for (int i = 0; i < images.size(); ++i) {
+        Mat image_pixels = images[i].reshape(1, 1);
+        samples.push_back(image_pixels);
+    }
+    samples.convertTo(samples, CV_32FC1);
 }
 
 Ptr<ml::KNearest> train(const std::vector<cv::Mat>& images,
                         const std::vector<int>& labels) {
-    CV_Error(Error::StsNotImplemented, "train");
+
+    Ptr<ml::KNearest> model = ml::KNearest::create();
+    Ptr<ml::TrainData> training_data;
+    Mat samples;
+
+    prepareSamples(images, samples);
+
+    training_data = ml::TrainData::create(samples, ml::SampleTypes::ROW_SAMPLE, labels);
+
+    model->train(training_data);
+
+    return model;
 }
 
 float validate(Ptr<ml::KNearest> model,
                const std::vector<cv::Mat>& images,
                const std::vector<int>& labels) {
-    CV_Error(Error::StsNotImplemented, "validate");
+
+    Mat samples, result;
+
+    prepareSamples(images, samples);
+
+    model->findNearest(samples, model->getDefaultK(), result);
+
+    int _count = 0;
+    for (int i = 0; i < labels.size(); ++i) {
+        if (result.at<float>(i) == labels[i]) {
+            _count++;
+        }
+    }
+    return float(_count) / labels.size();
 }
 
 int predict(Ptr<ml::KNearest> model, const Mat& image) {
     // TODO: resize image to 28x28 (cv::resize)
+    Mat resized_image;
+    resize(image, resized_image, Size(28, 28));
 
     // TODO: convert image from BGR to HSV (cv::cvtColor)
 
+    Mat HSV_image;
+    cvtColor(resized_image, HSV_image, COLOR_BGR2HSV);
+
     // TODO: get Saturate component (cv::split)
+
+    std::vector<Mat> channels;
+    split(HSV_image, channels);
 
     // TODO: prepare input - single row FP32 Mat
 
-    // TODO: make a prediction by the model
+    std::vector<Mat> saturate;
+    saturate.push_back(channels[1]);
 
-    CV_Error(Error::StsNotImplemented, "predict");
+    Mat samples;
+
+    prepareSamples(saturate, samples);
+    // TODO: make a prediction by the model
+    Mat result;
+    model->findNearest(samples, 64, result);
+    return (int)result.at<float>(0, 0);
 }
