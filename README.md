@@ -3,7 +3,7 @@
 This is a set of interactive modules which will help you study and practice:
 * git, GitHub
 * [OpenVINO toolkit](https://software.intel.com/openvino-toolkit)
-* [Travis CI](https://travis-ci.org/)
+* [Travis CI](https://travis-ci.com/)
 * [Google Test](https://github.com/google/googletest)
 
 [![chat](https://img.shields.io/badge/join-chat-green?style=plastic&logo=discord&logoColor=white)](https://discord.com/channels/723484061472915457/723484061472915460)
