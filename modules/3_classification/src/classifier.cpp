@@ -26,10 +26,11 @@ void topK(const std::vector<float>& src, unsigned k,
 
 void softmax(std::vector<float>& values) {
     float sum = 0;
+    float max = *std::max_element(values.begin(), values.end());
     for (int i = 0; i < values.size(); ++i)
-        sum += exp(values[i]);
+        sum += exp(values[i] - max);
     for (int i = 0; i < values.size(); ++i) {
-        values[i] = exp(values[i]) / sum;
+        values[i] = exp(values[i] - max) / sum;
     }       
 }
 
