@@ -19,6 +19,9 @@ public:
                 std::vector<cv::Rect>& boxes,
                 std::vector<float>& probabilities,
                 std::vector<unsigned>& classes);
+private:
+    InferenceEngine::InferRequest request;
+    std::string out_name;
 };
 
 // Compute Intersection over Union (IoU) metric between two rectangles.
