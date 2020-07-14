@@ -3,6 +3,8 @@ import math
 import logging as log
 import sys
 from tqdm import tqdm
+from scipy.spatial.distance import cosine
+
 from common.feature_distance import calc_features_similarity
 from common.common_objects import DetectedObject, validate_detected_object, Bbox
 from common.common_objects import get_bbox_center, get_dist, calc_bbox_area
@@ -133,14 +135,14 @@ class Tracker:
         return affinity_appearance * affinity_position * affinity_shape
 
     def _calc_affinity_appearance(self, track, obj):
-        raise NotImplementedError("The function _calc_affinity_appearance  is not implemented -- implement it by yourself")
+        return calc_features_similarity(track.last().appearance_feature, obj.appearance_feature)
 
     def _calc_affinity_position(self, track, obj):
-        raise NotImplementedError("The function _calc_affinity_position is not implemented -- implement it by yourself")
+        return math.exp(-0.5 * pow(get_dist(get_bbox_center(track.last().bbox), get_bbox_center(obj.bbox)), 2) / calc_bbox_area(track.last().bbox))
 
     def _calc_affinity_shape(self, track, obj):
-        raise NotImplementedError("The function _calc_affinity_shape is not implemented -- implement it by yourself")
-
+        return math.exp(-0.5 * abs(calc_bbox_area(track.last().bbox) - calc_bbox_area(obj.bbox)) / calc_bbox_area(track.last().bbox))
+    
     @staticmethod
     def _log_affinity_matrix(affinity_matrix):
         with np.printoptions(precision=2, suppress=True, threshold=sys.maxsize, linewidth=sys.maxsize):
