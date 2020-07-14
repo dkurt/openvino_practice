@@ -1,11 +1,12 @@
 import numpy as np
 import math
+from scipy import spatial
 import logging as log
 import sys
 from tqdm import tqdm
 from common.feature_distance import calc_features_similarity
 from common.common_objects import DetectedObject, validate_detected_object, Bbox
-from common.common_objects import get_bbox_center, get_dist, calc_bbox_area
+from common.common_objects import get_bbox_center, get_dist, calc_bbox_area, get_bbox_size, calc_IoU
 from common.find_best_assignment import solve_assignment_problem
 from common.annotation import AnnotationObject, AnnotationStorage
 
@@ -32,7 +33,6 @@ class Track:
         last_frame_index = self.objects[-1].frame_index
         if not last_frame_index < o.frame_index:
             raise RuntimeError("Add object={} to track with the last_frame_index={}".format(o, last_frame_index))
-
         self.objects.append(o)
 
     def last(self):
@@ -133,13 +133,18 @@ class Tracker:
         return affinity_appearance * affinity_position * affinity_shape
 
     def _calc_affinity_appearance(self, track, obj):
-        raise NotImplementedError("The function _calc_affinity_appearance  is not implemented -- implement it by yourself")
+        return calc_features_similarity(track.last().appearance_feature, obj.appearance_feature)
 
     def _calc_affinity_position(self, track, obj):
-        raise NotImplementedError("The function _calc_affinity_position is not implemented -- implement it by yourself")
-
+        center1 = get_bbox_center(track.last().bbox)
+        center2 = get_bbox_center(obj.bbox)
+        D = get_dist(center1, center2)
+        return math.exp(-D*D / calc_bbox_area(track.last().bbox))
+    
     def _calc_affinity_shape(self, track, obj):
-        raise NotImplementedError("The function _calc_affinity_shape is not implemented -- implement it by yourself")
+        area1 = calc_bbox_area(track.last().bbox)
+        area2 = calc_bbox_area(obj.bbox)
+        return math.exp(-abs(area1 - area2) / area1)
 
     @staticmethod
     def _log_affinity_matrix(affinity_matrix):
