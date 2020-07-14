@@ -136,7 +136,7 @@ class Tracker:
         dist_track = get_bbox_center(track.last().bbox)
         dist_obj = get_bbox_center(obj.bbox)
         dist = get_dist(dist_track, dist_obj)
-        return math.exp((-0.2) * dist / math.sqrt(calc_bbox_area(track.last().bbox)))
+        return math.exp((-0.3) * dist / math.sqrt(calc_bbox_area(track.last().bbox)))
 
     def _calc_affinity_position(self, track, obj):
         return calc_features_similarity(track.last().appearance_feature, obj.appearance_feature)
