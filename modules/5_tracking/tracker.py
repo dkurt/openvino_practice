@@ -133,13 +133,37 @@ class Tracker:
         return affinity_appearance * affinity_position * affinity_shape
 
     def _calc_affinity_appearance(self, track, obj):
-        raise NotImplementedError("The function _calc_affinity_appearance  is not implemented -- implement it by yourself")
+        # calculate cos of angle between RGB histogram vectors
+
+        last_track_ap_f = track.last().appearance_feature
+        cur_obj_ap_f = obj.appearance_feature
+
+        unit_vector_1 = last_track_ap_f / np.linalg.norm(last_track_ap_f)
+        unit_vector_2 = cur_obj_ap_f / np.linalg.norm(cur_obj_ap_f)
+        return np.cos(np.dot(unit_vector_1, unit_vector_2))
 
     def _calc_affinity_position(self, track, obj):
-        raise NotImplementedError("The function _calc_affinity_position is not implemented -- implement it by yourself")
+        # calculate intersection-over-union between two bounding boxes
+
+        last_track_bbox = track.last().bbox
+        cur_obj_bbox = obj.bbox
+
+        intersection_area = {
+            "width": max(min(last_track_bbox.br_x, cur_obj_bbox.br_x) - max(last_track_bbox.tl_x, cur_obj_bbox.tl_x), 0),
+            "height": max(min(last_track_bbox.br_y, cur_obj_bbox.br_y) - max(last_track_bbox.tl_y, cur_obj_bbox.tl_y), 0),
+        }
+
+        intersection_area_square = intersection_area['width'] * intersection_area['height']
+
+        last_track_square = (last_track_bbox.br_x - last_track_bbox.tl_x) * (last_track_bbox.br_y - last_track_bbox.tl_y)
+        cur_obj_square = (cur_obj_bbox.br_x - cur_obj_bbox.tl_x) * (cur_obj_bbox.br_y - cur_obj_bbox.tl_y)
+
+        union_area_square = last_track_square + cur_obj_square - intersection_area_square
+
+        return intersection_area_square / union_area_square
 
     def _calc_affinity_shape(self, track, obj):
-        raise NotImplementedError("The function _calc_affinity_shape is not implemented -- implement it by yourself")
+        return 1.0
 
     @staticmethod
     def _log_affinity_matrix(affinity_matrix):
