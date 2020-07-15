@@ -7,7 +7,7 @@ using namespace cv;
 using namespace cv::utils::fs;
 
 float Dice(const Mat& a, const Mat& b) {
-    return 2.0f * static_cast<float>(countNonZero(a & b)) / static_cast<float>(countNonZero(a) + countNonZero(b));
+    return 2.0f * countNonZero(a & b) / (countNonZero(a) + countNonZero(b));
 }
 
 ADAS::ADAS() {
