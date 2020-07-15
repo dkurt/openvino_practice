@@ -4,24 +4,24 @@
 
 class Detector {
 public:
-	Detector();
+    Detector();
 
-	// Performs object detection
-	// [inp] image
-	// [inp] nmsThreshold  - threshold for nms
-	// [inp] probThreshold - threshold for boxes probabilities
-	// [out] boxes         - list of bounding boxes
-	// [out] probabilities - list of probabilities corresponding to bounding boxes
-	// [out] classes       - indices of classes
-	void detect(const cv::Mat& image,
-		float nmsThreshold,
-		float probThreshold,
-		std::vector<cv::Rect>& boxes,
-		std::vector<float>& probabilities,
-		std::vector<unsigned>& classes);
-private:
-	InferenceEngine::InferRequest req;
-	std::string outputName;
+    // Performs object detection
+    // [inp] image
+    // [inp] nmsThreshold  - threshold for nms
+    // [inp] probThreshold - threshold for boxes probabilities
+    // [out] boxes         - list of bounding boxes
+    // [out] probabilities - list of probabilities corresponding to bounding boxes
+    // [out] classes       - indices of classes
+    void detect(const cv::Mat& image,
+                float nmsThreshold,
+                float probThreshold,
+                std::vector<cv::Rect>& boxes,
+                std::vector<float>& probabilities,
+                std::vector<unsigned>& classes);
+    private:
+        InferenceEngine::InferRequest req;
+        std::string outputName;
 };
 
 // Compute Intersection over Union (IoU) metric between two rectangles.
