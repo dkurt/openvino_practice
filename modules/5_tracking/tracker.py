@@ -137,8 +137,7 @@ class Tracker:
         #raise NotImplementedError("The function _calc_affinity_appearance  is not implemented -- implement it by yourself")
 
     def _calc_affinity_position(self, track, obj):
-        return math.exp(
-            -0.7 * (get_dist(get_bbox_center(track.last().bbox), get_bbox_center(obj.bbox))) / pow(calc_bbox_area(
+        return math.exp(-0.7 * (get_dist(get_bbox_center(track.last().bbox), get_bbox_center(obj.bbox))) / pow(calc_bbox_area(
                 track.last().bbox), 0.5))
         #raise NotImplementedError("The function _calc_affinity_position is not implemented -- implement it by yourself")
 
