@@ -10,7 +10,7 @@ Blob::Ptr wrapMatToBlob(const Mat& m) {
     CV_Assert(m.depth() == CV_32F);
     std::vector<size_t> dims(&m.size[0], &m.size[0] + m.dims);
     return make_shared_blob<float>(TensorDesc(Precision::FP32, dims, Layout::ANY),
-                                   (float*)m.data);
+        (float*)m.data);
 }
 
 UNetHistology::UNetHistology() {
@@ -18,7 +18,7 @@ UNetHistology::UNetHistology() {
 
     // Load deep learning network into memory
     CNNNetwork net = ie.ReadNetwork(join(DATA_FOLDER, "frozen_unet_histology.xml"),
-                                    join(DATA_FOLDER, "frozen_unet_histology.bin"));
+        join(DATA_FOLDER, "frozen_unet_histology.bin"));
 
     // Initialize runnable object on CPU device
     ExecutableNetwork execNet = ie.LoadNetwork(net, "CPU");
@@ -55,7 +55,7 @@ void UNetHistology::segment(const Mat& image, Mat& mask) {
     CV_CheckEQ(normalized.channels(), 3, "UNetHistology input channels");
 
     // Perform data permutation from 952x1144x3 to 3x952x1144
-    Mat inp({1, 3, height, width, 1, 1}, CV_32F);
+    Mat inp({ 1, 3, height, width, 1, 1 }, CV_32F);
     std::vector<Mat> channels(3);
     for (int i = 0; i < 3; ++i)
         channels[i] = Mat(height, width, CV_32FC1, inp.ptr<float>(0, i));
@@ -81,7 +81,7 @@ void UNetHistology::padMinimum(const Mat& src, int width, int height, Mat& dst) 
     minRow = repeat(minRow, height, 1);
     minCol = repeat(minCol, 1, width);
 
-    dst = repeat(globalMin, src.rows + 2*height, src.cols + 2*width);
+    dst = repeat(globalMin, src.rows + 2 * height, src.cols + 2 * width);
     minRow.copyTo(dst.colRange(width, dst.cols - width).rowRange(0, height));
     minRow.copyTo(dst.colRange(width, dst.cols - width).rowRange(dst.rows - height, dst.rows));
     minCol.copyTo(dst.colRange(0, width).rowRange(height, dst.rows - height));
