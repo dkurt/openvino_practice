@@ -4,7 +4,7 @@ import logging as log
 import sys
 from tqdm import tqdm
 from common.feature_distance import calc_features_similarity
-from common.common_objects import DetectedObject, validate_detected_object, Bbox
+from common.common_objects import DetectedObject, validate_detected_object, Bbox, get_bbox_size
 from common.common_objects import get_bbox_center, get_dist, calc_bbox_area
 from common.find_best_assignment import solve_assignment_problem
 from common.annotation import AnnotationObject, AnnotationStorage
