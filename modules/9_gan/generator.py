@@ -12,7 +12,8 @@ class Generator():
 
     # Performs generation of an image from CelebA distributiuon. Returns a BGR image.
     # Here you need to request the input shape from the loaded generator net, create a
-    # random input array of this shape via numpy, feed it into the generater and call postprocess to get image
+    # normally distributed random input array of this shape via numpy,
+    # feed it into the generator and call postprocess to get image
     def generate(self):
         print('generate is not implemented')
         exit(1)

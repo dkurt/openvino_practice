@@ -9,8 +9,8 @@ To complete this module you should implement:
 3. Generate images and add it to the pull request description.
 
 Original images from CelebA (left), generated images (right).
-    <img src="../../data/celeba_samples.jpeg" width="320">
-    <img src="../../data/generated_img.png" width="320">
+
+  <img src="../../data/celeba_samples.jpeg" width="320"><img src="../../data/generated_img.png" width="320">
 
 ## Details
 
