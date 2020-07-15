@@ -78,7 +78,7 @@ void UNetHistology::segment(const Mat& image, Mat& mask) {
 	// Copy output. "prob" is a name of output from .xml file
 	int* output = req.GetBlob(outputName)->buffer();
 	mask = Mat(req.GetBlob(outputName)->size(), 1, CV_32SC1, output);
-	mask = mask.reshape(1, 1144 / 2);
+	mask = mask.reshape(1, 772);	
 	mask.convertTo(mask, CV_32F);
 	resize(mask, mask, Size(image.cols, image.rows));
 	mask.convertTo(mask, CV_8UC1);
