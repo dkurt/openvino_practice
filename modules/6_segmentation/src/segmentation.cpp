@@ -55,5 +55,4 @@ void ADAS::segment(const Mat& image, Mat& mask) {
     mask.convertTo(mask, CV_32F);
     resize(mask, mask, Size(image.cols, image.rows));
     mask.convertTo(mask, CV_8UC1);
-    std::cout << req.GetBlob(outputName)->size() << std::endl;
 }

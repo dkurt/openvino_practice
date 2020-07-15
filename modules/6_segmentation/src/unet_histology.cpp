@@ -25,15 +25,22 @@ UNetHistology::UNetHistology() {
 
     // Create a single processing thread
     req = execNet.CreateInferRequest();
+
+    outputName = net.getOutputsInfo().begin()->first;
 }
 
 void UNetHistology::bgr2rgb(const Mat& src, Mat& dst) {
-    CV_Error(Error::StsNotImplemented, "bgr2rgb");
+    cv::cvtColor(src, dst, COLOR_BGR2RGB);
 }
 
-
 void UNetHistology::normalize(const Mat& src, Mat& dst) {
-    CV_Error(Error::StsNotImplemented, "normalize");
+    Scalar meanDeviation;
+    Scalar standartDeviation;
+    meanStdDev(src, meanDeviation, standartDeviation);
+    dst = Mat::zeros(src.size(), CV_32FC3);
+    dst += src;
+    dst -= meanDeviation;
+    dst /= standartDeviation;
 }
 
 void UNetHistology::segment(const Mat& image, Mat& mask) {
@@ -64,12 +71,32 @@ void UNetHistology::segment(const Mat& image, Mat& mask) {
     Blob::Ptr inputBlob = wrapMatToBlob(inp);
 
     // TODO: Put inputBlob to the network, perform inference and return mask
+    req.SetBlob("worker_0/validation/IteratorGetNext", inputBlob);
 
-    CV_Error(Error::StsNotImplemented, "UNetHistology semantic segmentation");
+    // Launch network
+    req.Infer();
+
+    // Copy output. 
+    int* output = req.GetBlob(outputName)->buffer();
+    mask = Mat(req.GetBlob(outputName)->size(), 1, CV_32SC1, output);
+    mask = mask.reshape(1, 772);
+    mask.convertTo(mask, CV_32F);
+    resize(mask, mask, Size(image.cols, image.rows));
+    mask.convertTo(mask, CV_8UC1);
 }
 
 int UNetHistology::countGlands(const cv::Mat& segm) {
-    CV_Error(Error::StsNotImplemented, "countGlands");
+    morphologyEx(segm, segm, MORPH_CLOSE, Mat::ones(3, 3, CV_8U), Point(-1, -1), 3);
+
+    Mat newImage;
+    distanceTransform(segm, newImage, cv::DIST_L2, 5);
+    double maxDistance, minDistance;
+    minMaxLoc(newImage, &minDistance, &maxDistance);
+    cv::threshold(newImage, newImage, maxDistance * 0.6, 255, 0);
+    newImage.convertTo(newImage, CV_8U);
+
+    Mat mark;
+    return connectedComponents(newImage, mark);
 }
 
 void UNetHistology::padMinimum(const Mat& src, int width, int height, Mat& dst) {
