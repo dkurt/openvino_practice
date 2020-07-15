@@ -20,6 +20,8 @@ UNetHistology::UNetHistology() {
     CNNNetwork net = ie.ReadNetwork(join(DATA_FOLDER, "frozen_unet_histology.xml"),
                                     join(DATA_FOLDER, "frozen_unet_histology.bin"));
 
+    outputName = net.getOutputsInfo().begin()->first;
+
     // Initialize runnable object on CPU device
     ExecutableNetwork execNet = ie.LoadNetwork(net, "CPU");
 
@@ -28,12 +30,21 @@ UNetHistology::UNetHistology() {
 }
 
 void UNetHistology::bgr2rgb(const Mat& src, Mat& dst) {
-    CV_Error(Error::StsNotImplemented, "bgr2rgb");
+    cvtColor(src, dst, COLOR_BGR2RGB);
 }
 
 
 void UNetHistology::normalize(const Mat& src, Mat& dst) {
-    CV_Error(Error::StsNotImplemented, "normalize");
+    Scalar mean, stdDev;
+    meanStdDev(src, mean, stdDev);
+    dst = Mat::zeros(src.rows, src.cols, CV_32FC3);
+    for (int i = 0; i < dst.rows; ++i) {
+        for (int j = 0; j < dst.cols; ++j) {
+            dst.at<Vec3f>(i, j)[0] = (src.at<Vec3b>(i, j)[0] - mean[0]) / stdDev[0];
+            dst.at<Vec3f>(i, j)[1] = (src.at<Vec3b>(i, j)[1] - mean[1]) / stdDev[1];
+            dst.at<Vec3f>(i, j)[2] = (src.at<Vec3b>(i, j)[2] - mean[2]) / stdDev[2];
+        }
+    }
 }
 
 void UNetHistology::segment(const Mat& image, Mat& mask) {
@@ -63,13 +74,36 @@ void UNetHistology::segment(const Mat& image, Mat& mask) {
 
     Blob::Ptr inputBlob = wrapMatToBlob(inp);
 
-    // TODO: Put inputBlob to the network, perform inference and return mask
+    req.SetBlob("worker_0/validation/IteratorGetNext", inputBlob);
+    req.Infer();
 
-    CV_Error(Error::StsNotImplemented, "UNetHistology semantic segmentation");
+    int* output = req.GetBlob(outputName)->buffer();
+
+    int rows = 772, cols = 964;
+    mask = Mat::zeros(rows, cols, CV_8UC1);
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            mask.at<uint8_t>(i, j) = output[i * cols + j];
+        }
+    }
+    resize(mask, mask, image.size());
 }
 
 int UNetHistology::countGlands(const cv::Mat& segm) {
-    CV_Error(Error::StsNotImplemented, "countGlands");
+    Mat tmp = segm;
+    morphologyEx(tmp, tmp, MORPH_CLOSE, Mat::ones(3, 3, CV_8U), Point(-1, -1), 3);
+    cv::dilate(tmp, tmp, Mat::ones(3, 3, CV_8U), Point(-1, -1), 3);
+    cv::distanceTransform(tmp, tmp, DIST_L2, CV_32F);
+    double minVal, maxVal;
+    Point minLoc, maxLoc;
+    minMaxLoc(tmp, &minVal, &maxVal, &minLoc, &maxLoc);
+    threshold(tmp, tmp, maxVal * 0.5, 255, THRESH_BINARY);
+    tmp.convertTo(tmp, CV_8U, 1, 0);
+
+    std::vector<std::vector<Point>> contours;
+    findContours(tmp, contours, RETR_LIST , CHAIN_APPROX_NONE );
+
+    return contours.size();
 }
 
 void UNetHistology::padMinimum(const Mat& src, int width, int height, Mat& dst) {
