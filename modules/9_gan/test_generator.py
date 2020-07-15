@@ -13,7 +13,7 @@ model = Generator(xml_path, bin_path)
 
 # Run the algorithm
 
-grid_size = 6
+grid_size = 4
 img_size = 64
 all_images = np.zeros((img_size * grid_size, img_size * grid_size, 3), dtype=np.uint8)
 

@@ -8,6 +8,7 @@ To complete this module you should implement:
 2. `postprocess` procedure that applies some transformations to output of the network to get the final generated image.
 3. Generate images and add it to the pull request description.
 
+Original images from CelebA (left), generated images (right).
     <img src="../../data/celeba_samples.jpeg" width="320">
     <img src="../../data/generated_img.png" width="320">
 
@@ -15,8 +16,8 @@ To complete this module you should implement:
 
 * Download converted model from here:
 
-  * [celeba_generator.xml]()
-  * [celeba_generator.bin]()
+  * [celeba_generator.xml](https://mega.nz/#!hAslCCaL!2vWXjiPq3EbuLZbOvEDOI0y9VorGn5enUm7UMNWGrWo)
+  * [celeba_generator.bin](https://mega.nz/#!AR1HwIIA!U3p46tM9SFMhKzbSwJIEiugdJDQ5mUSOC3twZL6UYTM)
 
 * Setup OpenVINO environment
 
