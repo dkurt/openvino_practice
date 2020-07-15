@@ -54,16 +54,12 @@ void ADAS::segment(const Mat& image, Mat& mask) {
     // Copy output. 
     int* output = req.GetBlob(outputName)->buffer();
 
-    for (int i = 0; i < req.GetBlob(outputName)->size(); i++)
-        mask.push_back(float(output[i]));
+    mask = Mat(req.GetBlob(outputName)->size(), 1, CV_32SC1, output);
 
     int reshapingVal = 1024;
-
     mask = mask.reshape(1, reshapingVal);
 
-    Size imageSize = Size(image.cols, image.rows);
-
-    resize(mask, mask, imageSize);
-
+    mask.convertTo(mask, CV_32F);
+    resize(mask, mask, Size(image.cols, image.rows));
     mask.convertTo(mask, CV_8UC1);
 }
