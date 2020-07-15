@@ -138,7 +138,7 @@ class Tracker:
     def _calc_affinity_position(self, track, obj):
         dist1 = get_bbox_center(track.last().bbox)
         dist2 = get_bbox_center(obj.bbox)
-        return math.exp((-0.3) * pow(get_dist(dist1, dist2), 2) / calc_bbox_area(track.last().bbox))
+        return math.exp((-0.4) * pow(get_dist(dist1, dist2), 2) / calc_bbox_area(track.last().bbox))
 
     def _calc_affinity_shape(self, track, obj):
         a1 = calc_bbox_area(track.last().bbox)
