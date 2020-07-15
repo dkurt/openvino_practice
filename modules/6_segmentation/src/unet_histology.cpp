@@ -25,15 +25,21 @@ UNetHistology::UNetHistology() {
 
     // Create a single processing thread
     req = execNet.CreateInferRequest();
+	outputName = net.getOutputsInfo().begin()->first;
 }
 
 void UNetHistology::bgr2rgb(const Mat& src, Mat& dst) {
-    CV_Error(Error::StsNotImplemented, "bgr2rgb");
+	cvtColor(src, dst, COLOR_BGR2RGB);
 }
 
 
 void UNetHistology::normalize(const Mat& src, Mat& dst) {
-    CV_Error(Error::StsNotImplemented, "normalize");
+   Scalar mean;
+   Scalar st;
+   meanStdDev(src, mean, st);
+   dst = src.clone();
+   dst.convertTo(dst, CV_32F);
+   dst = (dst - mean) / st;
 }
 
 void UNetHistology::segment(const Mat& image, Mat& mask) {
@@ -63,13 +69,33 @@ void UNetHistology::segment(const Mat& image, Mat& mask) {
 
     Blob::Ptr inputBlob = wrapMatToBlob(inp);
 
-    // TODO: Put inputBlob to the network, perform inference and return mask
+	// Pass blob as network's input. "data" is a name of input from .xml file
+	req.SetBlob("worker_0/validation/IteratorGetNext", inputBlob);
 
-    CV_Error(Error::StsNotImplemented, "UNetHistology semantic segmentation");
+	// Launch network
+	req.Infer();
+
+	// Copy output. "prob" is a name of output from .xml file
+	int* output = req.GetBlob(outputName)->buffer();
+	mask = Mat(req.GetBlob(outputName)->size(), 1, CV_32SC1, output);
+	mask = mask.reshape(1, 1144 / 2);
+	mask.convertTo(mask, CV_32F);
+	resize(mask, mask, Size(image.cols, image.rows));
+	mask.convertTo(mask, CV_8UC1);
 }
 
 int UNetHistology::countGlands(const cv::Mat& segm) {
-    CV_Error(Error::StsNotImplemented, "countGlands");
+	Mat thresh, bg, fg;
+	threshold(segm, thresh, 0, 255, THRESH_BINARY_INV + THRESH_OTSU);
+	morphologyEx(thresh, thresh, MORPH_CLOSE, Mat::ones(3, 3, CV_8U), Point(-1, -1), 3);
+	distanceTransform(thresh, thresh, DIST_L2, 5);
+	double min, max;
+	minMaxLoc(thresh, &min, &max);
+	threshold(thresh, fg, max * 0.6, 255, 0);
+	fg.convertTo(fg, CV_8U);
+	Mat tmp;
+	int count = connectedComponents(fg, tmp);
+	return count;
 }
 
 void UNetHistology::padMinimum(const Mat& src, int width, int height, Mat& dst) {
