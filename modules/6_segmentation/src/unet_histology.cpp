@@ -25,16 +25,37 @@ UNetHistology::UNetHistology() {
 
     // Create a single processing thread
     req = execNet.CreateInferRequest();
+
+    outputName = net.getOutputsInfo().begin()->first;
 }
 
 void UNetHistology::bgr2rgb(const Mat& src, Mat& dst) {
-    CV_Error(Error::StsNotImplemented, "bgr2rgb");
+    cv::cvtColor(src, dst, COLOR_BGR2RGB);
 }
 
 
 void UNetHistology::normalize(const Mat& src, Mat& dst) {
-    CV_Error(Error::StsNotImplemented, "normalize");
+    Scalar meanNorm;
+    Scalar stdNorm;
+
+    meanStdDev(src, meanNorm, stdNorm);
+
+    for (int i = 0; i < src.rows; i++)
+    {
+        for (int j = 0; j < src.cols; j++)
+        {
+            for (int k = 0; k < src.channels(); k++)
+            {
+                dst.push_back((src.at<Vec3b>(i, j)(k) - meanNorm[k]) / stdNorm[k]);
+            }
+        }
+    }
+
+    dst = dst.reshape(src.channels(), src.rows);
+
+    dst.convertTo(dst, CV_32F);
 }
+
 
 void UNetHistology::segment(const Mat& image, Mat& mask) {
     // Preprocessing
@@ -65,11 +86,46 @@ void UNetHistology::segment(const Mat& image, Mat& mask) {
 
     // TODO: Put inputBlob to the network, perform inference and return mask
 
-    CV_Error(Error::StsNotImplemented, "UNetHistology semantic segmentation");
+     // Pass blob as network's input. "data" is a name of input from .xml file
+    req.SetBlob("worker_0/validation/IteratorGetNext", inputBlob);
+
+    // Launch network
+    req.Infer();
+
+    // Copy output. "prob" is a name of output from .xml file
+    int* output = req.GetBlob(outputName)->buffer();
+
+    for (int i = 0; i < req.GetBlob(outputName)->size(); i++)
+    {
+        mask.push_back(float(output[i]));
+    }
+
+    int reshapingVal = 772;
+
+    mask = mask.reshape(1, reshapingVal);
+
+    Size imageSize = Size(image.cols, image.rows);
+
+    resize(mask, mask, imageSize);
+
+    mask.convertTo(mask, CV_8UC1);
 }
 
 int UNetHistology::countGlands(const cv::Mat& segm) {
-    CV_Error(Error::StsNotImplemented, "countGlands");
+    morphologyEx(segm, segm, MORPH_CLOSE, Mat::ones(3, 3, CV_8U), Point(-1, -1), 3);
+
+    Mat transformedImage;
+    distanceTransform(segm, transformedImage, cv::DIST_L2, 5);
+
+    double maxVal, minVal;
+    minMaxLoc(transformedImage, &minVal, &maxVal);
+
+    cv::threshold(transformedImage, transformedImage, maxVal * 0.6, 255, 0);
+
+    transformedImage.convertTo(transformedImage, CV_8U);
+
+    Mat markers;
+    return connectedComponents(transformedImage, markers);
 }
 
 void UNetHistology::padMinimum(const Mat& src, int width, int height, Mat& dst) {

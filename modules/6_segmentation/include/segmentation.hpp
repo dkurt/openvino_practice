@@ -57,4 +57,5 @@ public:
 
 private:
     InferenceEngine::InferRequest req;
+    std::string outputName;
 };
