@@ -145,7 +145,7 @@ class Tracker:
     def _calc_affinity_shape(self, track, obj):
         area1 = calc_bbox_area(track.last().bbox)
         area2 = calc_bbox_area(obj.bbox)
-        return math.exp(-0.8*abs(area1 -area2)/area1)
+        return math.exp(-0.09*abs(area1 -area2)/area1)
 
     @staticmethod
     def _log_affinity_matrix(affinity_matrix):
