@@ -19,6 +19,9 @@ public:
                 std::vector<cv::Rect>& boxes,
                 std::vector<float>& probabilities,
                 std::vector<unsigned>& classes);
+private:
+    InferenceEngine::InferRequest req;
+    std::string outputName;
 };
 
 // Compute Intersection over Union (IoU) metric between two rectangles.
@@ -35,3 +38,4 @@ float iou(const cv::Rect& a, const cv::Rect& b);
 // [out] indices       - output indices of bounding boxes from input list which are not suppressed
 void nms(const std::vector<cv::Rect>& boxes, const std::vector<float>& probabilities,
          float threshold, std::vector<unsigned>& indices);
+         
