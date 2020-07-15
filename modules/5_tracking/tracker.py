@@ -140,8 +140,8 @@ class Tracker:
         c_1 = get_bbox_center(track.last().bbox)
         c_2 = get_bbox_center(obj.bbox)
         D= get_dist(c_1, c_2)
-        return math.exp(-0.6* D / calc_bbox_area(track.last().bbox))
-        #return(track.last().bbox,obj.bbox)
+        return math.exp(-0.6* D*D/ calc_bbox_area(track.last().bbox))
+       # return calc_IoU(track.last().bbox, obj.bbox)
        # raise NotImplementedError("The function _calc_affinity_position is not implemented -- implement it by yourself")
 
     def _calc_affinity_shape(self, track, obj):
