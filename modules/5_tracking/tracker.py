@@ -133,13 +133,21 @@ class Tracker:
         return affinity_appearance * affinity_position * affinity_shape
 
     def _calc_affinity_appearance(self, track, obj):
-        raise NotImplementedError("The function _calc_affinity_appearance  is not implemented -- implement it by yourself")
+        return calc_features_similarity(track.last().appearance_feature, obj.appearance_feature)
+        #raise NotImplementedError("The function _calc_affinity_appearance  is not implemented -- implement it by yourself")
 
     def _calc_affinity_position(self, track, obj):
-        raise NotImplementedError("The function _calc_affinity_position is not implemented -- implement it by yourself")
+        c_1 = get_bbox_center(track.last().bbox)
+        c_2 = get_bbox_center(obj.bbox)
+        D= get_dist(c_1, c_2)
+        return math.exp(-0.6* D / calc_bbox_area(track.last().bbox))
+        #return(track.last().bbox,obj.bbox)
+       # raise NotImplementedError("The function _calc_affinity_position is not implemented -- implement it by yourself")
 
     def _calc_affinity_shape(self, track, obj):
-        raise NotImplementedError("The function _calc_affinity_shape is not implemented -- implement it by yourself")
+        return math.exp(-0.6 * abs(calc_bbox_area(track.last().bbox) - calc_bbox_area(obj.bbox)) / calc_bbox_area(
+            track.last().bbox))
+        #raise NotImplementedError("The function _calc_affinity_shape is not implemented -- implement it by yourself")
 
     @staticmethod
     def _log_affinity_matrix(affinity_matrix):
