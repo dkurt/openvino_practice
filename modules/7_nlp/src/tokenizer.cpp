@@ -6,7 +6,36 @@
 #include <opencv2/opencv.hpp>
 
 std::vector<std::string> basicTokenize(const std::string& text) {
-    CV_Error(cv::Error::StsNotImplemented, "basicTokenize");
+	std::vector<std::string> tokens;
+	std::string copy = text;
+	std::string alpha;
+	std::string punct;
+	for (int i = 0; i < copy.size(); i++)
+		if (isupper(copy[i]))
+			copy[i] = tolower(copy[i]);
+	for (int i = 0; i < copy.size(); i++)
+		if (isalpha(copy[i]))
+			alpha.push_back(copy[i]);
+		else
+		{
+			if (!isspace(copy[i]))
+			{
+				if (!alpha.empty())
+					tokens.push_back(alpha);
+				alpha.clear();
+				punct.push_back(copy[i]);
+				tokens.push_back(punct);
+				punct.clear();
+			}
+			else
+			{
+				if (!alpha.empty())
+					tokens.push_back(alpha);
+				alpha.clear();
+			}
+		}
+	tokens.push_back(alpha);
+	return tokens;
 }
 
 std::vector<std::string> wordTokenize(const std::string& word,
