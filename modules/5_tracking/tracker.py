@@ -9,6 +9,7 @@ from common.common_objects import get_bbox_center, get_dist, calc_bbox_area
 from common.find_best_assignment import solve_assignment_problem
 from common.annotation import AnnotationObject, AnnotationStorage
 
+
 class Track:
     __next_track_id = 0
     def __init__(self, first_obj):
