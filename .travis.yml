@@ -44,8 +44,8 @@ before_install:
   - megadl 'https://mega.nz/#!RAFU1I4T!xjuol1lZ9t_hA67AxgAxp8w1JIb5FXm53617UXR0NO8' --path data --no-progress  # frozen_unet_histology.pb
   # TODO: Implement frozen_unet_histology.pb model conversion with OpenVINO
   # (note that TensorFlow accepts input tensor of shape 1,952,1144,1,1,3)
-  - megadl 'https://mega.nz/file/RcUHRaQI#-4XReh2kFr_sgvl8qmKkVhkhTcxEWDVXMP1xFv8fsp8' --path data --no-progress  # celeba_generator.xml
-  - megadl 'https://mega.nz/file/pUN1kCCQ#e9foW8shMj6fpA7go8_RjtGo5YGYKtiI14SVCSop_l0' --path data --no-progress  # celeba_generator.bin
+  - megadl 'https://mega.nz/#!RcUHRaQI!-4XReh2kFr_sgvl8qmKkVhkhTcxEWDVXMP1xFv8fsp8' --path data --no-progress  # celeba_generator.xml
+  - megadl 'https://mega.nz/#!pUN1kCCQ!e9foW8shMj6fpA7go8_RjtGo5YGYKtiI14SVCSop_l0' --path data --no-progress  # celeba_generator.bin
 
 script:
   - source /opt/intel/openvino/bin/setupvars.sh -pyver 3.5
