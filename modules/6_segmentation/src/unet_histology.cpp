@@ -86,8 +86,7 @@ void UNetHistology::segment(const Mat& image, Mat& mask) {
 
 int UNetHistology::countGlands(const cv::Mat& segm) {
 	Mat thresh, bg, fg;
-	threshold(segm, thresh, 0, 255, THRESH_BINARY_INV + THRESH_OTSU);
-	morphologyEx(thresh, thresh, MORPH_CLOSE, Mat::ones(3, 3, CV_8U), Point(-1, -1), 3);
+	morphologyEx(segm, thresh, MORPH_CLOSE, Mat::ones(3, 3, CV_8U), Point(-1, -1), 3);
 	distanceTransform(thresh, thresh, DIST_L2, 5);
 	double min, max;
 	minMaxLoc(thresh, &min, &max);
