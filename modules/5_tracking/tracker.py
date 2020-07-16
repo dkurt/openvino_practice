@@ -146,7 +146,7 @@ class Tracker:
         w2, h2 = get_bbox_size(obj.bbox)
         a = abs(w1 - w2) / w1
         b = abs(h1 - h2) / h1
-        return math.exp(-0.75*(a+b))
+        return math.exp(-0.5*(a+b))
 
     @staticmethod
     def _log_affinity_matrix(affinity_matrix):
