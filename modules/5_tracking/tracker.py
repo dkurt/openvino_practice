@@ -5,7 +5,7 @@ import sys
 from tqdm import tqdm
 from common.feature_distance import calc_features_similarity
 from common.common_objects import DetectedObject, validate_detected_object, Bbox
-from common.common_objects import get_bbox_center, get_dist, calc_bbox_area, get_bbox_size
+from common.common_objects import get_bbox_center, get_dist, calc_bbox_area
 from common.find_best_assignment import solve_assignment_problem
 from common.annotation import AnnotationObject, AnnotationStorage
 
@@ -139,14 +139,12 @@ class Tracker:
         C1 = get_bbox_center(track.last().bbox)
         C2 = get_bbox_center(obj.bbox)
         dist = get_dist(C1,C2)
-        return math.exp(-0.5*dist**2 / calc_bbox_area(track.last().bbox)
+        return math.exp(-0.5 * dist ** 2 / calc_bbox_area(track.last().bbox))
 
     def _calc_affinity_shape(self, track, obj):
-        w1, h1 = get_bbox_size(track.last().bbox)
-        w2, h2 = get_bbox_size(obj.bbox)
-        a = abs(w1 - w2) / w1
-        b = abs(h1 - h2) / h1
-        return math.exp(-0.5*(a+b))
+       s1=calc_bbox_area(track.last().bbox);
+       s2=calc_bbox_area(obj.bbox);
+       return math.exp(-0.5 * abs(s1-s2)/s1)
 
     @staticmethod
     def _log_affinity_matrix(affinity_matrix):
