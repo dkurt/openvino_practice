@@ -25,15 +25,21 @@ UNetHistology::UNetHistology() {
 
     // Create a single processing thread
     req = execNet.CreateInferRequest();
+    outputName = net.getOutputsInfo().begin()->first;
 }
 
 void UNetHistology::bgr2rgb(const Mat& src, Mat& dst) {
-    CV_Error(Error::StsNotImplemented, "bgr2rgb");
+    cvtColor(src, dst, COLOR_BGR2RGB);
 }
 
 
 void UNetHistology::normalize(const Mat& src, Mat& dst) {
-    CV_Error(Error::StsNotImplemented, "normalize");
+    Scalar mean, std;
+    meanStdDev(src, mean, std);
+    dst = Mat::zeros(src.size(), CV_32FC3);
+    dst += src;
+    dst -= mean;
+    dst /= std;
 }
 
 void UNetHistology::segment(const Mat& image, Mat& mask) {
@@ -64,12 +70,38 @@ void UNetHistology::segment(const Mat& image, Mat& mask) {
     Blob::Ptr inputBlob = wrapMatToBlob(inp);
 
     // TODO: Put inputBlob to the network, perform inference and return mask
+    req.SetBlob("worker_0/validation/IteratorGetNext", inputBlob);
 
-    CV_Error(Error::StsNotImplemented, "UNetHistology semantic segmentation");
+    // Launch network
+    req.Infer();
+
+    // Copy output. "prob" is a name of output from .xml file
+    int* output = req.GetBlob(outputName)->buffer();
+    int Height = 772;
+    int Width = 964;
+    Mat res = Mat::zeros(Height, Width, CV_8UC1);
+    for (int i = 0; i < Height; i++) {
+        for (int j = 0; j < Width; j++) {
+            res.at<unsigned char>(i, j) = output[i * Width + j];
+        }
+    }
+    resize(res, mask, image.size());
+    
 }
 
 int UNetHistology::countGlands(const cv::Mat& segm) {
-    CV_Error(Error::StsNotImplemented, "countGlands");
+    Mat thresh;
+    threshold(segm, thresh, 0, 255, THRESH_BINARY_INV + THRESH_OTSU);
+    morphologyEx(thresh, thresh, MORPH_CLOSE, Mat::ones(3, 3, CV_8U), Point(-1, -1), 3);
+    dilate(thresh, thresh, 3);
+    distanceTransform(thresh, thresh, DIST_L2, 5);
+    double maxValue;
+    minMaxLoc(thresh, 0 , &maxValue);
+    threshold(thresh, thresh, 0.45*maxValue, 255, 0);
+    thresh.convertTo(thresh, CV_8U);
+    std::vector<std::vector<Point> > contours;
+    findContours(thresh, contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
+    return contours.size();
 }
 
 void UNetHistology::padMinimum(const Mat& src, int width, int height, Mat& dst) {
