@@ -16,8 +16,8 @@ Original images from CelebA (left), generated images (right).
 
 * Download converted model from here:
 
-  * [celeba_generator.bin](https://mega.nz/#!hAslCCaL!2vWXjiPq3EbuLZbOvEDOI0y9VorGn5enUm7UMNWGrWo)
-  * [celeba_generator.xml](https://mega.nz/#!AR1HwIIA!U3p46tM9SFMhKzbSwJIEiugdJDQ5mUSOC3twZL6UYTM)
+  * [celeba_generator.bin](https://mega.nz/#!pUN1kCCQ!e9foW8shMj6fpA7go8_RjtGo5YGYKtiI14SVCSop_l0)
+  * [celeba_generator.xml](https://mega.nz/#!RcUHRaQI!-4XReh2kFr_sgvl8qmKkVhkhTcxEWDVXMP1xFv8fsp8)
 
 * Setup OpenVINO environment
 
