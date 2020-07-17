@@ -3,6 +3,8 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/utils/filesystem.hpp>
 #include <inference_engine.hpp>
+#include <cmath>
+#include <algorithm>
 
 using namespace InferenceEngine;
 using namespace cv;
@@ -11,11 +13,41 @@ using namespace cv::utils::fs;
 void topK(const std::vector<float>& src, unsigned k,
           std::vector<float>& dst,
           std::vector<unsigned>& indices) {
-    CV_Error(Error::StsNotImplemented, "topK");
+    dst.resize(5, 0);
+    indices.resize(5, 0);
+    for (int i = 0; i < src.size(); i++)
+    {
+        for (int j = k - 1; j >= 0; j--) 
+        {
+            if (src[i] > dst[j]) 
+            {
+                if (j < k - 1) 
+                {
+                    dst[j + 1] = dst[j];
+                    indices[j + 1] = indices[j];
+                }
+                dst[j] = src[i];
+                indices[j] = i;
+            }
+        }
+    }
+    
+    
+
 }
 
 void softmax(std::vector<float>& values) {
-    CV_Error(Error::StsNotImplemented, "softmax");
+
+    float sum = 0;
+    float max = *std::max_element(values.begin(), values.end());
+    for (int i = 0; i < values.size(); i++) 
+    {
+        sum += exp(values[i] - max);
+    }
+    for (int i = 0; i < values.size(); i++)
+    {
+        values[i] = exp(values[i] - max) / sum;
+    }
 }
 
 Blob::Ptr wrapMatToBlob(const Mat& m) {
@@ -60,4 +92,11 @@ void Classifier::classify(const cv::Mat& image, int k, std::vector<float>& proba
 
     // Copy output. "prob" is a name of output from .xml file
     float* output = req.GetBlob(outputName)->buffer();
+    std::vector<float> res;
+    for (int i = 0; i < req.GetBlob(outputName)->size(); i++) 
+    {
+        res.push_back(output[i]);
+    }
+    topK(res, k, probabilities, indices);
+    softmax(probabilities);
 }
