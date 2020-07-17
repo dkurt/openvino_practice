@@ -8,7 +8,7 @@ public:
 
     // Performs object detection
     // [inp] image
-    // [inp] nmsThreshold  - threshold for nms
+    // [inp] nmsThreshold  - threshold for nms3
     // [inp] probThreshold - threshold for boxes probabilities
     // [out] boxes         - list of bounding boxes
     // [out] probabilities - list of probabilities corresponding to bounding boxes
@@ -19,6 +19,9 @@ public:
                 std::vector<cv::Rect>& boxes,
                 std::vector<float>& probabilities,
                 std::vector<unsigned>& classes);
+private:
+    InferenceEngine::InferRequest req;
+    std::string outputName;
 };
 
 // Compute Intersection over Union (IoU) metric between two rectangles.
