@@ -13,6 +13,7 @@ before_install:
   - sudo apt-get install -y megatools python3-setuptools python3-pip
   - python3 -m pip install --upgrade pip
   - python3 -m pip install -r modules/6_segmentation/requirements.txt --quiet
+  - python3 -m pip install -r modules/5_tracking/requirements.txt --quiet
   - python3 -m pip install -r modules/10_reinforcement_learning/requirements.txt --quiet
   # Install OpenVINO
   - sudo curl -o GPG-PUB-KEY-INTEL-OPENVINO-2020 https://apt.repos.intel.com/openvino/2020/GPG-PUB-KEY-INTEL-OPENVINO-2020
@@ -37,7 +38,10 @@ before_install:
   - megadl 'https://mega.nz/#!IZE0iYaT!XR9MdIy7B4EqVKOiiHppmliRf6E4ov_rtKs18wmyx3I' --path data --no-progress  # distilbert.xml
   - megadl 'https://mega.nz/#!NMV02agL!APdG2lwOvEKy5oqMwMKpRJJxNPIGDY4hSm3hpY9kj7M' --path data --no-progress  # candy.bin
   - megadl 'https://mega.nz/#!lNFWyagB!DPTHP8OKDDB9wcrshvQxcTSRAbyrgeUHKeVOYyiFss0' --path data --no-progress  # candy.xml
-
+  - megadl 'https://mega.nz/#!RcUHRaQI!-4XReh2kFr_sgvl8qmKkVhkhTcxEWDVXMP1xFv8fsp8' --path data --no-progress  # celeba_generator.xml
+  - megadl 'https://mega.nz/#!pUN1kCCQ!e9foW8shMj6fpA7go8_RjtGo5YGYKtiI14SVCSop_l0' --path data --no-progress  # celeba_generator.bin
+  - megadl 'https://mega.nz/#!gQlnAADB!ioLngYD5bK9P7_lhgybkiShonOauMMQ6EUDvJRUoY2A' --path data --no-progress && cd data && unzip tracking_data.zip && cd ..
+  
   # origin weights are from https://github.com/NifTK/NiftyNetModelZoo/tree/5-reorganising-with-lfs/unet_histology
   - megadl 'https://mega.nz/#!RAFU1I4T!xjuol1lZ9t_hA67AxgAxp8w1JIb5FXm53617UXR0NO8' --path data --no-progress  # frozen_unet_histology.pb
   # TODO: Implement frozen_unet_histology.pb model conversion with OpenVINO
@@ -47,6 +51,6 @@ script:
   - source /opt/intel/openvino/bin/setupvars.sh -pyver 3.5
   - export PYTHONPATH=$(ls modules | xargs -I {} sh -c 'printf $(pwd)/modules/{}:')$PYTHONPATH
   - mkdir build && cd build
-  - cmake .. -DCMAKE_BUILD_TYPE=Release && make -j8
+  - cmake .. -DCMAKE_BUILD_TYPE=Release && make -j$(nproc --all)
   # Run tests only for changes modules
   - git diff --name-only HEAD^ ../modules/ | cut -d "/" -f2 | sed -E "s/[0-9]+_(.*)/\1/" | uniq | xargs -I '{}' sh -c './bin/test_{}'

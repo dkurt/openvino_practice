@@ -27,7 +27,7 @@ deep learning network. To complete this module, you should implement:
 
     * Linux
     ```bash
-    /opt/intel/openvino/deployment_tools/model_optimizer/mo.py \
+    python3 /opt/intel/openvino/deployment_tools/model_optimizer/mo.py \
         --input_model DenseNet_121.caffemodel \
         --input_proto DenseNet_121.prototxt \
         --scale_values "[58.8235294117647]" \
@@ -37,7 +37,7 @@ deep learning network. To complete this module, you should implement:
 
     * Microsoft Windows
     ```bat
-    "C:\Program Files (x86)\IntelSWTools\openvino\deployment_tools\model_optimizer\mo.py" ^
+    python "C:\Program Files (x86)\IntelSWTools\openvino\deployment_tools\model_optimizer\mo.py" ^
         --input_model DenseNet_121.caffemodel ^
         --input_proto DenseNet_121.prototxt ^
         --scale_values "[58.8235294117647]" ^
