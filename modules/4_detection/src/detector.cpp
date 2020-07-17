@@ -40,6 +40,7 @@ void Detector::detect(const cv::Mat& image,
                       std::vector<float>& probabilities,
                       std::vector<unsigned>& classes) {
     Blob::Ptr input = wrapMatToBlob(image);
+
     req.SetBlob("image", input);
 
     // Launch network
