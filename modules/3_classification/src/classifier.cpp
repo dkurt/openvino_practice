@@ -11,11 +11,32 @@ using namespace cv::utils::fs;
 void topK(const std::vector<float>& src, unsigned k,
           std::vector<float>& dst,
           std::vector<unsigned>& indices) {
-    CV_Error(Error::StsNotImplemented, "topK");
+        std::vector<float> tmp = src;
+        sort(tmp.begin(), tmp.end(), std::greater<float>());
+        dst = std::vector<float>(tmp.begin(), tmp.begin() + k);
+        for (int i = 0; i < k; ++i) {
+            float temp = dst[i];
+            auto adress = std::find(src.begin(), src.end(), temp);
+            int index = std::distance(src.begin(), adress);
+            indices.push_back(index);
+        }
+
+        //CV_Error(Error::StsNotImplemented, "topK");
 }
 
 void softmax(std::vector<float>& values) {
-    CV_Error(Error::StsNotImplemented, "softmax");
+    //std::vector<float> tmp(values);
+    float normirovka = 0;
+    int maxElement = *std::max_element(values.begin(), values.end());
+
+    for (int i = 0; i < values.size(); ++i) {
+         normirovka += exp(values[i] - maxElement);
+    }
+    for (int i = 0; i < values.size(); ++i) {
+        values[i] = exp(values[i] - maxElement) / normirovka;
+    }
+
+    //CV_Error(Error::StsNotImplemented, "softmax");
 }
 
 Blob::Ptr wrapMatToBlob(const Mat& m) {
@@ -60,4 +81,11 @@ void Classifier::classify(const cv::Mat& image, int k, std::vector<float>& proba
 
     // Copy output. "prob" is a name of output from .xml file
     float* output = req.GetBlob(outputName)->buffer();
+    std::vector<float> src;
+    for (int i = 0; i < req.GetBlob(outputName)->size(); i++)
+    {
+        src.push_back(output[i]);
+    }
+    topK(src, k, probabilities, indices);
+    softmax(probabilities);
 }
