@@ -86,5 +86,5 @@ int predict(const cv::Ptr<cv::ml::KNearest>& model, const cv::Mat& image) {
     cv::Mat resultMat;
     model->findNearest(preparedImage, model->getDefaultK(), resultMat);
 
-    return resultMat.at<int>(0, 0);
+    return (int)resultMat.at<float>(0, 0);
 }
