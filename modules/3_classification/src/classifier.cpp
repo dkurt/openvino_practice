@@ -59,8 +59,17 @@ Classifier::Classifier() {
     CNNNetwork net = ie.ReadNetwork(join(DATA_FOLDER, "DenseNet_121.xml"),
                                     join(DATA_FOLDER, "DenseNet_121.bin"));
 
+    // Specify preprocessing procedures
+    // (NOTE: this part is different for different models!)
+    InputInfo::Ptr inputInfo = net.getInputsInfo()["data"];
+    inputInfo->getPreProcess().setResizeAlgorithm(ResizeAlgorithm::RESIZE_BILINEAR);
+    inputInfo->setLayout(Layout::NHWC);
+    inputInfo->setPrecision(Precision::U8);
+    outputName = net.getOutputsInfo().begin()->first;
+
     // Initialize runnable object on CPU device
-    // Throws Exception: EXC_BAD_ACCESS (code=1, address=0x80) on my PC
+    // Throws an Exception: EXC_BAD_ACCESS (code=1, address=0x80) on my PC
+    // https://github.com/openvinotoolkit/openvino/issues/1380
     ExecutableNetwork execNet = ie.LoadNetwork(net, "CPU");
 
     // Create a single processing thread
