@@ -37,11 +37,11 @@ void softmax(std::vector<float>& values) {
     float maxValue = *std::max_element(values.begin(), values.end());
 
     for (auto value: values) {
-        sumOfExps += exp(value / maxValue);
+        sumOfExps += exp(value - maxValue);
     }
 
     for (auto& value: values) {
-        value = exp(value / maxValue) / sumOfExps;
+        value = exp(value - maxValue) / sumOfExps;
     }
 }
 
@@ -58,14 +58,6 @@ Classifier::Classifier() {
     // Load deep learning network into memory
     CNNNetwork net = ie.ReadNetwork(join(DATA_FOLDER, "DenseNet_121.xml"),
                                     join(DATA_FOLDER, "DenseNet_121.bin"));
-
-    // Specify preprocessing procedures
-    // (NOTE: this part is different for different models!)
-    InputInfo::Ptr inputInfo = net.getInputsInfo()["data"];
-    inputInfo->getPreProcess().setResizeAlgorithm(ResizeAlgorithm::RESIZE_BILINEAR);
-    inputInfo->setLayout(Layout::NHWC);
-    inputInfo->setPrecision(Precision::U8);
-    outputName = net.getOutputsInfo().begin()->first;
 
     // Initialize runnable object on CPU device
     // Throws Exception: EXC_BAD_ACCESS (code=1, address=0x80) on my PC
