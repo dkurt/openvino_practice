@@ -3,9 +3,9 @@
 This module asks to solve one of `gym` environments.
 Check out `try_gym()` function to get perception of what `gym` is about.
 To complete this module you should:
-1. implement
-    i. `Agent`'s methods. Hyperparamthers `ALPHA`, `GAMMA` are initialized for you
-    ii. A part of `train()` function
+1. Implement
+    1. `Agent`'s methods. Hyperparamthers `ALPHA` and `GAMMA` are initialized for you
+    2. Parts of `train()` function
 2. Add `q_values.npy` file saved by `agent.save(WEIGHTS_PATH)`
 
 ## Details

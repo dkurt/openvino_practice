@@ -11,7 +11,9 @@ import test_reinforcement_learning
 WEIGHTS_PATH = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'q_values.npy')
 
 def try_gym():
-    # Jump to FrozenLakeEnv defenition to see its descrition
+    # Jump to the FrozenLakeEnv definition
+    # (https://github.com/openai/gym/blob/345c65973fc7160d8be374745a60c36869d8accc/gym/envs/toy_text/frozen_lake.py#L71)
+    # to see its descrition
     env = wrappers.TimeLimit(toy_text.FrozenLakeEnv(map_name='8x8'), max_episode_steps=1000)
     print('action_space size:', env.action_space.n)
     print('random action sample:', env.action_space.sample())
