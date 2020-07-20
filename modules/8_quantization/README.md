@@ -46,7 +46,7 @@ add a screenshot with working bot to pull request description.
   * Windows
 
       ```bat
-      set PYTHONPATH="C:\Program Files (x86)\IntelSWTools\openvino\deployment_tools\tools\post_training_optimization_toolkit";%PYTHONPATH%
+      set PYTHONPATH=C:\Program Files (x86)\IntelSWTools\openvino\deployment_tools\tools\post_training_optimization_toolkit;%PYTHONPATH%
       ```
 
 * Add quantized model to `openvino_practice/data` folder - you will find it in `./optimized` subfolder after script finished.
