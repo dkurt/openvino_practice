@@ -48,8 +48,8 @@ std::string SQuADModel::getAnswer(const std::string& question, const std::string
     std::vector<int> indices = tokenizer.tokensToIndices(tokens);
     Blob::Ptr input = wrapVecToBlob(indices);
     req.SetBlob("input.1", input);
-    req.Infer(); 
-    float* output1 = req.GetBlob(outputName)->buffer();
+    req.Infer();
+    float* output1 = req.GetBlob("Squeeze_437")->buffer();
     float* output2 = req.GetBlob("Squeeze_438")->buffer();
     float max1 = output1[0], max2 = output2[0];
     int indMax1 = 0, indMax2 = 0;
