@@ -19,6 +19,8 @@ public:
 // Semantic segmentation for  Autonomous Driving Assistant System scenario.
 // origin: https://github.com/opencv/open_model_zoo/blob/master/models/intel/semantic-segmentation-adas-0001/
 class ADAS : public Segmenter {
+    InferenceEngine::InferRequest req;
+    std::string outputName;
 public:
     ADAS();
 
@@ -53,4 +55,5 @@ public:
 
 private:
     InferenceEngine::InferRequest req;
+    std::string outputName;
 };
