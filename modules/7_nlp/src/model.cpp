@@ -67,7 +67,7 @@ std::string SQuADModel::getAnswer(const std::string& question, const std::string
     
     std::string result;
     for (int i = indMax1; i < indMax2 + 1; i++) {
-        std::string word = tokenizer.vocab[indices[i]];
+        std::string word = tokens[i];
         if (word[0] == '#') {
             result.pop_back();
             result += word.substr(2, word.length() - 2);
