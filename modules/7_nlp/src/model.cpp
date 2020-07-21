@@ -65,16 +65,17 @@ std::string SQuADModel::getAnswer(const std::string& question, const std::string
         }
     }
     
-    std::string result;
+    std::string result = "";
+    CV_CheckLE(indMax1, indMax2, "indMax1 > indMax2");
     for (int i = indMax1; i < indMax2 + 1; i++) {
         std::string word = tokens[i];
         if (word[0] == '#') {
             result.pop_back();
             result += word.substr(2, word.length() - 2);
-            result += ' ';
+            result += (char)32;
         }
         else {
-            result += word + ' ';
+            result += word + (char)32;
         }
     }
     result.pop_back();
