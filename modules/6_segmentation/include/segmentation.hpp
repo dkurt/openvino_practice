@@ -56,5 +56,6 @@ public:
     static int countGlands(const cv::Mat& segm);
 
 private:
-    InferenceEngine::InferRequest req;
+	InferenceEngine::InferRequest req;
+	std::string outputName;
 };
