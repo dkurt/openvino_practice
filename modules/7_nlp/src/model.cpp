@@ -11,7 +11,7 @@ using namespace InferenceEngine;
 using namespace cv;
 using namespace cv::utils::fs;
 
-Blob::Ptr wrapVecToBlob(std::vector<int> v) {
+Blob::Ptr wrapVecToBlob(const std::vector<int>& v) {
     std::vector<size_t> dims = {1, v.size()};
     return make_shared_blob<int32_t>(TensorDesc(Precision::I32, dims, Layout::NC), (int*)v.data());
 }
@@ -23,7 +23,7 @@ SQuADModel::SQuADModel() : tokenizer(join(DATA_FOLDER, "bert-large-uncased-vocab
     CNNNetwork net = ie.ReadNetwork(join(DATA_FOLDER, "distilbert.xml"),
                                     join(DATA_FOLDER, "distilbert.bin"));
     InputInfo::Ptr inputInfo = net.getInputsInfo()["input.1"];
-   // inputInfo->setLayout(Layout::HW);
+    inputInfo->setLayout(Layout::NC);
     inputInfo->setPrecision(Precision::I32);
     outputName = net.getOutputsInfo().begin()->first;
     // Initialize runnable object on CPU device
@@ -49,8 +49,8 @@ std::string SQuADModel::getAnswer(const std::string& question, const std::string
     Blob::Ptr input = wrapVecToBlob(indices);
     req.SetBlob("input.1", input);
     req.Infer();
-    float* output1 = req.GetBlob("Squeeze_437")->buffer();
-    float* output2 = req.GetBlob("Squeeze_438")->buffer();
+    float* output1 = req.GetBlob("Squeeze_437")->buffer().as<float*>();
+    float* output2 = req.GetBlob("Squeeze_438")->buffer().as<float*>();
     float max1 = output1[0], max2 = output2[0];
     int indMax1 = 0, indMax2 = 0;
     for (int i = 0; i < 128; i++) {
@@ -65,6 +65,7 @@ std::string SQuADModel::getAnswer(const std::string& question, const std::string
         }
     }
     
+    std::cout << indMax1 << " " << indMax2 << std::endl;
     std::string result = "";
     CV_CheckLE(indMax1, indMax2, "indMax1 > indMax2");
     for (int i = indMax1; i < indMax2 + 1; i++) {
