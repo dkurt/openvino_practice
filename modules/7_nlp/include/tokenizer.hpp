@@ -26,7 +26,8 @@ public:
     // [maxNumTokens] - if number of input tokens less than this value - fill indices by zeros.
     std::vector<int> tokensToIndices(const std::vector<std::string>& tokens, int maxNumTokens=128);
 
-private:
+public:
     std::vector<std::string> vocab;
+private:
     std::map<std::string, int> vocabMap;
 };
