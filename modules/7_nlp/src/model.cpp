@@ -70,7 +70,7 @@ std::string SQuADModel::getAnswer(const std::string& question, const std::string
         std::string word = tokenizer.vocab[indices[i]];
         if (word[0] == '#') {
             result.pop_back();
-            result += word.substr(2, word.length());
+            result += word.substr(2, word.length() - 2);
             result += ' ';
         }
         else {
