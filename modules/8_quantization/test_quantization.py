@@ -16,7 +16,6 @@ def test_FP32():
     img = cv.imread(img_path)
     ref = cv.imread(ref_path)
     stylized = model.process(img)
-    cv.imwrite("fp32.jpg", stylized)
     assert(cv.norm(stylized, ref, cv.NORM_INF) <= 1)
 
 
@@ -31,7 +30,6 @@ def test_INT8():
     img = cv.imread(img_path)
     ref = cv.imread(ref_path)
     stylized = model.process(img)
-    cv.imwrite("i8.jpg", stylized)
     print(cv.PSNR(stylized, ref))
     assert(cv.PSNR(stylized, ref) >= 35)
 
