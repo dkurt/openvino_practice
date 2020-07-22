@@ -6,14 +6,13 @@ using namespace cv;
 inline int readInt(std::ifstream& ifs) {
     int val;
     ifs.read((char*)&val, 4);
-    // Integers in file are high endian which requires swap
     std::swap(((char*)&val)[0], ((char*)&val)[3]);
     std::swap(((char*)&val)[1], ((char*)&val)[2]);
     return val;
 }
 
 void loadImages(const std::string& filepath,
-                std::vector<Mat>& images) {
+    std::vector<Mat>& images) {
     std::ifstream ifs(filepath.c_str(), std::ios::binary);
     CV_CheckEQ(ifs.is_open(), true, filepath.c_str());
 
@@ -21,13 +20,27 @@ void loadImages(const std::string& filepath,
     CV_CheckEQ(magicNum, 2051, "");
 
     int numImages = readInt(ifs);
+    int numRows = readInt(ifs);
+    int numCols = readInt(ifs);
 
-    // TODO: follow "FILE FORMATS FOR THE MNIST DATABASE" specification
-    // at http://yann.lecun.com/exdb/mnist/
+    for (int i = 0; i < numImages; i++)
+    {
+        Mat img(numRows, numCols, CV_8UC1);
+        for (int j = 0; j < numRows; j++)
+        {
+            for (int k = 0; k < numCols; k++)
+            {
+                uchar dest = 0;
+                ifs.read((char*)&dest, sizeof(dest));
+                img.at<char>(j, k) = dest;
+            }
+        }
+        images.push_back(img);
+    }
 }
 
 void loadLabels(const std::string& filepath,
-                std::vector<int>& labels) {
+    std::vector<int>& labels) {
     std::ifstream ifs(filepath.c_str(), std::ios::binary);
     CV_CheckEQ(ifs.is_open(), true, filepath.c_str());
 
@@ -36,35 +49,63 @@ void loadLabels(const std::string& filepath,
 
     int numLabels = readInt(ifs);
 
-    // TODO: follow "FILE FORMATS FOR THE MNIST DATABASE" specification
-    // at http://yann.lecun.com/exdb/mnist/
+    for (int i = 0; i < numLabels; i++)
+    {
+        uchar val = 0;
+        ifs.read((char*)&val, sizeof(val));
+        labels.push_back(val);
+    }
 }
 
 void prepareSamples(const std::vector<cv::Mat>& images, cv::Mat& samples) {
-    CV_Error(Error::StsNotImplemented, "prepareSamples");
+    for (int i = 0; i < images.size(); i++)
+    {
+        Mat row = images[i].reshape(1, 1);
+        samples.push_back(row);
+    }
+    samples.convertTo(samples, CV_32FC1);
 }
 
 Ptr<ml::KNearest> train(const std::vector<cv::Mat>& images,
-                        const std::vector<int>& labels) {
-    CV_Error(Error::StsNotImplemented, "train");
+    const std::vector<int>& labels) {
+    Ptr<ml::KNearest> model = ml::KNearest::create();
+    Mat s;
+    prepareSamples(images, s);
+    model->train(s, ml::SampleTypes::ROW_SAMPLE, labels);
+    return model;
 }
 
 float validate(Ptr<ml::KNearest> model,
-               const std::vector<cv::Mat>& images,
-               const std::vector<int>& labels) {
-    CV_Error(Error::StsNotImplemented, "validate");
+    const std::vector<cv::Mat>& images,
+    const std::vector<int>& labels) {
+    Mat s;
+    prepareSamples(images, s);
+    Mat result;
+    model->findNearest(s, 5, result);
+    int counter = 0;
+    for (int i = 0; i < labels.size(); i++)
+    {
+        if (labels[i] == result.at<float>(i));
+        counter++;
+    }
+    return (float)counter / (float)labels.size();
 }
 
 int predict(Ptr<ml::KNearest> model, const Mat& image) {
-    // TODO: resize image to 28x28 (cv::resize)
+    Mat img;
+    resize(image, img, Size(28, 28));
 
-    // TODO: convert image from BGR to HSV (cv::cvtColor)
+    Mat HSVcolor;
+    cvtColor(img, HSVcolor, COLOR_BGR2HSV);
 
-    // TODO: get Saturate component (cv::split)
+    std::vector<Mat> channels;
+    split(HSVcolor, channels);
 
-    // TODO: prepare input - single row FP32 Mat
+    std::vector<Mat> s;
+    s.push_back(channels[1]);
+    Mat input;
+    prepareSamples(s, input);
 
-    // TODO: make a prediction by the model
-
-    CV_Error(Error::StsNotImplemented, "predict");
+    int result = model->predict(input);
+    return result;
 }
