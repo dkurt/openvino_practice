@@ -3,6 +3,7 @@ import numpy as np
 import cv2 as cv
 import telebot
 import argparse
+import io
 from style_transfer import StyleTransfer
 
 parser = argparse.ArgumentParser()
