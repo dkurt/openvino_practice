@@ -27,7 +27,8 @@ def get_image(message):
 
 def send_image(message, img):
     _, buf = cv.imencode(".jpg", img, [cv.IMWRITE_JPEG_QUALITY, 90])
-    bot.send_photo(message.chat.id, buf)
+    outputbuf = io.BytesIO(buf)
+    bot.send_photo(message.chat.id, outputbuf)
 
 
 @bot.message_handler(content_types=['photo'])
