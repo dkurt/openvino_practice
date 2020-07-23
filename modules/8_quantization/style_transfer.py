@@ -38,7 +38,7 @@ class StyleTransfer():
         img = cv.cvtColor(img, cv.COLOR_BGR2RGB)
         img = np.transpose(img, (2, 0, 1))
         img = np.expand_dims(img, axis=0)
-        return img.astype(float)
+        return img.astype(np.float32)
 
     # Performs output postprocessing
     # 1. Transpose from NCHW to HWC
