@@ -35,8 +35,11 @@ class StyleTransfer():
     # 2. Transpose from HWC to NCHW layout
     # 3. Convert to FP32
     def _preprocess(self, img):
-        print('_preprocess is not implemented')
-        exit(1)
+          img = cv.cvtColor(img, cv.COLOR_BGR2RGB)
+          img = np.transpose(img, (2, 0, 1))
+          img = np.expand_dims(img, axis=0)
+          img.astype(np.float32)
+          return img
 
 
     # Performs output postprocessing
@@ -45,5 +48,8 @@ class StyleTransfer():
     # 3. Convert to U8
     # 4. Convert from RGB to BGR
     def _postprocess(self, out):
-        print('_postprocess is not implemented')
-        exit(1)
+       out = np.transpose(out[0], (1, 2, 0))
+       out = np.clip(out, 0, 255)
+       out = out.astype(np.uint8)
+       return cv.cvtColor(out, cv.COLOR_RGB2BGR)
+        
