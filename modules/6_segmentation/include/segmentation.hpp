@@ -23,6 +23,10 @@ public:
     ADAS();
 
     virtual void segment(const cv::Mat& image, cv::Mat& mask);
+
+private:
+	InferenceEngine::InferRequest req;
+	std::string outputName;
 };
 
 // Glands segmentation in colon histology images
@@ -52,5 +56,6 @@ public:
     static int countGlands(const cv::Mat& segm);
 
 private:
-    InferenceEngine::InferRequest req;
+	InferenceEngine::InferRequest req;
+	std::string outputName;
 };
