@@ -27,6 +27,6 @@ public:
     std::vector<int> tokensToIndices(const std::vector<std::string>& tokens, int maxNumTokens=128);
 
 private:
-    std::vector<std::string> vocab;
     std::map<std::string, int> vocabMap;
+    std::vector<std::string> vocab;
 };

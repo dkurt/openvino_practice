@@ -14,4 +14,5 @@ public:
 private:
     Tokenizer tokenizer;
     InferenceEngine::InferRequest req;
+    std::string outputName;
 };

@@ -1,0 +1,1 @@
+Erlang worked for the Copenhagen Telephone Exchange and wanted to analyze and optimize its operations

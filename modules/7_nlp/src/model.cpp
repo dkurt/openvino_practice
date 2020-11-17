@@ -11,16 +11,23 @@ using namespace InferenceEngine;
 using namespace cv;
 using namespace cv::utils::fs;
 
+Blob::Ptr wrapVecToBlob(const std::vector<int>& v) {
+    std::vector<size_t> dims = {1, v.size()};
+    return make_shared_blob<int32_t>(TensorDesc(Precision::I32, dims, Layout::NC), (int*)v.data());
+}
+
 SQuADModel::SQuADModel() : tokenizer(join(DATA_FOLDER, "bert-large-uncased-vocab.txt")) {
     Core ie;
 
     // Load deep learning network into memory
     CNNNetwork net = ie.ReadNetwork(join(DATA_FOLDER, "distilbert.xml"),
                                     join(DATA_FOLDER, "distilbert.bin"));
-
+    InputInfo::Ptr inputInfo = net.getInputsInfo()["input.1"];
+    inputInfo->setLayout(Layout::NC);
+    inputInfo->setPrecision(Precision::I32);
+    outputName = net.getOutputsInfo().begin()->first;
     // Initialize runnable object on CPU device
     ExecutableNetwork execNet = ie.LoadNetwork(net, "CPU");
-
     // Create a single processing thread
     req = execNet.CreateInferRequest();
 }
@@ -39,8 +46,39 @@ std::string SQuADModel::getAnswer(const std::string& question, const std::string
     tokens.push_back("[SEP]");
 
     std::vector<int> indices = tokenizer.tokensToIndices(tokens);
+    Blob::Ptr input = wrapVecToBlob(indices);
+    req.SetBlob("input.1", input);
+    req.Infer();
+    float* output1 = req.GetBlob("Squeeze_437")->buffer().as<float*>();
+    float* output2 = req.GetBlob("Squeeze_438")->buffer().as<float*>();
+    float max1 = output1[0], max2 = output2[0];
+    int indMax1 = 0, indMax2 = 0;
+    for (int i = 0; i < 128; i++) {
+        if (output1[i] > max1) {
+            max1 = output1[i];
+            indMax1 = i;
+        }
 
-    // TODO: forward indices through the network and return an answer
-
-    return "";
+        if (output2[i] > max2) {
+            max2 = output2[i];
+            indMax2 = i;
+        }
+    }
+    
+    std::cout << indMax1 << " " << indMax2 << std::endl;
+    std::string result = "";
+    CV_CheckLE(indMax1, indMax2, "indMax1 > indMax2");
+    for (int i = indMax1; i < indMax2 + 1; i++) {
+        std::string word = tokens[i];
+        if (word[0] == '#') {
+            result.pop_back();
+            result += word.substr(2, word.length() - 2);
+            result += (char)32;
+        }
+        else {
+            result += word + (char)32;
+        }
+    }
+    result.pop_back();
+    return result;
 }
