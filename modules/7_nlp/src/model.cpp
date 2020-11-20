@@ -17,12 +17,20 @@ SQuADModel::SQuADModel() : tokenizer(join(DATA_FOLDER, "bert-large-uncased-vocab
     // Load deep learning network into memory
     CNNNetwork net = ie.ReadNetwork(join(DATA_FOLDER, "distilbert.xml"),
                                     join(DATA_FOLDER, "distilbert.bin"));
-
+	InputInfo::Ptr inputInfo = net.getInputsInfo()["input.1"];
+	inputInfo->setPrecision(Precision::I32);
     // Initialize runnable object on CPU device
     ExecutableNetwork execNet = ie.LoadNetwork(net, "CPU");
 
     // Create a single processing thread
     req = execNet.CreateInferRequest();
+	outputName = net.getOutputsInfo().begin()->first;
+}
+
+Blob::Ptr wrapVecToBlob(const std::vector<int> str) {
+	std::vector<size_t> dims = { 1, 128 };
+	return make_shared_blob<int>(TensorDesc(Precision::I32, dims, Layout::NC),
+		(int*)str.data());
 }
 
 std::string SQuADModel::getAnswer(const std::string& question, const std::string& source) {
@@ -41,6 +49,9 @@ std::string SQuADModel::getAnswer(const std::string& question, const std::string
     std::vector<int> indices = tokenizer.tokensToIndices(tokens);
 
     // TODO: forward indices through the network and return an answer
-
+	Blob::Ptr input = wrapVecToBlob(indices);
+	req.SetBlob("input.1", input);
+	req.Infer();
+	float* output = req.GetBlob(outputName)->buffer();
     return "";
 }
