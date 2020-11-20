@@ -15,7 +15,6 @@ class Track:
         self.objects = []
         self._track_id = Track.__next_track_id
         Track.__next_track_id += 1
-
         self.objects.append(first_obj)
 
     def _validate(self):
@@ -133,13 +132,18 @@ class Tracker:
         return affinity_appearance * affinity_position * affinity_shape
 
     def _calc_affinity_appearance(self, track, obj):
-        raise NotImplementedError("The function _calc_affinity_appearance  is not implemented -- implement it by yourself")
+        return calc_features_similarity(track.last().appearance_feature, obj.appearance_feature)
 
     def _calc_affinity_position(self, track, obj):
-        raise NotImplementedError("The function _calc_affinity_position is not implemented -- implement it by yourself")
-
+        track_center = get_bbox_center(track.last().bbox)
+        obj_center = get_bbox_center(obj.bbox)
+        D = get_dist(track_center, obj_center)
+        return math.exp(-0.6*D / math.sqrt(calc_bbox_area(track.last().bbox)))
+        
     def _calc_affinity_shape(self, track, obj):
-        raise NotImplementedError("The function _calc_affinity_shape is not implemented -- implement it by yourself")
+        tr_area=calc_bbox_area(track.last().bbox)
+        obj_area=calc_bbox_area(obj.bbox)
+        return math.exp(-0.1*abs(tr_area-obj_area)/tr_area)
 
     @staticmethod
     def _log_affinity_matrix(affinity_matrix):
