@@ -23,7 +23,7 @@ class Track:
         for o in self.objects:
             validate_detected_object(o)
         for i in range(len(self.objects) - 1):
-            self.objects[i].frame_index < self.objects[i+1].frame_index
+            self.objects[i].frame_index < self.objects[i + 1].frame_index
 
     def add_object(self, o):
         self._validate()
@@ -57,7 +57,7 @@ class Track:
         if i_found == 0: # cur_frame_ind before the first frame_index in track
             return None
         log.debug("using linear approximation for track id={}, frame_index={}".format(self._track_id, cur_frame_ind))
-        o1 = self.objects[i_found-1]
+        o1 = self.objects[i_found - 1]
         o2 = self.objects[i_found]
         assert o1.frame_index < cur_frame_ind < o2.frame_index
 
@@ -133,13 +133,14 @@ class Tracker:
         return affinity_appearance * affinity_position * affinity_shape
 
     def _calc_affinity_appearance(self, track, obj):
-        raise NotImplementedError("The function _calc_affinity_appearance  is not implemented -- implement it by yourself")
+        return calc_features_similarity(track.last().appearance_feature, obj.appearance_feature)
 
     def _calc_affinity_position(self, track, obj):
-        raise NotImplementedError("The function _calc_affinity_position is not implemented -- implement it by yourself")
+         D = get_dist(get_bbox_center(track.last().bbox), get_bbox_center(obj.bbox))
+         return math.exp(-0.4 * D * D / calc_bbox_area(track.last().bbox))
 
     def _calc_affinity_shape(self, track, obj):
-        raise NotImplementedError("The function _calc_affinity_shape is not implemented -- implement it by yourself")
+        return math.exp(-0.1 * abs(calc_bbox_area(track.last().bbox) - calc_bbox_area(obj.bbox)) / calc_bbox_area(track.last().bbox))
 
     @staticmethod
     def _log_affinity_matrix(affinity_matrix):
@@ -168,8 +169,7 @@ class Tracker:
             else:
                 best_affinity_str = str(cur_best_affinity)
 
-            log.debug("track_index={}, track id={}, last_bbox={}, decision={}, best_affinity={} => {}".format(
-                      track_index, self.tracks[track_index].get_id(),
+            log.debug("track_index={}, track id={}, last_bbox={}, decision={}, best_affinity={} => {}".format(track_index, self.tracks[track_index].get_id(),
                       self.tracks[track_index].last().bbox,
                       decision[track_index],
                       best_affinity_str,
@@ -205,8 +205,7 @@ class Tracker:
     def _create_new_track(self, o):
         new_track = Track(o)
         self.tracks.append(new_track)
-        log.debug("created new track: id={} object: frame_index={}, {}".format(
-                  new_track.get_id(), o.frame_index, o.bbox))
+        log.debug("created new track: id={} object: frame_index={}, {}".format(new_track.get_id(), o.frame_index, o.bbox))
 
     def _move_obsolete_tracks_to_archive(self, frame_index):
         new_tracks = []
@@ -214,8 +213,7 @@ class Tracker:
             last_frame_index = t.last().frame_index
             if frame_index - last_frame_index >= self.num_frames_to_remove_track:
                 log.debug("Move the track id={} to archive: the current frame_index={}, "
-                          "the last frame_index in track={}".format(
-                              t.get_id(), frame_index, last_frame_index))
+                          "the last frame_index in track={}".format(t.get_id(), frame_index, last_frame_index))
                 self.track_archive.append(t)
             else:
                 new_tracks.append(t)
@@ -246,7 +244,7 @@ def convert_tracks_to_annotation_storage(tracks):
         first_frame_index = cur_track.objects[0].frame_index
         last_frame_index = cur_track.objects[-1].frame_index
 
-        for frame_index in range(first_frame_index, last_frame_index+1):
+        for frame_index in range(first_frame_index, last_frame_index + 1):
             bbox = cur_track.get_bbox_for_frame(frame_index)
             tl_x = math.floor(bbox.tl_x)
             tl_y = math.floor(bbox.tl_y)
