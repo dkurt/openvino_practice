@@ -25,15 +25,23 @@ UNetHistology::UNetHistology() {
 
     // Create a single processing thread
     req = execNet.CreateInferRequest();
+    outputName = net.getOutputsInfo().begin()->first;
 }
 
 void UNetHistology::bgr2rgb(const Mat& src, Mat& dst) {
-    CV_Error(Error::StsNotImplemented, "bgr2rgb");
+    //CV_Error(Error::StsNotImplemented, "bgr2rgb");
+    cvtColor(src, dst, COLOR_BGR2RGB);
 }
 
 
 void UNetHistology::normalize(const Mat& src, Mat& dst) {
-    CV_Error(Error::StsNotImplemented, "normalize");
+    //CV_Error(Error::StsNotImplemented, "normalize");
+    Scalar avg, sdv;
+    meanStdDev(src, avg, sdv);
+    dst = Mat::zeros(src.size(), CV_32FC3);
+    dst+=src;
+    dst-= avg;
+    dst /= sdv;
 }
 
 void UNetHistology::segment(const Mat& image, Mat& mask) {
@@ -65,11 +73,29 @@ void UNetHistology::segment(const Mat& image, Mat& mask) {
 
     // TODO: Put inputBlob to the network, perform inference and return mask
 
-    CV_Error(Error::StsNotImplemented, "UNetHistology semantic segmentation");
+    //CV_Error(Error::StsNotImplemented, "UNetHistology semantic segmentation");
+    req.SetBlob("worker_0/validation/IteratorGetNext", inputBlob);
+    // Launch network
+    req.Infer();
+    int* output = req.GetBlob(outputName)->buffer();
+    mask = Mat(req.GetBlob(outputName)->size(), 1, CV_32SC1, output);
+    mask = mask.reshape(1, 772);
+    mask.convertTo(mask, CV_32F);
+    resize(mask, mask, Size(image.cols, image.rows));
+    mask.convertTo(mask, CV_8UC1);
 }
 
 int UNetHistology::countGlands(const cv::Mat& segm) {
-    CV_Error(Error::StsNotImplemented, "countGlands");
+    morphologyEx(segm, segm, MORPH_CLOSE, Mat::ones(3, 3, CV_8U), Point(-1, -1), 3);
+    Mat thresh;
+    distanceTransform(segm, thresh, DIST_L2, 5);
+    double dist_transform = 0.0;
+    minMaxLoc(thresh, 0, &dist_transform);
+    threshold(thresh, thresh, 0.5 * dist_transform, 255, THRESH_BINARY);
+    thresh.convertTo(thresh, CV_8U);
+    std::vector<std::vector<cv::Point> > contours;
+    cv::findContours(thresh, contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
+    return contours.size();
 }
 
 void UNetHistology::padMinimum(const Mat& src, int width, int height, Mat& dst) {
