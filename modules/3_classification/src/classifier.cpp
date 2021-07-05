@@ -11,11 +11,28 @@ using namespace cv::utils::fs;
 void topK(const std::vector<float>& src, unsigned k,
           std::vector<float>& dst,
           std::vector<unsigned>& indices) {
-    CV_Error(Error::StsNotImplemented, "topK");
+	std::vector<float> tmp;
+	tmp = src;
+	sort(tmp.begin(), tmp.end(), std::greater<float>());
+	for (int i = 0; i <k; i++)
+	{
+		dst.push_back(tmp[i]);
+		auto f = std::find(src.begin(), src.end(), tmp[i]);
+		int index = std::distance(src.begin(), f);
+		indices.push_back(index);
+	}
 }
 
 void softmax(std::vector<float>& values) {
-    CV_Error(Error::StsNotImplemented, "softmax");
+	float sum = 0;
+	float valueMax = 0;
+	for (int i = 0; i < values.size(); i++)
+		if (values[i] > valueMax)
+			valueMax = values[i];
+	for (int i = 0; i < values.size(); i++)
+		sum += exp(values[i] - valueMax);
+	for (int i = 0; i < values.size(); i++)
+		values[i] = exp(values[i] - valueMax) / sum;
 }
 
 Blob::Ptr wrapMatToBlob(const Mat& m) {
@@ -48,16 +65,21 @@ Classifier::Classifier() {
 }
 
 void Classifier::classify(const cv::Mat& image, int k, std::vector<float>& probabilities,
-                          std::vector<unsigned>& indices) {
-    // Create 4D blob from BGR image
-    Blob::Ptr input = wrapMatToBlob(image);
+	std::vector<unsigned>& indices) {
+	// Create 4D blob from BGR image
+	Blob::Ptr input = wrapMatToBlob(image);
 
-    // Pass blob as network's input. "data" is a name of input from .xml file
-    req.SetBlob("data", input);
+	// Pass blob as network's input. "data" is a name of input from .xml file
+	req.SetBlob("data", input);
 
-    // Launch network
-    req.Infer();
-
-    // Copy output. "prob" is a name of output from .xml file
-    float* output = req.GetBlob(outputName)->buffer();
+	// Launch network
+	req.Infer();
+	std::cout << "okay" << std::endl;
+	// Copy output. "prob" is a name of output from .xml file
+	float* output = req.GetBlob(outputName)->buffer();
+	std::vector<float> src;
+	for (int i = 0; i < req.GetBlob(outputName)->size(); i++)
+		src.push_back(output[i]);
+	topK(src, k, probabilities, indices);
+	softmax(probabilities);
 }
