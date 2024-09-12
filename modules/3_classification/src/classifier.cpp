@@ -11,18 +11,41 @@ using namespace cv::utils::fs;
 void topK(const std::vector<float>& src, unsigned k,
           std::vector<float>& dst,
           std::vector<unsigned>& indices) {
-    CV_Error(Error::StsNotImplemented, "topK");
+    std::vector<float> tmp = src; 
+    std::sort(tmp.rbegin(), tmp.rend());
+
+    for (int i = 0; i < k; i++)
+    {
+        dst.push_back(tmp[i]);
+        for (int j = 0; src.size(); j++)
+        {
+            if (tmp[i] == src[j])
+            {
+                indices.push_back(j);
+                break;
+            }
+        }
+    }
 }
 
 void softmax(std::vector<float>& values) {
-    CV_Error(Error::StsNotImplemented, "softmax");
+    float sum = 0.0f; 
+    float max = *std::max_element(values.begin(), values.end());
+    for (int i = 0; i < values.size(); i++)
+    {
+        sum += exp(values[i] - max);
+    }
+    for (int i = 0; i < values.size(); i++)
+    {
+        values[i] = exp(values[i] - max) / sum;
+    }
 }
 
 Blob::Ptr wrapMatToBlob(const Mat& m) {
-    CV_Assert(m.depth() == CV_8U);
     std::vector<size_t> dims = {1, (size_t)m.channels(), (size_t)m.rows, (size_t)m.cols};
     return make_shared_blob<uint8_t>(TensorDesc(Precision::U8, dims, Layout::NHWC),
                                      m.data);
+
 }
 
 Classifier::Classifier() {
@@ -60,4 +83,12 @@ void Classifier::classify(const cv::Mat& image, int k, std::vector<float>& proba
 
     // Copy output. "prob" is a name of output from .xml file
     float* output = req.GetBlob(outputName)->buffer();
+
+    std::vector<float> out;
+    for (int i = 0; i < req.GetBlob(outputName)->size(); i++)
+    {
+        out.push_back(output[i]);
+    }
+    topK(out, k, probabilities, indices);
+    softmax(probabilities);
 }
