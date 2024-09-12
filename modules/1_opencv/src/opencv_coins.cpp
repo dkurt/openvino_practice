@@ -12,3 +12,4 @@ unsigned countCoins(const Mat& img) {
     // TODO: implement an algorithm from https://docs.opencv.org/master/d3/db4/tutorial_py_watershed.html
     CV_Error(Error::StsNotImplemented, "countCoins");
 }
+
