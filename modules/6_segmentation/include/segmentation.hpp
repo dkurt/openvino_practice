@@ -19,11 +19,14 @@ public:
 // Semantic segmentation for  Autonomous Driving Assistant System scenario.
 // origin: https://github.com/opencv/open_model_zoo/blob/master/models/intel/semantic-segmentation-adas-0001/
 class ADAS : public Segmenter {
+    InferenceEngine::InferRequest req;
+    std::string outputName;
 public:
     ADAS();
 
     virtual void segment(const cv::Mat& image, cv::Mat& mask);
 };
+
 
 // Glands segmentation in colon histology images
 // origin: https://github.com/NifTK/NiftyNetModelZoo/tree/5-reorganising-with-lfs/unet_histology
@@ -53,4 +56,5 @@ public:
 
 private:
     InferenceEngine::InferRequest req;
+    std::string outputName;
 };
