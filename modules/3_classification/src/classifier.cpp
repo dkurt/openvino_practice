@@ -8,14 +8,50 @@ using namespace InferenceEngine;
 using namespace cv;
 using namespace cv::utils::fs;
 
+
+
 void topK(const std::vector<float>& src, unsigned k,
           std::vector<float>& dst,
           std::vector<unsigned>& indices) {
-    CV_Error(Error::StsNotImplemented, "topK");
+    //CV_Error(Error::StsNotImplemented, "topK");
+
+	std::vector<float> src_copy = src;
+	std::sort(src_copy.rbegin(), src_copy.rend());
+
+	//unsigned index;
+	for (int i = 0; i < k; i++)
+	{
+		dst.push_back(src_copy[i]);
+		for (unsigned index = 0; index < src.size(); index++)
+		{
+			if (src[index] == src_copy[i])
+			{
+				indices.push_back(index);
+				//std::cout << "Value " << src_copy[i] << " at " << i << std::endl;
+				break;
+			}
+		}
+	}
+
 }
 
 void softmax(std::vector<float>& values) {
-    CV_Error(Error::StsNotImplemented, "softmax");
+
+	long double sum = 0;
+	for (float value : values)
+	{
+		sum += exp((long double)value);
+		//std::cout << sum << ' ';
+	}
+	//std::cout << std::endl;
+	for (int i = 0; i < values.size(); i++)
+	{
+		long double exponent = exp((long double)values[i]);
+		values[i] = static_cast<float>(exponent / sum);
+		//std::cout << values[i] << ' ';
+	}
+	//std::cout << std::endl;
+	
 }
 
 Blob::Ptr wrapMatToBlob(const Mat& m) {
@@ -60,4 +96,15 @@ void Classifier::classify(const cv::Mat& image, int k, std::vector<float>& proba
 
     // Copy output. "prob" is a name of output from .xml file
     float* output = req.GetBlob(outputName)->buffer();
+	
+	// Transfer output values to vector
+	std::vector<float> res;
+	for (int i = 0; i < req.GetBlob(outputName)->size(); i++)
+	{
+		res.push_back(output[i]);
+	}
+	topK(res, k, probabilities, indices);
+
+	// Normalize the output
+	softmax(probabilities);
 }
