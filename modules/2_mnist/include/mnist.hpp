@@ -34,11 +34,11 @@ cv::Ptr<cv::ml::KNearest> train(const std::vector<cv::Mat>& images,
 // [inp] model  - trained model
 // [inp] images - set of test images
 // [inp] labels - set of groundtruth labels
-float validate(cv::Ptr<cv::ml::KNearest> model,
+float validate(const cv::Ptr<cv::ml::KNearest>& model,
                const std::vector<cv::Mat>& images,
                const std::vector<int>& labels);
 
 // Implements OCR on test water counter image. Returns predicted digit
 // [inp] model - trained model
 // [inp] image - digit BGR image
-int predict(cv::Ptr<cv::ml::KNearest> model, const cv::Mat& image);
+int predict(const cv::Ptr<cv::ml::KNearest>& model, const cv::Mat& image);
